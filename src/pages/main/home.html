@@ -1,0 +1,151 @@
+<style type="text/css">
+    .alarm-tip{
+        margin: 0.1rem 0;
+        padding: 0.1rem 0;
+        background-color: #ffffff;
+    }
+    .alarm-tip>[class*=bui-btn]{
+        border: none;
+        padding: 0 0.2rem;
+        border-right: 1px solid #f5f5f5;
+    }
+    .alarm-tip li .span1 h3{
+        padding: 0;
+        font-size: 0.3rem;
+        text-align: right;
+    }
+    .alarm-tip li .span1 p{
+        font-size: 0.2rem;
+        text-align: right;
+    }
+    .alarm-tip>[class*=bui-btn]:last-child{
+        border: none;
+    }
+    .alarm-tip .thumbnail{
+        line-height: 0.65rem;
+        height: 0.65rem;
+        width: 0.65rem;
+        text-align: center;
+        border-radius: 50%;
+        margin-right: 0;
+        color: #ffffff;
+    }
+    .alarm-tip [class*=bui-btn] .appiconfont{
+        font-size: 0.4rem;
+        margin: 0;
+    }
+
+    .shortcut-nav{
+        background-color: #ffffff;
+        padding: 0.1rem;
+    }
+    .shortcut-nav .bui-fluid{
+        border: none;
+    }
+    .shortcut-nav .bui-btn .appiconfont{
+        color: #ffffff;
+        height: 1rem;
+        width: 1rem;
+        border-radius: 0.1rem;
+        line-height: 1rem;
+        margin: 0.2rem auto;
+        font-size: 0.65rem;
+    }
+    .shortcut-nav .bui-box-vertical > [class*=span]{
+        font-size: 0.2rem;
+        color: #666666;
+        padding-bottom: 0.15rem;
+    }
+    .short1{
+        background-color: #DD514C;
+    }
+    .short2{
+        background-color: #AF6DF5;
+    }
+    .short3{
+        background-color: #FE74A9;
+    }
+    .short4{
+        background-color: #1F6FB5;
+    }
+    .short5{
+        background-color: #6cc96c;
+    }
+    .short6{
+        background-color: #27AEFF;
+    }
+</style>
+<div id="app-main-tab-home" class="app-main-tab">
+    <header class="bui-bar">
+        <div class="bui-bar-left">
+        </div>
+        <div class="bui-bar-main">首页</div>
+        <div class="bui-bar-right">
+        </div>
+    </header>
+    <main>
+        <div id="pylon-app-home-slide" class="bui-slide bui-slide-skin01">
+            <div class="bui-slide-main">
+                <ul>
+                    <li>
+                        <img src="images/banner01.png" alt="广告横幅1">
+                    </li>
+                    <li style="display: none;">
+                        <img src="images/banner02.png" alt="广告横幅2">
+                    </li>
+                    <li style="display: none;">
+                        <img src="images/banner03.png" alt="广告横幅3">
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <ul id="pylon-app-home-tips" class="bui-list bui-fluid alarm-tip">
+            <li class="bui-btn bui-box span3" data-level="1">
+                <div class="thumbnail level1-bg"><i class="appiconfont appicon-level1"></i></div>
+                <div class="span1">
+                    <h3 id="pylon-app-home-lct1" class="item-title level1">0</h3>
+                    <p class="item-text">紧急</p>
+                </div>
+            </li>
+            <li class="bui-btn bui-box span3" data-level="2">
+                <div class="thumbnail level2-bg"><i class="appiconfont appicon-level2"></i></div>
+                <div class="span1">
+                    <h3 id="pylon-app-home-lct2" class="item-title level2">0</h3>
+                    <p class="item-text">重要</p>
+                </div>
+            </li>
+            <li class="bui-btn bui-box span3" data-level="3">
+                <div class="thumbnail level3-bg"><i class="appiconfont appicon-level3"></i></div>
+                <div class="span1">
+                    <h3 id="pylon-app-home-lct3" class="item-title level3">0</h3>
+                    <p class="item-text">次要</p>
+                </div>
+            </li>
+            <li class="bui-btn bui-box span3" data-level="4">
+                <div class="thumbnail level4-bg"><i class="appiconfont appicon-level4"></i></div>
+                <div class="span1">
+                    <h3 id="pylon-app-home-lct4" class="item-title level4">0</h3>
+                    <p class="item-text">普通</p>
+                </div>
+            </li>
+        </ul>
+        <div id="app-main-shortcut" class="shortcut-nav">
+            <ul class="bui-nav bui-fluid">
+                <li class="bui-btn bui-box-vertical span4" href="pages/main/datareport.html">
+                    <i class="appiconfont appicon-report short1"></i><div class="span1">历史数据</div>
+                </li> 
+                <li class="bui-btn bui-box-vertical span4" href="pages/main/alarmreport.html">
+                    <i class="appiconfont appicon-count short2"></i><div class="span1">历史告警</div>
+                </li> 
+                <li class="bui-btn bui-box-vertical span4" href="pages/main/curvereport.html">
+                    <i class="appiconfont appicon-curve short3"></i><div class="span1">测值曲线</div>
+                </li> 
+                <li class="bui-btn bui-box-vertical span4"><i class="appiconfont appicon-zutai short4"></i><div class="span1">图形组态</div></li>
+                <li class="bui-btn bui-box-vertical span4" href="pages/main/videolist.html">
+                    <i class="appiconfont appicon-video short5"></i><div class="span1">实时视频</div>
+                </li> 
+                <li class="bui-btn bui-box-vertical span4"><i class="appiconfont appicon-all short6"></i><div class="span1">全部</div></li>
+            </ul>
+        </div>
+    </main>
+</div>

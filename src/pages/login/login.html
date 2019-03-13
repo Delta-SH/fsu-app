@@ -1,0 +1,127 @@
+<style type="text/css">
+    .login-page main {
+        background-color: #ffffff;
+    }
+
+    .logo {
+        height: 2rem;
+        margin: .6rem auto;
+        text-align: center;
+    }
+
+    .logo img {
+        height: 100%;
+        border: none;
+    }
+
+    .login-form {
+        padding-left: .3rem;
+        padding-right: .3rem;
+    }
+
+    .login-form .bui-list {
+        border-top: none;
+        margin-bottom: .3rem;
+    }
+
+    .login-form .bui-btn {
+        padding-left: 0;
+        padding-right: 0;
+        padding-top: .2rem;
+        padding-bottom: .2rem;
+    }
+
+    .login-form .bui-list>[class*=bui-btn]:last-child {
+        border-bottom: 1px solid #eee;
+    }
+
+    .login-form .bui-label {
+        width: .6rem;
+    }
+
+    .login-form .appiconfont {
+        font-size: 0.36rem;
+    }
+
+    .login-form .bui-input {
+        height: .6rem;
+    }
+
+    .login-form .login {
+        font-size: 0.26rem;
+        padding-top: 0.2rem;
+        padding-bottom: 0.2rem;
+        margin-top: .6rem;
+        margin-bottom: .2rem;
+    }
+
+    .login-form .bui-btn-text {
+        color: #666;
+        text-align: center;
+        font-size: 0.2rem;
+    }
+
+    .copyright {
+        font-size: 0.17rem;
+        color: #999;
+        width: 100%;
+        text-align: center;
+        background-color: #ffffff;
+        padding-bottom: 0.25rem;
+    }
+
+    .icon-eye:before {
+        content: "\e680"
+    }
+    .icon-eye.active:before {
+        content: "\e67f"
+    }
+</style>
+
+<div class="bui-page login-page">
+    <header class="bui-bar">
+        <div class="bui-bar-left">
+        </div>
+        <div class="bui-bar-main">数据机房监控系统</div>
+        <div class="bui-bar-right">
+        </div>
+    </header>
+    <main>
+        <div class="logo">
+            <img src="images/applogo.png" alt="">
+        </div>
+        <div class="login-form">
+            <ul class="bui-list">
+                <li class="bui-btn bui-box clearactive">
+                    <label class="bui-label" for="user"><i class="appiconfont appicon-diqiu primary-icon"></i></label>
+                    <div class="span1">
+                        <div class="bui-input user-input">
+                            <input id="app-login-ip" type="text" placeholder="设备IP">
+                        </div>
+                    </div>
+                </li>
+                <li class="bui-btn bui-box clearactive">
+                    <label class="bui-label" for="user"><i class="appiconfont appicon-user primary-icon"></i></label>
+                    <div class="span1">
+                        <div class="bui-input user-input">
+                            <input id="app-login-user" type="text" placeholder="用户名">
+                        </div>
+                    </div>
+                </li>
+                <li class="bui-btn bui-box clearactive">
+                    <label class="bui-label" for="password"><i class="appiconfont appicon-lock primary-icon"></i></label>
+                    <div class="span1">
+                        <div class="bui-input password-input">
+                            <input id="app-login-password" type="password" placeholder="密码">
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div id="app-login-login" class="bui-btn round primary login">登录</div>
+            <div id="app-login-forgot" class="bui-btn-text">忘记密码?</div>
+        </div>
+    </main>
+    <footer>
+        <div class="copyright"></div>
+    </footer>
+</div>

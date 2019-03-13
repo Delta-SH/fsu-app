@@ -1,0 +1,1 @@
+keytool -genkey -alias pylonkey -keyalg RSA -keysize 1024 -keypass abcde54321 -validity 3500 -keystore d:\app\key\pylon.keystore
