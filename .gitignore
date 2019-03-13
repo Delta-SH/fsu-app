@@ -31,7 +31,6 @@ bower_components
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
-dist/
 
 # Dependency directories
 node_modules/
@@ -60,3 +59,20 @@ typings/
 
 # next.js build output
 .next
+
+# custom options 
+*.svn
+*.iml
+*.gradle
+*.idea
+*.DS_Store
+*.log
+*/build
+dist/
+
+*.xcworkspace
+*/Podfile.lock
+*/Pods
+*/build.xcconfig
+*/ExportOptions.plist
+*/ProvisionFile.plist
