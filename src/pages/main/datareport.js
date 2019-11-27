@@ -167,14 +167,13 @@ loader.define(function(require, exports, module) {
                 var points = JSON.parse(data);
                 var nodes = [];
                 $.each(points, function(index, item) {
-                    if (item.Type !== '遥测')
-                        return true;
-
-                    nodes.push({
-                        name: item.Name,
-                        value: item.ID,
-                        unit: item.ValueDesc
-                    });
+                    if((item.Type === $node.AI.name || item.Type == $node.AI.id)){
+                        nodes.push({
+                            name: item.Name,
+                            value: item.ID,
+                            unit: item.ValueDesc
+                        });
+                    }
                 });
 
                 success(nodes);

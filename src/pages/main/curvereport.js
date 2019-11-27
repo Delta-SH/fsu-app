@@ -1,9 +1,12 @@
-loader.define(function(require, exports, module) {
-    var pageview = {name: '测值曲线'}, _ticket, _deviceSelector, _pointSelector, _startPicker, _endPicker;
-    
+loader.define(function (require, exports, module) {
+    var pageview = {
+            name: '测值曲线'
+        },
+        _ticket, _deviceSelector, _pointSelector, _startPicker, _endPicker;
+
     pageview.init = function () {
         _ticket = getTicket();
-        if(!_deviceSelector){
+        if (!_deviceSelector) {
             var data = _compute();
             _deviceSelector = bui.select({
                 trigger: "#pylon-app-curvereport-device",
@@ -12,16 +15,16 @@ loader.define(function(require, exports, module) {
                 height: 400,
                 data: data,
                 placeholder: "请选择设备",
-                onChange: function(e) {
+                onChange: function (e) {
                     _pointSelector.selectNone();
-                    _request(this.value(),function(data){
+                    _request(this.value(), function (data) {
                         _pointSelector.option("data", data);
                     });
                 }
             });
         }
 
-        if(!_pointSelector) {
+        if (!_pointSelector) {
             _pointSelector = bui.select({
                 trigger: "#pylon-app-curvereport-point",
                 title: "选择信号",
@@ -29,28 +32,27 @@ loader.define(function(require, exports, module) {
                 height: 400,
                 data: [],
                 placeholder: "请选择信号",
-                onChange: function(e) {
-                }
+                onChange: function (e) {}
             });
         }
 
-        if(!_startPicker) {
+        if (!_startPicker) {
             _startPicker = bui.pickerdate({
                 handle: "#pylon-app-curvereport-start",
                 formatValue: "yyyy-MM-dd hh:mm:ss",
                 value: moment().format("YYYY/MM/DD"),
-                onChange: function(value) {
+                onChange: function (value) {
                     router.$("#pylon-app-curvereport-start").val(value);
                 }
             });
         }
 
-        if(!_endPicker) {
+        if (!_endPicker) {
             _endPicker = bui.pickerdate({
-                handle:"#pylon-app-curvereport-end",
+                handle: "#pylon-app-curvereport-end",
                 formatValue: "yyyy-MM-dd hh:mm:ss",
                 value: moment().format("YYYY/MM/DD HH:mm:ss"),
-                onChange: function(value) {
+                onChange: function (value) {
                     router.$("#pylon-app-curvereport-end").val(value);
                 }
             });
@@ -58,7 +60,7 @@ loader.define(function(require, exports, module) {
 
         bui.btn("#pylon-app-curvereport-query").submit(function (loading) {
             var device = _deviceSelector.value();
-            if(isNullOrEmpty(device,true) === true){
+            if (isNullOrEmpty(device, true) === true) {
                 warning("请选择设备");
                 loading.stop();
                 return;
@@ -66,28 +68,28 @@ loader.define(function(require, exports, module) {
 
             var id = _pointSelector.value();
             var name = _pointSelector.text();
-            if(isNullOrEmpty(id,true) === true){
+            if (isNullOrEmpty(id, true) === true) {
                 warning("请选择信号");
                 loading.stop();
                 return;
             }
 
             var start = _startPicker.value();
-            if(isNullOrEmpty(start,true) === true){
+            if (isNullOrEmpty(start, true) === true) {
                 warning("请选择开始时间");
                 loading.stop();
                 return;
             }
 
             var end = _endPicker.value();
-            if(isNullOrEmpty(end,true) === true){
+            if (isNullOrEmpty(end, true) === true) {
                 warning("请选择结束时间");
                 loading.stop();
                 return;
             }
 
-            var diff = moment(end).diff(start, "seconds") ;
-            if(diff <= 0) {
+            var diff = moment(end).diff(start, "seconds");
+            if (diff <= 0) {
                 warning("结束时间必须大于开始时间");
                 loading.stop();
                 return;
@@ -100,18 +102,28 @@ loader.define(function(require, exports, module) {
             // }
 
             loading.stop();
-            router.load({ url: "pages/main/curvereportdetail.html",param: {id:id,name:name,device:device,start:start,end:end} });
-        },{ text: "正在查询..." });
+            router.load({
+                url: "pages/main/curvereportdetail.html",
+                param: {
+                    id: id,
+                    name: name,
+                    device: device,
+                    start: start,
+                    end: end
+                }
+            });
+        }, {
+            text: "正在查询..."
+        });
     }
 
-    pageview.load = function(){
+    pageview.load = function () {}
+
+    pageview.dispose = function () {
+
     }
 
-    pageview.dispose = function(){
-
-    }
-
-    function _compute(){
+    function _compute() {
         var data = [];
         var devices = getDevices();
         if (isNull(devices) === true)
@@ -120,14 +132,17 @@ loader.define(function(require, exports, module) {
         if (devices.length === 0)
             return;
 
-        $.each(devices, function(index,el){
-            data.push({name:el.Name,value:el.ID});
+        $.each(devices, function (index, el) {
+            data.push({
+                name: el.Name,
+                value: el.ID
+            });
         });
-        
+
         return data;
     }
 
-    function _request(device, success){
+    function _request(device, success) {
         $.ajax({
             type: 'POST',
             url: String.format("{0}getsignals?{1}&{2}", $requestURI, _ticket.token, device),
@@ -147,15 +162,14 @@ loader.define(function(require, exports, module) {
 
                 var points = JSON.parse(data);
                 var nodes = [];
-                $.each(points, function(index, item) {
-                    if (item.Type !== '遥测')
-                        return true;
-
-                    nodes.push({
-                        name: item.Name,
-                        value: item.ID,
-                        unit: item.ValueDesc
-                    });
+                $.each(points, function (index, item) {
+                    if ((item.Type === $node.AI.name || item.Type == $node.AI.id)) {
+                        nodes.push({
+                            name: item.Name,
+                            value: item.ID,
+                            unit: item.ValueDesc
+                        });
+                    }
                 });
 
                 success(nodes);

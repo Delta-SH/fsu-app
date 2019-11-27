@@ -154,7 +154,7 @@ loader.define(function(require, exports, module) {
                 var points = JSON.parse(data);
                 var nodes = [];
                 $.each(points, function(index, item) {
-                    if (item.Type === '遥信' && item.AlarmLevel > 0) {
+                    if ((item.Type === $node.DI.name || item.Type == $node.DI.id) && item.AlarmLevel > 0) {
                         nodes.push({
                             name: item.Name,
                             value: item.ID,

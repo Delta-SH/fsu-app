@@ -239,14 +239,16 @@ loader.define(function (require, exports, module) {
             _params = null;
     } 
 
-    function _logout() {
-        var module = router.currentModule();
-        if (module.pid !== "pages/login/login") {
-            router.load({
-                url: "pages/login/login.html",
-                param: {},
-                effect: "zoom"
-            });
+    function _logout(force) {
+        if(maxRetry() === true || force === true){
+            var module = router.currentModule();
+            if (module.pid !== "pages/login/login") {
+                router.load({
+                    url: "pages/login/login.html",
+                    param: {},
+                    effect: "zoom"
+                });
+            }
         }
     }
 
@@ -291,7 +293,7 @@ loader.define(function (require, exports, module) {
     
     _ticket = getTicket();
     if (isNull(_ticket) === true) {
-        _logout();
+        _logout(true);
         return;
     }
 

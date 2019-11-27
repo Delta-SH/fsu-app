@@ -299,13 +299,13 @@ loader.define(function () {
 
                     _ainodes = [], _aonodes = [], _dinodes = [], _donodes = [];
                     $.each(nodes, function (index, el) {
-                        if (el.Type === $node.DO.name) {
+                        if (el.Type === $node.DO.name || el.Type == $node.DO.id) {
                             _donodes.push(el);
-                        } else if (el.Type === $node.AO.name) {
+                        } else if (el.Type === $node.AO.name || el.Type == $node.AO.id) {
                             _aonodes.push(el);
-                        } else if (el.Type === $node.AI.name) {
+                        } else if (el.Type === $node.AI.name || el.Type == $node.AI.id) {
                             _ainodes.push(el);
-                        } else if (el.Type === $node.DI.name) {
+                        } else if (el.Type === $node.DI.name || el.Type == $node.DI.id) {
                             _dinodes.push(el);
                         }
                     });

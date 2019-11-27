@@ -2,15 +2,49 @@
 //bui.isWebapp = false; 
 window.router = bui.router();
 window.storage = bui.storage();
-window.$level = {L0: 0,L1: 1,L2: 2,L3: 3,L4: 4};
-window.$state = {S0: 0,S1: 1,S2: 2,S3: 3,S4: 4,S5: 5,S6: 6,S7: 7};
-window.$node = {DO: {id: 1,name: "遥控"},AO: {id: 2,name: "遥调"},AI: {id: 3,name: "遥测"},DI: {id: 4,name: "遥信"}};
+window.$level = {
+    L0: 0,
+    L1: 1,
+    L2: 2,
+    L3: 3,
+    L4: 4
+};
+window.$state = {
+    S0: 0,
+    S1: 1,
+    S2: 2,
+    S3: 3,
+    S4: 4,
+    S5: 5,
+    S6: 6,
+    S7: 7
+};
+window.$node = {
+    DO: {
+        id: 2,
+        name: "遥控"
+    },
+    AO: {
+        id: 3,
+        name: "遥调"
+    },
+    AI: {
+        id: 1,
+        name: "遥测"
+    },
+    DI: {
+        id: 0,
+        name: "遥信"
+    }
+};
 window.$requestURI = "http://127.0.0.1/api/bi/";
 window.$requestUid = "ius";
 window.$rememberKey = "pylon.app.login.remember";
 window.$ticketKey = "pylon.app.auth.ticket";
 window.$deviceKey = "pylon.app.setting.device";
 window.$alarmKey = "pylon.app.setting.alarm";
+window.$retryKey = "pylon.app.setting.retry";
+window.$maxretry = 5;
 
 bui.ready(function () {
     router.init({
@@ -20,8 +54,10 @@ bui.ready(function () {
         reloadCache: false
     });
 
-    router.on("loadfail",function(){
-        bui.load({url:"404.html"})
+    router.on("loadfail", function () {
+        bui.load({
+            url: "404.html"
+        })
     });
 
     bui.btn({
@@ -31,8 +67,8 @@ bui.ready(function () {
 
     $("#bui-router").on("click", ".btn-back", function (e) {
         bui.back({
-            beforeBack: function(e){
-                if(isNull(e.target) === true)
+            beforeBack: function (e) {
+                if (isNull(e.target) === true)
                     return false;
 
                 dispose(e.target);
@@ -43,33 +79,33 @@ bui.ready(function () {
 
     setRequest();
 
-    if(window.plus) {  
-        plusReady();  
+    if (window.plus) {
+        plusReady();
     } else {
-        document.addEventListener("plusready", plusReady, false);  
+        document.addEventListener("plusready", plusReady, false);
     }
-    
-	function plusReady(){
-		plus.key.addEventListener("backbutton", function() {
+
+    function plusReady() {
+        plus.key.addEventListener("backbutton", function () {
             if (plus.os.name === "Android") {
                 bui.back({
-                    beforeBack: function(e){
-                        if(isNull(e.target) === true)
+                    beforeBack: function (e) {
+                        if (isNull(e.target) === true)
                             return false;
-                    
+
                         dispose(e.target);
-                        if(e.target.pid === "pages/login/login"){
+                        if (e.target.pid === "pages/login/login") {
                             plus.runtime.quit();
                             return false;
                         }
-                    
+
                         return true;
                     }
                 });
             } else {
-                plus.nativeUI.toast( "请按Home键切换应用");
+                plus.nativeUI.toast("请按Home键切换应用");
             }
-	    });
+        });
     }
 })
 
@@ -91,6 +127,29 @@ function getTicket() {
         return null;
 
     return ticket;
+}
+
+function maxRetry(){
+    var count = getRetry();
+    if(count >= $maxretry){
+        setRetry(0);
+        return true;
+    } else {
+        setRetry(++count);
+        return false;
+    }
+}
+
+function getRetry() {
+    var count = storage.get($retryKey, 0);
+    if (isNull(count) === true)
+        return 0;
+
+    return count;
+}
+
+function setRetry(count) {
+    storage.set($retryKey, count);
 }
 
 function getDevices() {
@@ -165,8 +224,8 @@ function warningdialog(message, detail) {
     });
 }
 
-function dispose(target){
-    loader.require(target.pid, function(mod){
+function dispose(target) {
+    loader.require(target.pid, function (mod) {
         mod.dispose();
     });
 }
@@ -272,7 +331,8 @@ function getStateName(state) {
 }
 
 function getUnit(value, type, desc) {
-    if (type === $node.DI.id || type === $node.DO.id) {
+    if (type == $node.DI.name || type == $node.DI.id ||
+        type == $node.DO.name || type == $node.DO.id) {
         var unit = "";
         var keys = desc.split(";");
         $.each(keys, function (index, item) {

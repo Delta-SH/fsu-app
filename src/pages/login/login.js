@@ -172,6 +172,7 @@ loader.define(function(require,exports,module) {
 
     // 用户注销
     pageview.logout = function(){
+        setRetry(0);
         var ticket = getTicket();
         if(isNull(ticket) === false) {
             storage.remove($ticketKey);

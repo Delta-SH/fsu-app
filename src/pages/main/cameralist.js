@@ -1,11 +1,76 @@
 loader.define(function (require, exports, module) {
-    var pageview = { name: '摄像头列表' }, _ticket, _id;
+    var pageview = {
+            name: '摄像头列表'
+        },
+        _ticket,
+        _id,
+        _sources = [{
+                name: 'CCTV-1',
+                src: 'http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8'
+            },
+            {
+                name: 'CCTV-2',
+                src: 'http://ivi.bupt.edu.cn/hls/cctv2.m3u8'
+            },
+            {
+                name: 'CCTV-3',
+                src: 'http://ivi.bupt.edu.cn/hls/cctv3hd.m3u8'
+            },
+            {
+                name: 'CCTV-4',
+                src: 'http://ivi.bupt.edu.cn/hls/cctv4.m3u8'
+            },
+            {
+                name: 'CCTV-5',
+                src: 'http://ivi.bupt.edu.cn/hls/cctv5phd.m3u8'
+            },
+            {
+                name: 'CCTV-6',
+                src: 'http://ivi.bupt.edu.cn/hls/cctv6hd.m3u8'
+            },
+            {
+                name: 'CCTV-7',
+                src: 'http://ivi.bupt.edu.cn/hls/cctv7.m3u8'
+            },
+            {
+                name: 'CCTV-8',
+                src: 'http://ivi.bupt.edu.cn/hls/cctv8hd.m3u8'
+            },
+            {
+                name: 'CCTV-9',
+                src: 'http://ivi.bupt.edu.cn/hls/cctv9.m3u8'
+            },
+            {
+                name: 'CCTV-10',
+                src: 'http://ivi.bupt.edu.cn/hls/cctv10.m3u8'
+            },
+            {
+                name: 'CCTV-11',
+                src: 'http://ivi.bupt.edu.cn/hls/cctv11.m3u8'
+            },
+            {
+                name: 'CCTV-12',
+                src: 'http://ivi.bupt.edu.cn/hls/cctv12.m3u8'
+            },
+            {
+                name: 'CCTV-13',
+                src: 'http://ivi.bupt.edu.cn/hls/cctv13.m3u8'
+            },
+            {
+                name: 'CCTV-14',
+                src: 'http://ivi.bupt.edu.cn/hls/cctv14.m3u8'
+            },
+            {
+                name: 'CCTV-15',
+                src: 'http://ivi.bupt.edu.cn/hls/cctv15.m3u8'
+            }
+        ];
 
     pageview.init = function () {
         _ticket = getTicket();
 
         var params = router.getPageParams();
-        if(isNull(params) === false){
+        if (isNull(params) === false) {
             _id = params.id;
             router.$(".bui-bar > .bui-bar-main").html(params.name);
         }
@@ -13,11 +78,11 @@ loader.define(function (require, exports, module) {
 
     pageview.load = function () {
         var html = "";
-        for(var i=1;i<= 16;i++){
+        for (var i = 1; i <= _sources.length; i++) {
             html += `
-            <li class="bui-btn" href="pages/main/video.html?url=${encodeURI("http://playertest.longtailvideo.com/adaptive/bipbop/gear4/prog_index.m3u8")}">
+            <li class="bui-btn" href="pages/main/video.html?url=${encodeURI(_sources[i-1].src)}">
                 <div class="bui-icon primary round"><i class="appiconfont appicon-camera"></i></div>
-                <div class="span1 camera-title">摄像头#${i}</div>
+                <div class="span1 camera-title">${_sources[i-1].name}</div>
             </li>`;
         }
 
@@ -29,8 +94,7 @@ loader.define(function (require, exports, module) {
         }
     }
 
-    pageview.dispose = function(){
-    }
+    pageview.dispose = function () {}
 
     function _empty() {
         router.$("#camera-footer").html('<div class="nodata"><i class="appiconfont appicon-empty-face"></i> <span>列表空空如也~</span></div>');
