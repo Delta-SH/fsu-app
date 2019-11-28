@@ -1,14 +1,16 @@
-loader.define(function(require,exports,module) {
-    var pageview = { name: "登录" };
+loader.define(function (require, exports, module) {
+    var pageview = {
+        name: "登录"
+    };
     var _ip, _user, _password, _loading;
-    
+
     // 模块初始化
     pageview.init = function () {
         _ip = router.$("#app-login-ip");
         _user = router.$("#app-login-user");
         _password = router.$("#app-login-password");
 
-        if(!_loading) {
+        if (!_loading) {
             _loading = bui.loading({
                 appendTo: ".login-page",
                 text: "正在加载"
@@ -21,7 +23,7 @@ loader.define(function(require,exports,module) {
     }
 
     // 模块加载
-    pageview.load = function(){
+    pageview.load = function () {
 
     }
 
@@ -30,7 +32,7 @@ loader.define(function(require,exports,module) {
         bui.input({
             id: ".user-input",
             iconClass: ".icon-remove",
-            callback: function(e) {
+            callback: function (e) {
                 this.empty();
                 $(e.target).hide();
             }
@@ -39,33 +41,36 @@ loader.define(function(require,exports,module) {
         bui.input({
             id: ".password-input",
             iconClass: ".icon-eye",
-            callback: function(e) {
+            callback: function (e) {
                 this.toggleType();
                 $(e.target).toggleClass("active");
             }
         });
 
-        router.$("#app-login-login").on('click', function(e){
+        router.$("#app-login-login").on('click', function (e) {
             var iptext = _ip.val(),
                 usertext = _user.val(),
                 pwdtext = _password.val();
 
-            if(isEmpty(iptext) === true){
+            if (isEmpty(iptext) === true) {
                 warning("设备IP不能为空");
                 return;
             }
 
-            if(isEmpty(usertext) === true){
+            if (isEmpty(usertext) === true) {
                 warning("用户名不能为空");
                 return;
             }
 
-            if(isEmpty(pwdtext) === true){
+            if (isEmpty(pwdtext) === true) {
                 warning("密码不能为空");
                 return;
             }
 
-            var remeber = {"ip": _ip.val(), "user": _user.val()};
+            var remeber = {
+                "ip": _ip.val(),
+                "user": _user.val()
+            };
             storage.set($rememberKey, remeber);
             setRequest(remeber);
 
@@ -87,7 +92,7 @@ loader.define(function(require,exports,module) {
     }
 
     // 获取token
-    pageview.reqakey = function(uid, pwd) {
+    pageview.reqakey = function (uid, pwd) {
         try {
             $.ajax({
                 type: 'POST',
@@ -95,11 +100,11 @@ loader.define(function(require,exports,module) {
                 data: null,
                 dataType: "text",
                 timeout: 10000,
-                beforeSend: function(xhr, settings) {
+                beforeSend: function (xhr, settings) {
                     _loading.option("text", "请求令牌");
                     _loading.show();
                 },
-                success: function(data, status) {
+                success: function (data, status) {
                     var token = data.replace(/\"/g, '');
                     if (isNullOrEmpty(token) === true) {
                         warning("获取令牌失败,请重试。");
@@ -111,14 +116,14 @@ loader.define(function(require,exports,module) {
                         return;
                     }
 
-                    loader.import("js/jquery.md5.min.js", function(){
+                    loader.import("js/jquery.md5.min.js", function () {
                         pageview.reqatu(token, uid, pwd);
                     });
                 },
-                error: function(xhr, errorType, error){
+                error: function (xhr, errorType, error) {
                     warning("获取令牌失败,请重试。");
                 },
-                complete: function(xhr, status){
+                complete: function (xhr, status) {
                     _loading.hide();
                 }
             });
@@ -128,7 +133,7 @@ loader.define(function(require,exports,module) {
     }
 
     // 用户验证
-    pageview.reqatu = function(token, uid, pwd){
+    pageview.reqatu = function (token, uid, pwd) {
         try {
             $.ajax({
                 type: 'POST',
@@ -136,32 +141,45 @@ loader.define(function(require,exports,module) {
                 data: null,
                 dataType: "text",
                 timeout: 10000,
-                beforeSend: function(xhr, settings) {
-                    _loading.option("text","验证用户");
+                beforeSend: function (xhr, settings) {
+                    _loading.option("text", "验证用户");
                     _loading.show();
                 },
-                success: function(data, status) {
-                    if(data !== "true"){
+                success: function (data, status) {
+                    if (data !== "true") {
                         warning("用户名或密码错误");
                         return;
                     }
-    
-                    storage.set($ticketKey, {"uid":uid, "token":token, "time":new Date().getTime()});
-                    router.back({
-                        name: "main",
-                        callback: function(){
-                            loader.require(["main"], function(mod){
+
+                    storage.set($ticketKey, {
+                        "uid": uid,
+                        "token": token,
+                        "time": new Date().getTime()
+                    });
+
+                    if (router.isLoad("main")) {
+                        router.back({
+                            name: "main",
+                            callback: function (mod) {
                                 mod.init();
                                 mod.load();
                                 success("欢迎回来", 1500);
-                            })
-                        }
-                    });
+                            }
+                        });
+                    } else {
+                        router.load({
+                            url: "main",
+                            effect: "zoom",
+                            callback: function (mod) {
+                                success("欢迎使用", 1500);
+                            }
+                        });
+                    }
                 },
-                error: function(xhr, errorType, error){
+                error: function (xhr, errorType, error) {
                     warning("验证用户失败,请重试。");
                 },
-                complete: function(xhr, status){
+                complete: function (xhr, status) {
                     _loading.hide();
                 }
             });
@@ -171,10 +189,10 @@ loader.define(function(require,exports,module) {
     }
 
     // 用户注销
-    pageview.logout = function(){
-        setRetry(0);
+    pageview.logout = function () {
+        initRetry();
         var ticket = getTicket();
-        if(isNull(ticket) === false) {
+        if (isNull(ticket) === false) {
             storage.remove($ticketKey);
             $.ajax({
                 type: 'POST',
@@ -182,26 +200,25 @@ loader.define(function(require,exports,module) {
                 data: null,
                 dataType: "text",
                 timeout: 10000,
-                success: function(data, status) {
-                }
+                success: function (data, status) {}
             });
         }
     }
 
     // 记住我
-    pageview.rememberme = function(){
+    pageview.rememberme = function () {
         var remeber = storage.get($rememberKey, 0);
-        if(isNull(remeber) === false) {
+        if (isNull(remeber) === false) {
             _ip.val(remeber.ip);
             _user.val(remeber.user);
         }
     }
 
     // 销毁资源
-    pageview.dispose = function(){
+    pageview.dispose = function () {
 
     }
-    
+
     // 初始化
     pageview.init();
 

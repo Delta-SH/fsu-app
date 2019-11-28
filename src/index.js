@@ -44,7 +44,7 @@ window.$ticketKey = "pylon.app.auth.ticket";
 window.$deviceKey = "pylon.app.setting.device";
 window.$alarmKey = "pylon.app.setting.alarm";
 window.$retryKey = "pylon.app.setting.retry";
-window.$maxretry = 5;
+window.$maxretry = 3;
 
 bui.ready(function () {
     router.init({
@@ -129,13 +129,17 @@ function getTicket() {
     return ticket;
 }
 
+function initRetry(){
+    setRetry(1);
+}
+
 function maxRetry(){
     var count = getRetry();
     if(count >= $maxretry){
-        setRetry(0);
         return true;
     } else {
-        setRetry(++count);
+        count++;
+        setRetry(count);
         return false;
     }
 }
@@ -143,7 +147,7 @@ function maxRetry(){
 function getRetry() {
     var count = storage.get($retryKey, 0);
     if (isNull(count) === true)
-        return 0;
+        return 1;
 
     return count;
 }
@@ -408,7 +412,7 @@ function onInput(option) {
 }
 
 function isNull(value) {
-    return typeof value === "undefined" || value === null;
+    return typeof value == "undefined" || value == null;
 }
 
 function isEmpty(value, whitespace) {

@@ -1,15 +1,27 @@
 loader.define(function (require, exports, module) {
-    var _maintab, _ticket, _loading, _steps = 2, _finish = [], _timer, _timeout = 20, _realtimer, _realtimeout = 15000, _params;
+    var _maintab = null,
+        _ticket = null,
+        _loading = null,
+        _steps = 2,
+        _finish = [],
+        _timer = null,
+        _realtimer = null,
+        _timeout = 30,
+        _realtimeout = 15,
+        _params = null,
+        _maxretry = 3,
+        _devretry = 1,
+        _almretry = 1;
 
     function _init() {
-        if (!_loading) {
+        if (isNull(_loading) === true) {
             _loading = bui.loading({
                 appendTo: ".main-page",
                 text: "正在加载"
             });
         }
 
-        if (!_maintab) {
+        if (isNull(_maintab) === true) {
             _maintab = bui.tab({
                 id: "#app-main-tab-container",
                 menu: "#app-main-tab-nav",
@@ -33,12 +45,12 @@ loader.define(function (require, exports, module) {
                     case 2:
                         _badges(true);
                         loader.require(["pages/main/alarm"], function (mod) {
-                            if(isNull(_params) === false){
+                            if (isNull(_params) === false) {
                                 var params = _params;
-                                if(_params.once === true){
+                                if (_params.once === true) {
                                     _params = null;
                                 }
-                                
+
                                 mod.setparams(params);
                             }
 
@@ -54,7 +66,7 @@ loader.define(function (require, exports, module) {
             });
         }
 
-        if (!_timer) {
+        if (isNull(_timer) === true) {
             _timer = bui.timer({
                 onProcess: function (arg) {
                     if (arg.count === _timeout) {
@@ -93,7 +105,11 @@ loader.define(function (require, exports, module) {
         _timer.restart();
     }
 
-    function _dispose(){
+    function _dispose() {
+        if (isNull(_realtimer) === false) {
+            clearTimeout(_realtimer);
+            _realtimer = null;
+        }
     }
 
     function _devices() {
@@ -103,32 +119,46 @@ loader.define(function (require, exports, module) {
                 url: String.format("{0}getdevices?{1}", $requestURI, _ticket.token),
                 data: null,
                 dataType: "text",
-                timeout: 20000,
+                timeout: 10000,
                 beforeSend: function (xhr, settings) {
                     storage.remove($deviceKey);
                 },
                 success: function (data, status) {
-                    if (data.startWith('Error') === true) {
-                        _finish.push("init devices error.");
-                        warning(data);
-                        return;
-                    }
+                    try {
+                        if (data.startWith('Error') === true)
+                            throw new Error(data);
 
-                    var result = [];
-                    if (isNullOrEmpty(data) === false) {
-                        result = JSON.parse(data);
-                    }
+                        _devretry = 1;
+                        var result = [];
+                        if (isNullOrEmpty(data) === false) {
+                            result = JSON.parse(data);
+                        }
 
-                    setDevices(result);
-                    _finish.push("init devices success.");
+                        setDevices(result);
+                        _finish.push("load devices success.");
+                    } catch (err) {
+                        _loaddeverr(err.message);
+                    }
                 },
                 error: function (xhr, errorType, error) {
-                    _finish.push("init devices failure.");
-                    warning("设备加载失败,请重试。");
+                    _loaddeverr("设备加载失败");
                 }
             });
         } catch (error) {
             console.error(error);
+        }
+    }
+
+    function _loaddeverr(err) {
+        if (_devretry >= _maxretry) {
+            _devretry = 1;
+            warning(err);
+            _finish.push(err);
+        } else {
+            _devretry++;
+            setTimeout(function () {
+                _devices();
+            }, 3000);
         }
     }
 
@@ -139,35 +169,50 @@ loader.define(function (require, exports, module) {
                 url: String.format("{0}getactalarm?{1}", $requestURI, _ticket.token),
                 data: null,
                 dataType: "text",
-                timeout: 20000,
+                timeout: 10000,
                 beforeSend: function (xhr, settings) {
                     storage.remove($alarmKey);
                 },
                 success: function (data, status) {
-                    if (data.startWith('Error') === true) {
-                        _finish.push("init alarms error.");
-                        warning(data);
-                        _logout();
-                        return;
-                    }
+                    try {
+                        if (data.startWith('Error') === true)
+                            throw new Error(data);
 
-                    var result = [];
-                    if (isNullOrEmpty(data) === false) {
-                        result = JSON.parse(data);
-                    }
+                        _almretry = 1;
+                        var result = [];
+                        if (isNullOrEmpty(data) === false) {
+                            result = JSON.parse(data);
+                        }
 
-                    setAlarms(result);
-                    _finish.push("init alarms success.");
-                    _realtimer = setTimeout(_realalarm, _realtimeout);
+                        setAlarms(result);
+                        _finish.push("init alarms success.");
+                        _realtimer = setTimeout(function () {
+                            _realalarm();
+                        }, _realtimeout * 1000);
+                    } catch (err) {
+                        _loadalmerr(err.message);
+                    }
                 },
                 error: function (xhr, errorType, error) {
-                    _finish.push("init alarms failure.");
-                    warning("告警加载失败,请重试。");
-                    _logout();
+                    _loadalmerr("告警加载失败");
                 }
             });
         } catch (error) {
             console.error(error);
+        }
+    }
+
+    function _loadalmerr(err) {
+        if (_almretry >= _maxretry) {
+            _almretry = 1;
+            warning(err);
+            _finish.push(err);
+            _logout();
+        } else {
+            _almretry++;
+            setTimeout(function () {
+                _alarms();
+            }, 5000);
         }
     }
 
@@ -178,45 +223,59 @@ loader.define(function (require, exports, module) {
                 url: String.format("{0}getrealalarm?{1}", $requestURI, _ticket.token),
                 data: null,
                 dataType: "text",
-                timeout: 30000,
+                timeout: 15000,
                 success: function (data, status) {
-                    if (isNullOrEmpty(data) === false 
-                    && data.startWith('Error') === false) {
-                        var alarms = getAlarms();
-                        if (isNull(alarms) === false) {
-                            var increment = JSON.parse(data);
-                            $.each(increment, function (index, item) {
-                                if (isNullOrEmpty(item.EndTime) === true) {
-                                    var current = _.find(alarms, function (value) {
-                                        return item.DeviceID === value.DeviceID && item.SignalID === value.SignalID;
-                                    });
+                    var ok = data.startWith('Error') === false;
+                    if (ok === true) {
+                        initRetry();
+                        if (isNullOrEmpty(data) === false) {
+                            var alarms = getAlarms();
+                            if (isNull(alarms) === false) {
+                                var increment = JSON.parse(data);
+                                $.each(increment, function (index, item) {
+                                    if (isNullOrEmpty(item.EndTime) === true) {
+                                        var current = _.find(alarms, function (value) {
+                                            return item.DeviceID === value.DeviceID && item.SignalID === value.SignalID;
+                                        });
 
-                                    if (isNull(current) === true) {
-                                        alarms.push(item);
+                                        if (isNull(current) === true) {
+                                            alarms.push(item);
+                                        }
+                                    } else {
+                                        var current = _.find(alarms, function (value) {
+                                            return item.DeviceID === value.DeviceID && item.SignalID === value.SignalID;
+                                        });
+
+                                        if (isNull(current) === false) {
+                                            alarms = _.without(alarms, current);
+                                        }
                                     }
-                                } else {
-                                    var current = _.find(alarms, function (value) {
-                                        return item.DeviceID === value.DeviceID && item.SignalID === value.SignalID;
-                                    });
+                                });
 
-                                    if (isNull(current) === false) {
-                                        alarms = _.without(alarms, current);
-                                    }
-                                }
-                            });
-
-                            setAlarms(alarms);
-                            _update(alarms, increment);
+                                setAlarms(alarms);
+                                _update(alarms, increment);
+                            }
                         }
-
-                        _realtimer = setTimeout(_realalarm, _realtimeout);
-                        return;
                     }
 
-                    _logout();
+                    if (ok === true || maxRetry() === false) {
+                        _realtimer = setTimeout(function () {
+                            _realalarm();
+                        }, _realtimeout * 1000);
+                    } else {
+                        warning("获取实时告警失败");
+                        _logout();
+                    }
                 },
                 error: function (xhr, errorType, error) {
-                    _logout();
+                    if (maxRetry() === false) {
+                        _realtimer = setTimeout(function () {
+                            _realalarm();
+                        }, _realtimeout * 1000);
+                    } else {
+                        warning("获取实时告警失败");
+                        _logout();
+                    }
                 }
             });
         } catch (error) {
@@ -232,24 +291,19 @@ loader.define(function (require, exports, module) {
         }
     }
 
-    function _setparams(params){
-        if(isNull(params) === false)
+    function _setparams(params) {
+        if (isNull(params) === false)
             _params = params;
-        else 
+        else
             _params = null;
-    } 
+    }
 
-    function _logout(force) {
-        if(maxRetry() === true || force === true){
-            var module = router.currentModule();
-            if (module.pid !== "pages/login/login") {
-                router.load({
-                    url: "pages/login/login.html",
-                    param: {},
-                    effect: "zoom"
-                });
-            }
-        }
+    function _logout() {
+        _dispose();
+        router.load({
+            url: "pages/login/login",
+            effect: "zoom"
+        });
     }
 
     function _update(total, increment) {
@@ -261,8 +315,7 @@ loader.define(function (require, exports, module) {
 
         _badges(false);
 
-        var module = router.currentModule();
-        if (module.pid === "main") {
+        if (isNull(_maintab) === false) {
             var index = _maintab.index();
             if (index === 0) {
                 loader.require(["pages/main/home"], function (mod) {
@@ -290,10 +343,10 @@ loader.define(function (require, exports, module) {
     exports.dispose = _dispose;
     exports.to = _to;
     exports.setparams = _setparams;
-    
+
     _ticket = getTicket();
     if (isNull(_ticket) === true) {
-        _logout(true);
+        _logout();
         return;
     }
 

@@ -3,7 +3,13 @@ loader.define(function(require, exports, module) {
     
     pageview.init = function () {
         router.$("#pylon-app-user-logout").on("click",function(e){
-            bui.load({ url: "pages/login/login.html", effect: "zoom" });
+            loader.require(["main"], function (mod) {
+                mod.dispose();
+                bui.load({ 
+                    url: "pages/login/login", 
+                    effect: "zoom" 
+                });
+            })
         });
     }
 
