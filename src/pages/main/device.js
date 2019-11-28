@@ -232,6 +232,10 @@ loader.define(function () {
     }
 
     pageview.dispose = function(){
+        if (isNull(_timer) === false) {
+            clearTimeout(_timer);
+            _timer = null;
+        }
     }
 
     function _loadbase() {
