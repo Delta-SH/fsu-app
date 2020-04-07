@@ -1,29 +1,115 @@
+<style type="text/css">
+  #app-main-tab-data {
+    height: 100%;
+  }
+  #app-main-tab-data .data-list-container {
+    overflow: auto;
+  }
+
+  #app-main-tab-data .accordion-details > li.bui-btn {
+    background-color: transparent;
+    padding: 0.1rem 0.16rem;
+  }
+
+  #app-main-tab-data .accordion-details > li.bui-btn:active {
+    background-color: #eee;
+  }
+</style>
 <div id="app-main-tab-data" class="app-main-tab">
-    <header class="bui-bar">
-        <div class="bui-bar-left">
+  <header class="bui-bar">
+    <div class="bui-bar-left"></div>
+    <div class="bui-bar-main">实时数据</div>
+    <div class="bui-bar-right"></div>
+  </header>
+  <main class="overlist">
+    <div id="pylon-app-data-search" class="bui-searchbar bui-box">
+      <div class="span1">
+        <div class="bui-input">
+          <i class="icon-search"></i>
+          <input type="search" value="" placeholder="请输入关键字" />
         </div>
-        <div class="bui-bar-main">实时数据</div>
-        <div class="bui-bar-right">
-        </div>
-    </header>
-    <main class="overlist">
-        <div id="pylon-app-data-search" class="bui-searchbar bui-box">
-            <div class="span1">
-                <div class="bui-input">
-                    <i class="icon-search"></i>
-                    <input type="search" value="" placeholder="请输入关键字"/>
-                </div>
-            </div>
-            <div class="btn-search">搜索</div>
-        </div>
-        <div id="pylon-app-data-device-scroll" class="bui-scroll">
-			<div class="bui-scroll-head"></div>
-			<div class="bui-scroll-main">
-				<ul id="pylon-app-data-device-list" class="bui-list">
-				</ul>
-			</div>
-			<div class="bui-scroll-foot">
-            </div>
-		</div>
-    </main>
+      </div>
+      <div class="btn-search">搜索</div>
+    </div>
+    <div class="data-list-container">
+      <dl id="pylon-app-data-accordion" class="bui-accordion">
+        <dt class="bui-btn bui-box">
+          <div class="span1">浦东新区</div>
+          <i class="icon-accordion"></i>
+        </dt>
+        <dd>
+          <ul class="bui-list accordion-details">
+            <li class="bui-btn bui-box" href="pages/main/station.html?id=100">
+              <div class="bui-icon round success"><i class="appiconfont appicon-station"></i></div>
+              <div class="span1">浦东站点#001</div>
+              <i class="icon-listright"></i>
+            </li>
+            <li class="bui-btn bui-box">
+              <div class="bui-icon round warning"><i class="appiconfont appicon-station"></i></div>
+              <div class="span1">浦东站点#002 <span class="bui-badges">5</span></div>
+              <i class="icon-listright"></i>
+            </li>
+            <li class="bui-btn bui-box">
+              <div class="bui-icon round success"><i class="appiconfont appicon-station"></i></div>
+              <div class="span1">浦东站点#003</div>
+              <i class="icon-listright"></i>
+            </li>
+            <li class="bui-btn bui-box">
+              <div class="bui-icon round danger"><i class="appiconfont appicon-station"></i></div>
+              <div class="span1">浦东站点#004 <span class="bui-badges">3</span></div>
+              <i class="icon-listright"></i>
+            </li>
+            <li class="bui-btn bui-box">
+              <div class="bui-icon round warning"><i class="appiconfont appicon-station"></i></div>
+              <div class="span1">浦东站点#005 <span class="bui-badges">9</span></div>
+              <i class="icon-listright"></i>
+            </li>
+            <li class="bui-btn bui-box">
+              <div class="bui-icon round success"><i class="appiconfont appicon-station"></i></div>
+              <div class="span1">浦东站点#006</div>
+              <i class="icon-listright"></i>
+            </li>
+          </ul>
+        </dd>
+        <dt class="bui-btn bui-box">
+          <div class="span1">静安区</div>
+          <i class="icon-accordion"></i>
+        </dt>
+        <dd>
+          <ul class="bui-list accordion-details">
+            <li class="bui-btn bui-box" href="device.html?id=222">
+              <div class="bui-icon round success"><i class="appiconfont appicon-station"></i></div>
+              <div class="span1">静安站点#001</div>
+              <i class="icon-listright"></i>
+            </li>
+            <li class="bui-btn bui-box">
+              <div class="bui-icon round warning"><i class="appiconfont appicon-station"></i></div>
+              <div class="span1">静安站点#002 <span class="bui-badges">6</span></div>
+              <i class="icon-listright"></i>
+            </li>
+            <li class="bui-btn bui-box">
+              <div class="bui-icon round success"><i class="appiconfont appicon-station"></i></div>
+              <div class="span1">静安站点#003</div>
+              <i class="icon-listright"></i>
+            </li>
+            <li class="bui-btn bui-box">
+              <div class="bui-icon round danger"><i class="appiconfont appicon-station"></i></div>
+              <div class="span1">静安站点#004 <span class="bui-badges">8</span></div>
+              <i class="icon-listright"></i>
+            </li>
+            <li class="bui-btn bui-box">
+              <div class="bui-icon round warning"><i class="appiconfont appicon-station"></i></div>
+              <div class="span1">静安站点#005 <span class="bui-badges">2</span></div>
+              <i class="icon-listright"></i>
+            </li>
+            <li class="bui-btn bui-box">
+              <div class="bui-icon round success"><i class="appiconfont appicon-station"></i></div>
+              <div class="span1">静安站点#006</div>
+              <i class="icon-listright"></i>
+            </li>
+          </ul>
+        </dd>
+      </dl>
+    </div>
+  </main>
 </div>

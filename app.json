@@ -1,17 +1,20 @@
 {
   "distServer": {
-    "root": "dist",
     "livereload": true,
-    "port": 5304
+    "port": 2869
   },
   "devServer": {
-    "root": "src",
     "livereload": false,
-    "port": 5302
+    "port": 2867
   },
+  "qrcode": "/index.html",
+  "ignored": [
+    "!src/README.md",
+    "!src/preview.png"
+  ],
   "proxy": {
-    "/pylon-api": {
-      "target": "http://www.pylon.com",
+    "/demo": {
+      "target": "http://www.easybui.com",
       "changeOrigin": true,
       "ssl": false
     }
@@ -54,11 +57,6 @@
     "minifyJS": true,
     "minifyCSS": true
   },
-  "imagemin": {
-    "optimizationLevel": 5,
-    "progressive": true,
-    "interlaced": true,
-    "multipass": true
-  },
+  "imagemin": null,
   "license": "ISC"
 }

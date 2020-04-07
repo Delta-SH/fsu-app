@@ -1,0 +1,22 @@
+<style type="text/css">
+  #pylon-app-video-player {
+    width: 100%;
+    height: 100%;
+  }
+</style>
+<div id="pylon-app-player" class="bui-page player-page">
+  <header class="bui-bar">
+    <div class="bui-bar-left">
+      <a class="bui-btn btn-back"><i class="icon-back"></i></a>
+    </div>
+    <div class="bui-bar-main">实时视频</div>
+    <div class="bui-bar-right"></div>
+  </header>
+  <main>
+    <video id="pylon-app-video-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" poster="images/poster.png" x-webkit-airplay="allow" webkit-playsinline playsinline x5-video-player-type="h5" x5-video-player-fullscreen="true">
+      <source src="http://www.pylon.com/video/camera.m3u8" type="application/x-mpegURL" />
+      <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>.</p>
+    </video>
+  </main>
+  <footer></footer>
+</div>

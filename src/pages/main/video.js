@@ -1,51 +1,51 @@
 loader.define(function(require, exports, module) {
-    var pageview = {name: '实时视频'}, _player;
-    
-    pageview.init = function () {
-        if(!_player){
-        	_player = videojs('video-player', {
-	        	html5: {
-                    hls: {
-                        overrideNative: true
-                    }
-                },
-	            controlBar: {
-	                volumePanel: {
-	                    inline: false
-	                }
-	            },
-	            liveui: true
-	        });
-        }
+  var pageview = {
+    name: "实时视频",
+    request: null,
+    search: null,
+    accordion: null
+  };
 
-        var params = router.getPageParams();
-        if(isNull(params) === false){
-            _player.src({
-                src: decodeURI(params.url),
-                type: 'application/x-mpegURL',
-                overrideNative: true
-            });
-        }
-
-        // 销毁播放器,释放资源
-        $("#video-container").on("click", ".btn-back", function (e) {
-            pageview.dispose();
-        });
+  pageview.init = function() {
+    if (isNull(this.request) === true) {
+      this.request = getAppRequest();
     }
 
-    pageview.load = function(){
+    if (isNull(this.search) === true) {
+      this.search = bui.searchbar({
+        id: "#pylon-app-video-search",
+        onInput: function(e, keyword) {},
+        onRemove: function(e, keyword) {},
+        callback: function(e, keyword) {}
+      });
     }
 
-    pageview.dispose = function(){
-        if(isNull(_player) === false){
-            _player.dispose();
-            _player = null;
-        }
+    if (isNull(this.accordion) === true) {
+      this.accordion = bui.accordion({
+        id: "#pylon-app-video-accordion",
+        single: true
+      });
+      this.accordion.showFirst();
     }
 
-    loader.import(["css/video.min.css", "js/video.min.js"],function(){
-        pageview.init();
-    });
+    _resize();
+  };
 
-    return pageview;
+  pageview.load = function() {};
+
+  pageview.dispose = function() {};
+
+  pageview.refresh = function() {};
+
+  function _resize() {
+    var viewport = router.$("#pylon-app-video");
+    var height1 = viewport.height();
+    var height2 = router.$("header").height();
+    var height3 = router.$("#pylon-app-video-search").height();
+    router.$(".data-list-container").height(height1 - height2 - height3 - 15);
+  }
+
+  pageview.init();
+  pageview.load();
+  return pageview;
 });

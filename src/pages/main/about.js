@@ -1,24 +1,26 @@
 loader.define(function(require, exports, module) {
-    var pageview = {name: '版本信息'};
-    
-    pageview.init = function () {
-        bui.btn("#about-check-version").submit(function (loading) {
-            setTimeout(function (argument) {
-                bui.alert("已经是最新版本咯！",function(){
-                    this.close();
-                    loading.stop();
-                })
-            }, 500);
-        },{ text: "正在检查..." });
-    }
+  var pageview = { name: "版本信息" };
 
-    pageview.load = function(){
-    }
+  pageview.init = function() {
+    bui.btn("#about-check-version").submit(
+      function(loading) {
+        setTimeout(function() {
+          bui.hint({
+            content: "<i class='appiconfont appicon-ok'></i><div>已经是最新版本</div>",
+            position: "center",
+            effect: "fadeInDown"
+          });
+          loading.stop();
+        }, 500);
+      },
+      { text: "正在检查..." }
+    );
+  };
 
-    pageview.dispose = function(){
-    }
+  pageview.load = function() {};
 
-    pageview.init();
-    
-    return pageview;
+  pageview.dispose = function() {};
+
+  pageview.init();
+  return pageview;
 });

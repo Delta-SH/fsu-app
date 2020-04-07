@@ -1,55 +1,51 @@
-<style type="text/css">
-</style>
-<div class="bui-page datareport-page">
-    <header class="bui-bar">
-        <div class="bui-bar-left">
-            <a class="bui-btn btn-back"><i class="icon-back"></i>返回</a>
-        </div>
-        <div class="bui-bar-main">历史数据</div>
-        <div class="bui-bar-right"></div>
-    </header>
-    <main>
-        <div class="overview">
-            <ul class="bui-list">
-                <li id="pylon-app-datareport-device" class="bui-btn bui-box clearactive">
-                    <div class="bui-label">设备名称</div>
-                    <div class="span1"></div>
-                    <i class="icon-listright"></i>
-                </li>
-                <li id="pylon-app-datareport-point" class="bui-btn bui-box clearactive">
-                    <div class="bui-label">信号名称</div>
-                    <div class="span1"></div>
-                    <i class="icon-listright"></i>
-                </li>
-                </li>
-                <li class="bui-btn bui-box clearactive">
-                    <label class="bui-label">开始时间</label>
-                    <div class="span1">
-                        <input id="pylon-app-datareport-start" type="text" readonly class="bui-input">
-                    </div>
-                </li>
-                <li class="bui-btn bui-box clearactive">
-                    <label class="bui-label">结束时间</label>
-                    <div class="span1">
-                        <input id="pylon-app-datareport-end" type="text" readonly class="bui-input">
-                    </div>
-                </li>
-                <li class="bui-btn bui-box clearactive">
-                    <label class="bui-label">显示条数</label>
-                    <div class="span1">
-                        <div id="pylon-app-datareport-limit" class="bui-number"></div>
-                    </div>
-                </li>
-            </ul>
-            <div class="container-y">
-                <div class="bui-box-space">
-                    <div class="span1">
-                        <div id="pylon-app-datareport-query" class="bui-btn round success"><i class="icon-success"></i> 查询</div>
-                    </div>
-                </div>
+<div id="pylon-app-datareport" class="bui-page datareport-page">
+  <header class="bui-bar">
+    <div class="bui-bar-left">
+      <a class="bui-btn btn-back"><i class="icon-back"></i></a>
+    </div>
+    <div class="bui-bar-main">历史数据</div>
+    <div class="bui-bar-right"></div>
+  </header>
+  <main>
+    <div class="overview">
+      <ul class="bui-list report-form">
+        <li id="pylon-app-datareport-deviceer" class="bui-btn bui-box">
+          <label class="bui-label">设备名称</label>
+          <div class="span1 v-menu">
+            <div class="bui-box selector">
+              <div class="selected-val"></div>
+              <div class="selected-val"></div>
+              <div class="selected-val"></div>
             </div>
-        </div>
-    </main>
-    <footer>
-    </footer>
+          </div>
+          <i class="icon-listright"></i>
+        </li>
+        <li id="pylon-app-datareport-signal" class="bui-btn bui-box">
+          <label class="bui-label">信号名称</label>
+          <div class="span1 v-menu"></div>
+          <i class="icon-listright"></i>
+        </li>
+        <li class="bui-btn bui-box">
+          <label class="bui-label" for="pylon-app-datareport-start">开始时间</label>
+          <div class="span1">
+            <div class="bui-input report-input">
+              <input id="pylon-app-datareport-start" type="text" readonly class="bui-input" />
+            </div>
+          </div>
+        </li>
+        <li class="bui-btn bui-box">
+          <label class="bui-label" for="pylon-app-datareport-end">结束时间</label>
+          <div class="span1">
+            <div class="bui-input report-input">
+              <input id="pylon-app-datareport-end" type="text" readonly class="bui-input" />
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="report-submit">
+        <div id="pylon-app-datareport-ok" class="bui-btn round success">查 询</div>
+      </div>
+    </div>
+  </main>
+  <footer></footer>
 </div>

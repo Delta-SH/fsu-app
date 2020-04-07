@@ -1,27 +1,35 @@
 loader.define(function(require, exports, module) {
-    var pageview = {name: '我的'}, _ticket;
-    
-    pageview.init = function () {
-        router.$("#pylon-app-user-logout").on("click",function(e){
-            loader.require(["main"], function (mod) {
-                mod.dispose();
-                bui.load({ 
-                    url: "pages/login/login", 
-                    effect: "zoom" 
-                });
-            })
-        });
+  var pageview = {
+    name: "我的",
+    request: null,
+    outbtn: null,
+    uidlbl: null
+  };
+
+  pageview.init = function() {
+    if (isNull(this.request) === true) {
+      this.request = getAppRequest();
     }
 
-    pageview.load = function(){
-        _ticket = getTicket(); 
-        router.$("pylon-app-user-uid").html(isNull(_ticket) === false ? _ticket.uid : "User");
+    if (isNull(this.logout) === true) {
+      this.outbtn = router.$("#pylon-app-user-logout");
+      this.outbtn.on("click", function(e) {
+        logout();
+      });
     }
 
-    pageview.dispose = function(){
+    if (isNull(this.uidlbl) === true) {
+      this.uidlbl = router.$("#pylon-app-user-uid");
     }
+  };
 
-    pageview.init();
+  pageview.load = function() {
+    this.uidlbl.html(isNull(this.request) === false ? this.request.GetUser() : "User");
+  };
 
-    return pageview;
+  pageview.dispose = function() {};
+
+  pageview.init();
+
+  return pageview;
 });

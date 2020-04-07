@@ -36,16 +36,22 @@ var gulp = require('gulp'),
     md5 = require('gulp-md5-assets'),
     // 删除文件
     del = require('del');
-// 用于获取本机信息
-// os=require('os');
 
+// 加入二维码
+var qrcode = require('qrcode-terminal');
+// 用于获取本机信息
+var os = require('os');
+var ip = getNetwork().ip || "localhost";
+
+var package = require('./package.json');
 // 同步刷新
 var browserSync = require('browser-sync').create();
 var reload = browserSync.reload;
 
-// 获取默认配置
-var configName = "app.json",
-    app = require("./" + configName),
+// 获取package的项目配置
+var configName = package['projects'] && package['projects'][process.env.NODE_ENV] || 'app.json';
+
+var app = require("./" + configName),
     // 编译服务配置
     distServer = app.distServer || {},
     // 开发服务配置
@@ -55,9 +61,9 @@ var configName = "app.json",
     // 实时刷新,仅在编译模式
     isDistLivereload = distServer.livereload == false ? false : true,
     // 源文件目录
-    sourcePath = devServer.root || '',
+    sourcePath = process.env.NODE_ENV ? process.env.NODE_ENV + '/src' : 'src',
     // 源文件目录
-    sourceBuild = distServer.root || '';
+    sourceBuild = process.env.NODE_ENV ? process.env.NODE_ENV + '/dist' : 'dist';
 
 // 配置编译的服务
 var config = {
@@ -65,15 +71,15 @@ var config = {
         // 源文件目录
         root: sourcePath,
         // 源文件样式目录
-        css: [sourcePath + '/css', , '!' + sourcePath + '/api/**'],
+        css: [sourcePath + "/css/**/*.css"],
         // style.css 源文件目录
-        scss: sourcePath + '/scss/**/*.scss',
+        scss: [sourcePath + '/scss/**/*.scss'],
         // 源文件图片目录
-        images: [sourcePath + '/**/*.{png,jpg,gif,ico}', '!' + sourcePath + '/api/**'],
+        images: [sourcePath + '/**/*.{png,jpg,gif,ico}'],
     },
     // 编译的输出路径
     build: sourceBuild,
-    // 输出配置 
+    // 输出配置
     output: {
         // 输出的根目录
         root: sourceBuild,
@@ -83,10 +89,20 @@ var config = {
     },
     watcher: {
         rootRule: sourcePath + '/**',
-        scssRule: [sourcePath + '/**/*.scss', '!' + sourcePath + '/scss/**/_*.scss'],
-        jsRule: [sourcePath + '/**/*.js', '!' + sourcePath + '/js/bui.js', '!' + sourcePath + '/js/zepto.js', '!' + sourcePath + '/js/platform/**/*.js', '!' + sourcePath + '/js/plugins/**/*.js', '!' + sourcePath + '/**/*.min.js', '!' + sourcePath + '/api/**'],
-        htmlRule: [sourcePath + '/**/*.html', , '!' + sourcePath + '/api/**'],
+        moveRule: [sourcePath + '/**', '!**/*.{html,css,scss,less,md,png,jpg,gif,ico}', '!' + sourcePath + '/scss'],
+        jsRule: [sourcePath + '/**/*.js', '!' + sourcePath + '/js/bui.js', '!' + sourcePath + '/js/zepto.js', '!' + sourcePath + '/js/platform/**/*.js', '!' + sourcePath + '/js/plugins/**/*.js', '!' + sourcePath + '/**/*.min.js'],
+        htmlRule: [sourcePath + '/**/*.html'],
     }
+}
+
+// 增加用户配置的忽略文件
+if ("ignored" in app) {
+    config.source.scss = config.source.scss.concat(app.ignored);
+    config.source.css = config.source.css.concat(app.ignored);
+    config.source.images = config.source.images.concat(app.ignored);
+    config.watcher.moveRule = config.watcher.moveRule.concat(app.ignored);
+    config.watcher.jsRule = config.watcher.jsRule.concat(app.ignored);
+    config.watcher.htmlRule = config.watcher.htmlRule.concat(app.ignored);
 }
 
 // 获取本机IP
@@ -98,6 +114,7 @@ function getNetwork() {
         ifaces[dev].forEach(function(details, alias) {
             if (details.family == 'IPv4') {
                 iptable[dev + (alias ? ':' + alias : '')] = details.address;
+                iptable["ip"] = details.address;
             }
         });
     }
@@ -142,20 +159,22 @@ gulp.task('clean-dist', cb => {
     return del([sourceBuild + '/**/*'], cb);
 });
 
-// sass 实时编译, 并生成sourcemap 便于调试
+// sass 初始化的时候编译, 并生成sourcemap 便于调试
 gulp.task('scss', function() {
 
-    return gulp.src(sourcePath + "/scss/*.scss")
+    return gulp.src(config.source.scss)
         .pipe(changed(sourceBuild + '/css/'))
-        // 生成css对应的sourcemap 
+        // 生成css对应的sourcemap
         .pipe(sourcemaps.init())
         .pipe(sass(app.sass).on('error', sass.logError))
         .pipe(autoprefixer(app.autoprefixer))
         .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest(sourceBuild + "/css"))
+        .pipe(gulp.dest(sourcePath + "/css"))
 });
 // sass 编译成压缩版本
 gulp.task('scss-build', function() {
-    return gulp.src(sourcePath + "/scss/*.scss")
+    return gulp.src(config.source.scss)
         .pipe(sass(app.sass).on('error', sass.logError))
         .pipe(autoprefixer(app.autoprefixer))
         .pipe(gulp.dest(sourceBuild + "/css"))
@@ -166,7 +185,7 @@ gulp.task('scss-build', function() {
 // css 编译
 gulp.task('css', function() {
     // 编译style.scss文件
-    return gulp.src(sourcePath + "/css/**/*.css")
+    return gulp.src(config.source.css)
         .pipe(changed(sourceBuild + '/css/'))
         .pipe(gulp.dest(config.output.css))
         // .pipe(md5(10, sourceBuild+"/**/*.html"))
@@ -176,7 +195,7 @@ gulp.task('css', function() {
 // 改变的时候才执行压缩
 gulp.task('css-minify', function() {
     // 编译style.scss文件
-    return gulp.src(sourcePath + "/css/**/*.css")
+    return gulp.src(config.source.css)
         // .pipe(changed(sourceBuild + '/css/'))
         .pipe(minifycss(app.cleanCss))
         .pipe(gulp.dest(config.output.css))
@@ -225,9 +244,9 @@ gulp.task('move-bui', function() {
     gulp.src([sourcePath + '/js/platform/*.js'])
         .pipe(gulp.dest(sourceBuild + '/js/platform/'))
 });
-// move all file except pages/js/** .sass .md 
+// move all file except pages/js/** .sass .md
 gulp.task('move', function() {
-    return gulp.src([config.source.root + '/**', '!**/*.{html,css,scss,less,md,png,jpg,gif,ico}', '!' + config.source.root + '/scss', '!' + config.source.root + '/api/**'])
+    return gulp.src(config.watcher.moveRule)
         .pipe(changed(config.watcher.rootRule))
         .pipe(gulp.dest(config.output.root));
 });
@@ -246,17 +265,23 @@ gulp.task('html', function() {
 
 // compress image
 gulp.task('images', function() {
-    return gulp.src(config.source.images)
-        .pipe(changed(config.output.images))
-        .pipe(imagemin(app.imagemin))
-        .pipe(gulp.dest(config.output.images));
+    // 有大图会很慢,默认不开启
+    if (app.imagemin) {
+        return gulp.src(config.source.images)
+            .pipe(changed(config.output.images))
+            .pipe(imagemin(app.imagemin))
+            .pipe(gulp.dest(config.output.images));
+    } else {
+        return gulp.src(config.source.images)
+            .pipe(changed(config.output.images))
+            .pipe(gulp.dest(config.output.images));
+    }
 });
 
 
 // 同步服务
 gulp.task('server-sync', ['server-build'], function() {
     var portObj = getServerPort();
-
 
     let proxys = [];
     if ("proxy" in app) {
@@ -275,14 +300,21 @@ gulp.task('server-sync', ['server-build'], function() {
             port: portObj.distPort + 1
         },
         server: {
-            baseDir: app.distServer.root,
+            baseDir: sourceBuild,
             middleware: proxys
         },
         port: portObj.distPort,
         ghostMode: false,
         notify: false,
         codeSync: isDistLivereload,
+        // plugins: ['bs-console-qrcode']
     });
+
+    // 插入二维码,手机扫码调试
+    var qrurl = "http://" + ip + ":" + portObj.distPort + app.qrcode;
+
+    qrcode.generate(qrurl, { small: true });
+    console.log("手机扫码预览效果");
 
     // 新增删除由插件负责
     watch(config.watcher.rootRule)
@@ -319,13 +351,17 @@ gulp.task('server', function() {
             port: portObj.devPort + 1
         },
         server: {
-            baseDir: app.devServer.root,
+            baseDir: sourcePath,
             middleware: proxys
         },
         port: portObj.devPort,
         ghostMode: false,
         codeSync: isDevLivereload
     });
+
+    // 插入二维码,手机扫码调试
+    var qrurl = "http://" + ip + ":" + portObj.devPort + app.qrcode;
+    qrcode.generate(qrurl, { small: true });
 
 });
 
@@ -362,14 +398,15 @@ function changeFile(file) {
             .pipe(md5(10, sourceBuild + '/**/*.html'))
     } else if (isScss) {
 
-        gulp.src(sourcePath + "/scss/*.scss")
+        gulp.src(config.source.scss)
             .pipe(changed(sourceBuild + '/css/'))
-            // 生成css对应的sourcemap 
+            // 生成css对应的sourcemap
             .pipe(sourcemaps.init())
             .pipe(sass(app.sass).on('error', sass.logError))
             .pipe(autoprefixer(app.autoprefixer))
             .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest(sourceBuild + "/css"))
+            .pipe(gulp.dest(sourcePath + "/css"))
             .pipe(reload({ stream: true }));
 
     } else if (isHtml) {

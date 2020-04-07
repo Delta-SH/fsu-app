@@ -1,5 +1,5 @@
 loader.define(function(require, exports, module) {
-  var pageview = { name: "系统提示" };
+  var pageview = { name: "全部菜单" };
 
   pageview.init = function() {};
 

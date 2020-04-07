@@ -1,113 +1,126 @@
 <style type="text/css">
-.condition .section-title{
-    font-size: .25rem;
-}
-.condition .leveloption {
-    padding-top: .1rem;
-}
-.condition .bui-check {
-    margin-bottom: .2rem;
-}
-.condition .bui-check label {
-    font-size: .2rem;
-    padding: .15rem .2rem;
-    border-radius:.4rem;
-    -webkit-border-radius:.4rem;
-}
-.condition .foot{
+  #app-main-tab-alarm .condition .section-title {
+    font-size: 0.25rem;
+  }
+  #app-main-tab-alarm .condition .leveloption {
+    padding-top: 0.1rem;
+  }
+  #app-main-tab-alarm .condition .bui-check {
+    margin-bottom: 0.2rem;
+  }
+  #app-main-tab-alarm .condition .bui-check label {
+    font-size: 0.2rem;
+    padding: 0.15rem 0.2rem;
+  }
+  #app-main-tab-alarm .condition .foot {
     width: 100%;
-    position:absolute;
+    position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-}
-.condition .foot>[class*=bui-btn] {
-    margin-top: .1rem;
-}
-.condition .keyword {
-    padding-left: .2rem;
-    padding-right: .2rem;
-    padding-top: .1rem;
-    padding-bottom: .2rem;
-}
-.condition .keyword-item {
-    padding-top: .1rem;
-    padding-bottom: .1rem;
-    padding-left: .3rem;
-    padding-right: .3rem;
-    border-radius: .6rem;
-    -webkit-border-radius: .6rem;
-    background: #ffffff; 
-}
+  }
+  #app-main-tab-alarm .condition .foot > [class*="bui-btn"] {
+    margin-top: 0.1rem;
+  }
+  #app-main-tab-alarm .condition .keyword {
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+    padding-top: 0.1rem;
+    padding-bottom: 0.2rem;
+  }
+  #app-main-tab-alarm .condition .keyword-item {
+    padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+    background: #ffffff;
+  }
+  #app-main-tab-alarm .condition .selector {
+    padding-top: 0.15rem;
+    padding-bottom: 0.15rem;
+    font-size: 0.27rem;
+    color: #666;
+  }
+  #app-main-tab-alarm .condition .selected-val {
+    margin-right: 0.1rem;
+  }
+  #pylon-app-alarm-list .alarm-icon {
+    margin-right: 0.2rem;
+  }
+  #pylon-app-alarm-list .alarm-icon i {
+    font-size: 0.6rem;
+  }
+  #pylon-app-alarm-list .item-title {
+    font-size: 0.3rem;
+    padding-right: 0;
+    margin-bottom: 0.1rem;
+  }
+  #pylon-app-alarm-list [class*="bui-btn"] {
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+  }
 </style>
 
 <div id="app-main-tab-alarm" class="bui-sidebar-wrap app-main-tab">
-    <div class="bui-sidebar swipeleft condition">
-        <div class="section-title">告警等级</div>
-        <div class="bui-fluid-space-2 leveloption">
-            <div class="bui-check">
-                <input id="pylon-app-alarm-level1" type="checkbox" value="1" name="alarm-level"><label for="pylon-app-alarm-level1">一级告警</label>
-            </div>
-            <div class="bui-check">
-                <input id="pylon-app-alarm-level2" type="checkbox" value="2" name="alarm-level"><label for="pylon-app-alarm-level2">二级告警</label>
-            </div>
-            <div class="bui-check">
-                <input id="pylon-app-alarm-level3" type="checkbox" value="3" name="alarm-level"><label for="pylon-app-alarm-level3">三级告警</label>
-            </div>
-            <div class="bui-check">
-                <input id="pylon-app-alarm-level4" type="checkbox" value="4" name="alarm-level"><label for="pylon-app-alarm-level4">四级告警</label>
-            </div>
+  <div class="bui-sidebar swipeleft condition">
+    <div class="section-title">筛选范围</div>
+    <ul class="bui-list keyword">
+      <li id="pylon-app-alarm-deviceer" class="bui-btn bui-box keyword-item">
+        <div class="span1">
+          <div class="bui-box selector">
+            <div class="selected-val"></div>
+            <div class="selected-val"></div>
+            <div class="selected-val"></div>
+          </div>
         </div>
-        <div class="section-title">设备名称</div>
-        <ul class="bui-list keyword">
-            <li class="bui-box keyword-item">
-                <div class="span1">
-                    <div class="bui-input">
-                        <input id="pylon-app-alarm-device" type="text" class="bui-input" placeholder="输入设备名称关键字">
-                    </div>
-                </div>
-            </li>
-        </ul>
-        <div class="section-title">信号名称</div>
-        <ul class="bui-list keyword">
-            <li class="bui-box keyword-item">
-                <div class="span1">
-                    <div class="bui-input">
-                        <input id="pylon-app-alarm-signal" type="text" class="bui-input" placeholder="输入信号名称关键字">
-                    </div>
-                </div>
-            </li>
-        </ul>
-        <div class="foot">
-            <div class="bui-box">
-                <div class="span1">
-                    <div id="pylon-app-alarm-reset" class="bui-btn danger">重置</div>
-                </div>
-                <div class="span1">
-                    <div id="pylon-app-alarm-ok" class="bui-btn primary">确定</div>
-                </div>
-            </div>
+      </li>
+    </ul>
+    <div class="section-title">信号名称</div>
+    <ul class="bui-list keyword">
+      <li class="bui-box keyword-item">
+        <div class="span1">
+          <div class="bui-input">
+            <input id="pylon-app-alarm-signal" type="text" class="bui-input" placeholder="输入信号名称关键字" />
+          </div>
         </div>
+      </li>
+    </ul>
+    <div class="section-title">告警等级</div>
+    <div class="bui-fluid-space-2 leveloption">
+      <div class="bui-check"><input id="pylon-app-alarm-level1" type="checkbox" value="1" name="alarm-level" /><label for="pylon-app-alarm-level1">一级告警</label></div>
+      <div class="bui-check"><input id="pylon-app-alarm-level2" type="checkbox" value="2" name="alarm-level" /><label for="pylon-app-alarm-level2">二级告警</label></div>
+      <div class="bui-check"><input id="pylon-app-alarm-level3" type="checkbox" value="3" name="alarm-level" /><label for="pylon-app-alarm-level3">三级告警</label></div>
+      <div class="bui-check"><input id="pylon-app-alarm-level4" type="checkbox" value="4" name="alarm-level" /><label for="pylon-app-alarm-level4">四级告警</label></div>
     </div>
-    <div class="bui-page alarm-page">
-        <header class="bui-bar">
-            <div class="bui-bar-left">
-            </div>
-            <div class="bui-bar-main">实时告警</div>
-            <div class="bui-bar-right">
-                <div id="pylon-app-alarm-menu" class="bui-btn"><i class="icon-filter"></i></div>
-            </div>
-        </header>
-        <main class="overlist">
-            <div id="pylon-app-alarm-scroll" class="bui-scroll">
-                <div class="bui-scroll-head"></div>
-                <div class="bui-scroll-main">
-                    <ul id="pylon-app-alarm-list" class="bui-list">
-                    </ul>
-                </div>
-                <div class="bui-scroll-foot">
-                </div>
-            </div>
-        </main>
+    <div class="foot">
+      <div class="bui-box">
+        <div class="span1">
+          <div id="pylon-app-alarm-reset" class="bui-btn danger">重置</div>
+        </div>
+        <div class="span1">
+          <div id="pylon-app-alarm-ok" class="bui-btn primary">确定</div>
+        </div>
+      </div>
     </div>
+  </div>
+  <div class="bui-page alarm-page">
+    <header class="bui-bar">
+      <div class="bui-bar-left"></div>
+      <div class="bui-bar-main">实时告警</div>
+      <div class="bui-bar-right">
+        <div id="pylon-app-alarm-menu" class="bui-btn"><i class="appiconfont appicon-list"></i></div>
+      </div>
+    </header>
+    <main class="overlist">
+      <div id="pylon-app-alarm-scroll" class="bui-scroll">
+        <div class="bui-scroll-head"></div>
+        <div class="bui-scroll-main">
+          <ul id="pylon-app-alarm-list" class="bui-list detail-list"></ul>
+        </div>
+        <div class="bui-scroll-foot"></div>
+      </div>
+    </main>
+  </div>
 </div>

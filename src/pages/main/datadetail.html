@@ -1,0 +1,46 @@
+<style type="text/css">
+  #pylon-app-datadetail-list .signal-icon {
+    margin-right: 0.2rem;
+  }
+
+  #pylon-app-datadetail-list .signal-icon i {
+    font-size: 0.6rem;
+  }
+
+  #pylon-app-datadetail-list .item-title {
+    font-size: 0.3rem;
+    padding-right: 0;
+    margin-bottom: 0.1rem;
+  }
+
+  #pylon-app-datadetail-list .item-val {
+    font-size: 0.28rem;
+    margin-left: 0.15rem;
+    text-align: right;
+  }
+
+  #pylon-app-datadetail-list [class*="bui-btn"] {
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+  }
+</style>
+<div id="pylon-app-datadetail" class="bui-page datadetail-page">
+  <header class="bui-bar">
+    <div class="bui-bar-left">
+      <a class="bui-btn btn-back"><i class="icon-back"></i></a>
+    </div>
+    <div class="bui-bar-main">历史数据详单</div>
+    <div class="bui-bar-right"></div>
+  </header>
+  <main class="overlist">
+    <div id="pylon-app-datadetail-scroll" class="bui-scroll">
+      <div class="bui-scroll-head"></div>
+      <div class="bui-scroll-main">
+        <ul id="pylon-app-datadetail-list" class="bui-list"></ul>
+      </div>
+      <div class="bui-scroll-foot"></div>
+    </div>
+  </main>
+</div>

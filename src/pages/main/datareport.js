@@ -1,190 +1,264 @@
 loader.define(function(require, exports, module) {
-    var pageview = {name: '历史数据'}, _ticket, _points, _deviceSelector, _pointSelector, _startPicker, _endPicker, _limitNumber;
-    
-    pageview.init = function () {
-        _ticket = getTicket();
-        if(!_deviceSelector){
-            var data = _compute();
-            _deviceSelector = bui.select({
-                trigger: "#pylon-app-datareport-device",
-                title: "选择设备",
-                type: "radio",
-                height: 400,
-                data: data,
-                placeholder: "请选择设备",
-                onChange: function(e) {
-                    _pointSelector.selectNone();
-                    _request(this.value(),function(data){
-                        _points = data;
-                        _pointSelector.option("data", data);
-                    });
-                }
-            });
-        }
+  var pageview = {
+    name: "历史数据",
+    request: null,
+    deviceer: null,
+    deviceor: null,
+    signaler: null,
+    starter: null,
+    ender: null,
+    submit: null
+  };
 
-        if(!_pointSelector) {
-            _pointSelector = bui.select({
-                trigger: "#pylon-app-datareport-point",
-                title: "选择信号",
-                type: "radio",
-                height: 400,
-                data: [],
-                placeholder: "请选择信号",
-                onChange: function(e) {
-                }
-            });
-        }
-
-        if(!_startPicker) {
-            _startPicker = bui.pickerdate({
-                handle: "#pylon-app-datareport-start",
-                formatValue: "yyyy-MM-dd hh:mm:ss",
-                value: moment().format("YYYY/MM/DD"),
-                onChange: function(value) {
-                    router.$("#pylon-app-datareport-start").val(value);
-                }
-            });
-        }
-
-        if(!_endPicker) {
-            _endPicker = bui.pickerdate({
-                handle:"#pylon-app-datareport-end",
-                formatValue: "yyyy-MM-dd hh:mm:ss",
-                value: moment().format("YYYY/MM/DD HH:mm:ss"),
-                onChange: function(value) {
-                    router.$("#pylon-app-datareport-end").val(value);
-                }
-            });
-        }
-
-        if(!_limitNumber){
-            _limitNumber = bui.number({
-                id:'#pylon-app-datareport-limit',
-                min: 0,
-                max: 200,
-                value: 100,
-                step: 10
-            });
-        }
-
-        bui.btn("#pylon-app-datareport-query").submit(function (loading) {
-            var device = _deviceSelector.value();
-            if(isNullOrEmpty(device,true) === true){
-                warning("请选择设备");
-                loading.stop();
-                return;
-            }
-
-            var id = _pointSelector.value();
-            var name = _pointSelector.text();
-            if(isNullOrEmpty(id,true) === true){
-                warning("请选择信号");
-                loading.stop();
-                return;
-            }
-
-            var unit = "";
-            var node = _.find(_points,function(item){return item.value === id});
-            if(isNull(node) === false) {
-                unit = node.unit;
-            }
-
-            var start = _startPicker.value();
-            if(isNullOrEmpty(start,true) === true){
-                warning("请选择开始时间");
-                loading.stop();
-                return;
-            }
-
-            var end = _endPicker.value();
-            if(isNullOrEmpty(end,true) === true){
-                warning("请选择结束时间");
-                loading.stop();
-                return;
-            }
-
-            var diff = moment(end).diff(start, "seconds") ;
-            if(diff <= 0) {
-                warning("结束时间必须大于开始时间");
-                loading.stop();
-                return;
-            }
-
-            // if(diff > 24 * 3600) {
-            //     warning("时间段必须在24小时内");
-            //     loading.stop();
-            //     return;
-            // }
-
-            var limit = _limitNumber.value();
-
-            loading.stop();
-            router.load({ url: "pages/main/datareportdetail.html",param: {id:id,name:name,device:device,start:start,end:end,limit:limit,unit:unit} });
-        },{ text: "正在查询..." });
+  pageview.init = function() {
+    if (isNull(this.request) === true) {
+      this.request = getAppRequest();
     }
 
-    pageview.load = function(){
-    }
-
-    pageview.dispose = function(){
-
-    }
-
-    function _compute(){
-        var data = [];
-        var devices = getDevices();
-        if (isNull(devices) === true)
-            return;
-
-        if (devices.length === 0)
-            return;
-
-        $.each(devices, function(index,el){
-            data.push({name:el.Name,value:el.ID});
+    if (isNull(this.deviceer) === true) {
+      this.deviceer = _getselect($appAuthLevel);
+      if (isNull(this.deviceer) === false) {
+        this.deviceer.on("lastchange", function() {
+          alert(1);
         });
-        
-        return data;
+      }
     }
 
-    function _request(device, success){
-        $.ajax({
-            type: 'POST',
-            url: String.format("{0}getsignals?{1}&{2}", $requestURI, _ticket.token, device),
-            data: null,
-            dataType: "text",
-            timeout: 30000,
-            success: function (data, status) {
-                if (isNullOrEmpty(data) === true) {
-                    warning("信号获取失败");
-                    return;
-                }
+    if (isNull(this.deviceor) === true) {
+      this.deviceor = router.$("#pylon-app-datareport-deviceer");
+      this.deviceor.on("click", function() {
+        pageview.deviceer.show();
+      });
+    }
 
-                if (data.startWith('Error') === true) {
-                    warning(data);
-                    return;
-                }
+    if (isNull(this.signaler) === true) {
+      this.signaler = bui.select({
+        trigger: "#pylon-app-datareport-signal",
+        title: "信号列表",
+        type: "radio",
+        height: 300,
+        autoClose: true,
+        data: [
+          {
+            name: "广东",
+            value: "11"
+          },
+          {
+            name: "广西",
+            value: "22"
+          },
+          {
+            name: "上海",
+            value: "33"
+          },
+          {
+            name: "北京",
+            value: "44"
+          },
+          {
+            name: "深圳",
+            value: "55"
+          },
+          {
+            name: "南京",
+            value: "66"
+          },
+          {
+            name: "广东",
+            value: "111"
+          },
+          {
+            name: "广西",
+            value: "221"
+          },
+          {
+            name: "上海",
+            value: "331"
+          },
+          {
+            name: "北京",
+            value: "441"
+          },
+          {
+            name: "深圳",
+            value: "551"
+          },
+          {
+            name: "南京",
+            value: "661"
+          },
+          {
+            name: "广东",
+            value: "112"
+          },
+          {
+            name: "广西",
+            value: "222"
+          },
+          {
+            name: "上海",
+            value: "332"
+          },
+          {
+            name: "北京",
+            value: "442"
+          },
+          {
+            name: "深圳",
+            value: "552"
+          },
+          {
+            name: "南京",
+            value: "662"
+          }
+        ],
+        placeholder: "请选择"
+      });
 
-                var points = JSON.parse(data);
-                var nodes = [];
-                $.each(points, function(index, item) {
-                    if((item.Type === $node.AI.name || item.Type == $node.AI.id)){
-                        nodes.push({
-                            name: item.Name,
-                            value: item.ID,
-                            unit: item.ValueDesc
-                        });
-                    }
-                });
+      pageview.signaler.on("show", function() {
+        var content = this.widget().dialog.$(".bui-dialog-main");
+        content.height(content.height() - 15);
+        this.off("show");
+      });
+    }
 
-                success(nodes);
-            },
-            error: function (xhr, status, error) {
-                warning("信号获取失败");
+    if (isNull(this.starter) === true) {
+      this.starter = bui.pickerdate({
+        bindValue: true,
+        handle: "#pylon-app-datareport-start",
+        formatValue: "yyyy-MM-dd hh:mm:ss",
+        value: moment().format("YYYY/MM/DD")
+      });
+    }
+
+    if (isNull(this.ender) === true) {
+      this.ender = bui.pickerdate({
+        bindValue: true,
+        handle: "#pylon-app-datareport-end",
+        formatValue: "yyyy-MM-dd hh:mm:ss",
+        value: moment().format("YYYY/MM/DD HH:mm:ss")
+      });
+    }
+
+    if (isNull(this.submit) === true) {
+      this.submit = bui.btn("#pylon-app-datareport-ok");
+      this.submit.submit(
+        function(loading) {
+          loading.stop();
+          router.load({
+            url: "pages/main/datadetail.html",
+            param: {
+              id: 1,
+              name: "TEST",
+              device: 2,
+              start: "2020-01-01 12:00:00",
+              end: "2020-01-01 13:00:00"
             }
-        });
+          });
+        },
+        { text: "正在查询..." }
+      );
+    }
+  };
+
+  pageview.load = function() {};
+
+  pageview.dispose = function() {};
+
+  function _getselect(level) {
+    if (level === $auth.Area) {
+      var areas = getAreas();
+      var stations = getStations();
+      var devcies = getDevices();
+      var _options = [];
+      var _areamap = {};
+      var _statmap = {};
+      for (var i = 0; i < areas.length; i++) {
+        var current = areas[i];
+        _areamap[current["Id"]] = { d: current.Id, n: current.Name, c: [] };
+      }
+
+      for (var i = 0; i < stations.length; i++) {
+        var current = stations[i];
+        _statmap[current["Id"]] = { d: current.Id, n: current.Name, c: [] };
+      }
+
+      $.each(devcies, function(index, item) {
+        var parent = _statmap[item.PID];
+        if (parent) {
+          parent["c"].push({ d: item.Id, n: item.Name });
+        }
+      });
+
+      $.each(stations, function(index, item) {
+        var parent = _areamap[item.AreaId];
+        if (parent) {
+          parent["c"].push(_statmap[item.Id]);
+        }
+      });
+
+      $.each(areas, function(index, item) {
+        var current = _areamap[item.Id];
+        if (current) {
+          _options.push(current);
+        }
+      });
+
+      router.$("#pylon-app-datareport-deviceer .selector").html('<div class="selected-val"></div><div class="selected-val"></div><div class="selected-val"></div>');
+      return bui.levelselect({
+        data: _options,
+        title: "筛选范围",
+        trigger: "#pylon-app-datareport-deviceer .selected-val",
+        placeholder: "请选择",
+        level: 3,
+        field: {
+          name: "n",
+          value: "d",
+          data: ["c", "a"]
+        }
+      });
+    } else if (level === $auth.Station) {
+      var stations = getStations();
+      var devcies = getDevices();
+      var _options = [];
+      var _statmap = {};
+      for (var i = 0; i < stations.length; i++) {
+        var current = stations[i];
+        _statmap[current["Id"]] = { d: current.Id, n: current.Name, c: [] };
+      }
+
+      $.each(devcies, function(index, item) {
+        var parent = _statmap[item.PID];
+        if (parent) {
+          parent["c"].push({ d: item.Id, n: item.Name });
+        }
+      });
+
+      $.each(stations, function(index, item) {
+        var current = _statmap[item.Id];
+        if (current) {
+          _options.push(current);
+        }
+      });
+
+      router.$("#pylon-app-datareport-deviceer .selector").html('<div class="selected-val"></div><div class="selected-val"></div>');
+      return bui.levelselect({
+        data: _options,
+        title: "筛选范围",
+        trigger: "#pylon-app-datareport-deviceer .selected-val",
+        placeholder: "请选择",
+        level: 2,
+        field: {
+          name: "n",
+          value: "d",
+          data: ["c", "a"]
+        }
+      });
     }
 
-    pageview.init();
+    return null;
+  }
 
-    return pageview;
+  pageview.init();
+  return pageview;
 });

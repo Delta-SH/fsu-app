@@ -1,9 +1,9 @@
 loader.define(function(require, exports, module) {
   var pageview = {
-    name: "实时数据",
+    name: "摄像机列表",
     request: null,
     search: null,
-    accordion: null
+    list: null
   };
 
   pageview.init = function() {
@@ -13,37 +13,32 @@ loader.define(function(require, exports, module) {
 
     if (isNull(this.search) === true) {
       this.search = bui.searchbar({
-        id: "#pylon-app-data-search",
+        id: "#pylon-app-webcam-search",
         onInput: function(e, keyword) {},
         onRemove: function(e, keyword) {},
         callback: function(e, keyword) {}
       });
     }
 
-    if (isNull(this.accordion) === true) {
-      this.accordion = bui.accordion({
-        id: "#pylon-app-data-accordion",
-        single: true
-      });
-
-      this.accordion.showFirst();
+    if (isNull(this.list) === true) {
+      this.list = router.$("#pylon-app-webcam-list");
     }
 
     _resize();
   };
 
-  pageview.load = function(devices) {};
+  pageview.load = function() {};
 
   pageview.dispose = function() {};
 
   pageview.refresh = function() {};
 
   function _resize() {
-    var viewport = router.$("#app-main-tab-data");
+    var viewport = router.$("#pylon-app-webcam");
     var height1 = viewport.height();
     var height2 = router.$("header").height();
-    var height3 = router.$("#pylon-app-data-search").height();
-    router.$(".data-list-container").height(height1 - height2 - height3 - 15);
+    var height3 = router.$("#pylon-app-webcam-search").height();
+    pageview.list.height(height1 - height2 - height3 - 15);
   }
 
   pageview.init();

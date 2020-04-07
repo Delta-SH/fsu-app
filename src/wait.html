@@ -1,5 +1,5 @@
 <style type="text/css">
-  #pylon-app-404 .page404 {
+  #pylon-app-wait .pagewait {
     text-align: center;
     padding-top: 2rem;
     padding-bottom: 0.2rem;
@@ -8,38 +8,42 @@
     width: 100%;
   }
 
-  #pylon-app-404 .page404 > i {
+  #pylon-app-wait .pagewait > i {
     font-size: 1.5rem;
   }
 
-  #pylon-app-404 .page404-title {
-    font-size: 1rem;
+  #pylon-app-wait .pagewait-title {
+    font-size: 0.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.2rem;
   }
 
-  #pylon-app-404 .page404-content {
+  #pylon-app-wait .pagewait-content {
     font-size: 0.25rem;
     padding: 0.2rem;
   }
 
-  #pylon-app-404 .page404-buttons {
+  #pylon-app-wait .pagewait-buttons {
     padding-top: 2rem;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
   }
 </style>
 
-<div id="pylon-app-404" class="bui-page">
+<div id="pylon-app-wait" class="bui-page">
   <header class="bui-bar">
-    <div class="bui-bar-left"></div>
+    <div class="bui-bar-left">
+      <a class="bui-btn btn-back"><i class="icon-back"></i></a>
+    </div>
     <div class="bui-bar-main">系统提示</div>
     <div class="bui-bar-right"></div>
   </header>
   <main>
-    <div class="page404">
+    <div class="pagewait">
       <i class="appiconfont appicon-failure-face"></i>
-      <div class="page404-title">404</div>
-      <div class="page404-content">哇哦，页面找不到啦！</div>
-      <div class="page404-buttons">
+      <div class="pagewait-title">产品功能暂未上线</div>
+      <div class="pagewait-content">即将上线，敬请期待~</div>
+      <div class="pagewait-buttons">
         <div class="bui-btn btn-back round primary">返 回</div>
       </div>
     </div>

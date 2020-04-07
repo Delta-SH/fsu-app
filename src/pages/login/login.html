@@ -1,127 +1,129 @@
 <style type="text/css">
-    .login-page main {
-        background-color: #ffffff;
-    }
+  #pylon-app-login main {
+    background-color: #ffffff;
+    background-image: url("images/login_bg.png");
+    background-size: cover;
+  }
 
-    .logo {
-        height: 2rem;
-        margin: .6rem auto;
-        text-align: center;
-    }
+  #pylon-app-login .logo {
+    margin: 0.5rem auto;
+    text-align: center;
+  }
 
-    .logo img {
-        height: 100%;
-        border: none;
-    }
+  #pylon-app-login .logo img {
+    height: 150px;
+    width: 200px;
+    border: none;
+  }
 
-    .login-form {
-        padding-left: .3rem;
-        padding-right: .3rem;
-    }
+  #pylon-app-login .login-form {
+    margin-top: 0.4rem;
+    margin-left: 0.4rem;
+    margin-right: 0.4rem;
+    background-color: #ffffff;
+    border-radius: 5px;
+    border: 1px solid #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  }
 
-    .login-form .bui-list {
-        border-top: none;
-        margin-bottom: .3rem;
-    }
+  #pylon-app-login .login-form > .login-inputs {
+    padding: 0.4rem;
+  }
 
-    .login-form .bui-btn {
-        padding-left: 0;
-        padding-right: 0;
-        padding-top: .2rem;
-        padding-bottom: .2rem;
-    }
+  #pylon-app-login .login-form > .login-inputs .bui-btn {
+    padding: 0.1rem 0.2rem;
+    margin-bottom: 0.2rem;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+    border: 1px solid #f2f2f2;
+  }
 
-    .login-form .bui-list>[class*=bui-btn]:last-child {
-        border-bottom: 1px solid #eee;
-    }
+  #pylon-app-login .login-form .bui-label {
+    width: 0.55rem;
+  }
 
-    .login-form .bui-label {
-        width: .6rem;
-    }
+  #pylon-app-login .login-form .bui-label > i {
+    color: #7e7e7e;
+  }
 
-    .login-form .appiconfont {
-        font-size: 0.36rem;
-    }
+  #pylon-app-login .login-form .appiconfont {
+    font-size: 0.36rem;
+  }
 
-    .login-form .bui-input {
-        height: .6rem;
-    }
+  #pylon-app-login .login-form .bui-input {
+    height: 0.6rem;
+    color: #7e7e7e;
+    background: transparent !important;
+  }
 
-    .login-form .login {
-        font-size: 0.26rem;
-        padding-top: 0.2rem;
-        padding-bottom: 0.2rem;
-        margin-top: .6rem;
-        margin-bottom: .2rem;
-    }
+  #pylon-app-login .login-buttons .bui-btn {
+    border-width: 0;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    font-size: 0.28rem;
+  }
 
-    .login-form .bui-btn-text {
-        color: #666;
-        text-align: center;
-        font-size: 0.2rem;
-    }
+  #pylon-app-login .login-buttons > .span1:last-child > .bui-btn {
+    border-right-width: 0;
+  }
 
-    .copyright {
-        font-size: 0.17rem;
-        color: #999;
-        width: 100%;
-        text-align: center;
-        background-color: #ffffff;
-        padding-bottom: 0.25rem;
-    }
-
-    .icon-eye:before {
-        content: "\e680"
-    }
-    .icon-eye.active:before {
-        content: "\e67f"
-    }
+  #pylon-app-login .copyright {
+    font-size: 0.17rem;
+    color: #999;
+    width: 100%;
+    text-align: center;
+    background-color: #ffffff;
+    padding-bottom: 0.25rem;
+  }
 </style>
 
-<div class="bui-page login-page">
-    <header class="bui-bar">
-        <div class="bui-bar-left">
+<div id="pylon-app-login" class="bui-page login-page">
+  <header class="bui-bar"></header>
+  <main>
+    <div class="logo">
+      <img src="images/login_logo.png" alt="PEIMS" />
+    </div>
+    <div class="login-form">
+      <ul class="bui-list login-inputs">
+        <li class="bui-btn bui-box">
+          <label class="bui-label" for="user"><i class="appiconfont appicon-network"></i></label>
+          <div class="span1">
+            <div class="bui-input user-input">
+              <input id="app-login-ip" type="text" placeholder="服务器地址" />
+            </div>
+          </div>
+        </li>
+        <li class="bui-btn bui-box">
+          <label class="bui-label" for="user"><i class="appiconfont appicon-user"></i></label>
+          <div class="span1">
+            <div class="bui-input user-input">
+              <input id="app-login-user" type="text" placeholder="用户名" />
+            </div>
+          </div>
+        </li>
+        <li class="bui-btn bui-box">
+          <label class="bui-label" for="password"><i class="appiconfont appicon-password"></i></label>
+          <div class="span1">
+            <div class="bui-input password-input">
+              <input id="app-login-password" type="password" placeholder="密码" />
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="bui-box login-buttons">
+        <div class="span1">
+          <div id="app-login-forgot" class="bui-btn primary-icon">忘记密码</div>
         </div>
-        <div class="bui-bar-main">数据机房监控系统</div>
-        <div class="bui-bar-right">
+        <div class="span1">
+          <div id="app-login-login" class="bui-btn primary-icon">登 录</div>
         </div>
-    </header>
-    <main>
-        <div class="logo">
-            <img src="images/applogo.png" alt="">
-        </div>
-        <div class="login-form">
-            <ul class="bui-list">
-                <li class="bui-btn bui-box clearactive">
-                    <label class="bui-label" for="user"><i class="appiconfont appicon-diqiu primary-icon"></i></label>
-                    <div class="span1">
-                        <div class="bui-input user-input">
-                            <input id="app-login-ip" type="text" placeholder="设备IP">
-                        </div>
-                    </div>
-                </li>
-                <li class="bui-btn bui-box clearactive">
-                    <label class="bui-label" for="user"><i class="appiconfont appicon-user primary-icon"></i></label>
-                    <div class="span1">
-                        <div class="bui-input user-input">
-                            <input id="app-login-user" type="text" placeholder="用户名">
-                        </div>
-                    </div>
-                </li>
-                <li class="bui-btn bui-box clearactive">
-                    <label class="bui-label" for="password"><i class="appiconfont appicon-lock primary-icon"></i></label>
-                    <div class="span1">
-                        <div class="bui-input password-input">
-                            <input id="app-login-password" type="password" placeholder="密码">
-                        </div>
-                    </div>
-                </li>
-            </ul>
-            <div id="app-login-login" class="bui-btn round primary login">登录</div>
-            <div id="app-login-forgot" class="bui-btn-text">忘记密码?</div>
-        </div>
-    </main>
-    <footer>
-        <div class="copyright"></div>
-    </footer>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <div class="copyright">
+      版本 V1.2.0 Build200401
+    </div>
+  </footer>
 </div>
