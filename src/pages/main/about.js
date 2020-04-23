@@ -1,14 +1,14 @@
-loader.define(function(require, exports, module) {
+loader.define(function (require, exports, module) {
   var pageview = { name: "版本信息" };
 
-  pageview.init = function() {
+  pageview.init = function () {
     bui.btn("#about-check-version").submit(
-      function(loading) {
-        setTimeout(function() {
+      function (loading) {
+        setTimeout(function () {
           bui.hint({
             content: "<i class='appiconfont appicon-ok'></i><div>已经是最新版本</div>",
             position: "center",
-            effect: "fadeInDown"
+            effect: "fadeInDown",
           });
           loading.stop();
         }, 500);
@@ -17,9 +17,9 @@ loader.define(function(require, exports, module) {
     );
   };
 
-  pageview.load = function() {};
+  pageview.load = function () {};
 
-  pageview.dispose = function() {};
+  pageview.dispose = function () {};
 
   pageview.init();
   return pageview;

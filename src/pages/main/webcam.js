@@ -76,15 +76,16 @@ loader.define(function (require, exports, module) {
         return v.Name.toLowerCase().indexOf(text) > -1;
       });
 
-      if (_devices.length == 0) {
-        this.list.html('<div class="nodata"><i class="appiconfont appicon-empty-face"></i> <span>未找到记录~</span></div>');
-      } else {
-        _drawui(_devices);
-      }
+      _drawui(_devices);
     }
   };
 
   function _drawui(data) {
+    if (data.length === 0) {
+      _empty();
+      return;
+    }
+
     var html = "";
     html += '<ul class="bui-list detail-list">';
     $.each(data, function (index, item) {
@@ -97,7 +98,16 @@ loader.define(function (require, exports, module) {
               `;
     });
     html += "</ul>";
-    pageview.list.html(html);
+    _more(html);
+  }
+
+  function _empty() {
+    pageview.list.html('<div class="nodata"><i class="appiconfont appicon-empty-face"></i> <span>列表空空如也~</span></div>');
+  }
+
+  function _more(content) {
+    pageview.list.html(content);
+    pageview.list.append('<div class="nomore">没有更多内容</div>');
   }
 
   function _resize() {

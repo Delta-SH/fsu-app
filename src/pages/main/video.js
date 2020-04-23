@@ -55,7 +55,7 @@ loader.define(function (require, exports, module) {
       });
 
       if (_stations.length == 0) {
-        this.accordior.html('<div class="nodata"><i class="appiconfont appicon-empty-face"></i> <span>未找到记录~</span></div>');
+        this.accordior.html('<div class="nodata"><i class="appiconfont appicon-empty-face"></i> <span>列表空空如也~</span></div>');
       } else {
         _drawui([], _stations);
       }
@@ -92,7 +92,7 @@ loader.define(function (require, exports, module) {
       pageview.accordion.init();
       pageview.accordion.showFirst();
     } else {
-      html += '<ul class="bui-list accordion-details">';
+      html += '<ul class="bui-list">';
       $.each(stations, function (s, sta) {
         html += `
               <li id="pylon-video-station-${sta.ID}" class="bui-btn bui-box" href="pages/main/webcam.html?id=${sta.ID}">
@@ -102,7 +102,7 @@ loader.define(function (require, exports, module) {
               </li>
               `;
       });
-      html += "</ul>";
+      html += '</ul><div class="nomore">没有更多内容</div>';
       pageview.accordior.html(html);
     }
   }

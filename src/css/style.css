@@ -259,6 +259,11 @@ ul.report-form .selected-val {
   font-size: 0.25rem;
 }
 
+.bui-hint-center i {
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
 .bui-dialog i {
   background-color: transparent !important;
 }

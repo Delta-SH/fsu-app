@@ -3,13 +3,16 @@
     overflow: auto;
   }
 
-  #pylon-app-video .accordion-details > li.bui-btn {
-    background-color: transparent;
+  #pylon-app-video .bui-accordion li.bui-btn {
     padding: 0.1rem 0.16rem;
   }
 
-  #pylon-app-video .accordion-details > li.bui-btn:active {
+  #pylon-app-video .bui-accordion li.bui-btn:active {
     background-color: #eee;
+  }
+
+  #pylon-app-video .accordion-details > li.bui-btn {
+    background-color: transparent;
   }
 </style>
 <div id="pylon-app-video" class="bui-page video-page">
@@ -20,7 +23,7 @@
     <div class="bui-bar-main">实时视频</div>
     <div class="bui-bar-right"></div>
   </header>
-  <main>
+  <main class="overlist">
     <div id="pylon-app-video-search" class="bui-searchbar bui-box">
       <div class="span1">
         <div class="bui-input">

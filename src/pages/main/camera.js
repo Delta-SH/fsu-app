@@ -6,48 +6,6 @@ loader.define(function (require, exports, module) {
     loading: null,
     list: null,
     nodes: null,
-    src: [
-      {
-        name: "测试#1",
-        src: "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8",
-      },
-      {
-        name: "测试#2",
-        src: "http://ivi.bupt.edu.cn/hls/cctv2.m3u8",
-      },
-      {
-        name: "测试#3",
-        src: "http://ivi.bupt.edu.cn/hls/cctv3hd.m3u8",
-      },
-      {
-        name: "测试#4",
-        src: "http://ivi.bupt.edu.cn/hls/cctv4.m3u8",
-      },
-      {
-        name: "测试#5",
-        src: "http://ivi.bupt.edu.cn/hls/cctv5phd.m3u8",
-      },
-      {
-        name: "测试#6",
-        src: "http://ivi.bupt.edu.cn/hls/cctv6hd.m3u8",
-      },
-      {
-        name: "测试#7",
-        src: "http://ivi.bupt.edu.cn/hls/cctv7.m3u8",
-      },
-      {
-        name: "测试#8",
-        src: "http://ivi.bupt.edu.cn/hls/cctv8hd.m3u8",
-      },
-      {
-        name: "测试#9",
-        src: "http://ivi.bupt.edu.cn/hls/cctv9.m3u8",
-      },
-      {
-        name: "测试#10",
-        src: "http://ivi.bupt.edu.cn/hls/cctv10.m3u8",
-      },
-    ],
   };
 
   pageview.init = function () {
@@ -86,20 +44,7 @@ loader.define(function (require, exports, module) {
         });
 
         pageview.nodes = xnodes;
-        if (xnodes.length > 0) {
-          var html = '<ul class="bui-nav-icon bui-fluid-4">';
-          $.each(xnodes, function (index, item) {
-            html += `
-            <li class="bui-btn" href="pages/main/player.html?url=${encodeURI(item.ValueDesc)}">
-                <div class="bui-icon primary round"><i class="appiconfont appicon-camera"></i></div>
-                <div class="span1 camera-title">${item.Name}</div>
-            </li>`;
-          });
-          html += "</ul>";
-          pageview.list.html(html);
-        } else {
-          pageview.list.html('<div class="nodata"><i class="appiconfont appicon-empty-face"></i> <span>未找到记录~</span></div>');
-        }
+        _drawui(xnodes);
       },
       function (err) {
         warning(err.message);
@@ -111,6 +56,34 @@ loader.define(function (require, exports, module) {
   };
 
   pageview.dispose = function () {};
+
+  function _drawui(data) {
+    if (data.length === 0) {
+      _empty();
+      return;
+    }
+
+    var html = "";
+    html += '<ul class="bui-nav-icon bui-fluid-4">';
+    $.each(data, function (index, item) {
+      html += `
+            <li class="bui-btn" href="pages/main/player.html?url=${encodeURI(item.ValueDesc)}">
+                <div class="bui-icon primary round"><i class="appiconfont appicon-camera"></i></div>
+                <div class="span1 camera-title">${item.Name}</div>
+            </li>`;
+    });
+    html += "</ul>";
+    _more(html);
+  }
+
+  function _empty() {
+    pageview.list.html('<div class="nodata"><i class="appiconfont appicon-empty-face"></i> <span>列表空空如也~</span></div>');
+  }
+
+  function _more(content) {
+    pageview.list.html(content);
+    pageview.list.append('<div class="nomore">没有更多内容</div>');
+  }
 
   pageview.init();
   pageview.load();
