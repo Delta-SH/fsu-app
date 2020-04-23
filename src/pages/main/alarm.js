@@ -1,5 +1,4 @@
-loader.define(function(require, exports, module) {
-  var _condition;
+loader.define(function (require, exports, module) {
   var pageview = {
     name: "实时告警",
     request: null,
@@ -9,10 +8,12 @@ loader.define(function(require, exports, module) {
     menubtn: null,
     resetbtn: null,
     okbtn: null,
-    choose: null
+    choose: null,
+    timer: null,
+    options: null,
   };
 
-  pageview.init = function() {
+  pageview.init = function () {
     if (isNull(this.request) === true) {
       this.request = getAppRequest();
     }
@@ -21,7 +22,7 @@ loader.define(function(require, exports, module) {
       this.sidebar = bui.sidebar({
         id: "#app-main-tab-alarm",
         handle: ".alarm-page",
-        width: 640
+        width: 640,
       });
 
       this.sidebar.lock();
@@ -29,22 +30,22 @@ loader.define(function(require, exports, module) {
 
     if (isNull(this.menubtn) === true) {
       this.menubtn = $("#pylon-app-alarm-menu");
-      this.menubtn.on("click", function() {
-        _reset(_condition);
+      this.menubtn.on("click", function () {
+        _bindsidebar(pageview.options);
         pageview.sidebar.open({ target: "swipeleft" });
       });
     }
 
     if (isNull(this.resetbtn) === true) {
       this.resetbtn = $("#pylon-app-alarm-reset");
-      this.resetbtn.on("click", function() {
-        _reset();
+      this.resetbtn.on("click", function () {
+        _initsidebar();
       });
     }
 
     if (isNull(this.okbtn) === true) {
       this.okbtn = $("#pylon-app-alarm-ok");
-      this.okbtn.on("click", function() {
+      this.okbtn.on("click", function () {
         _filter();
         pageview.sidebar.close();
       });
@@ -54,246 +55,157 @@ loader.define(function(require, exports, module) {
       this.pull = bui.pullrefresh({
         id: "#pylon-app-alarm-scroll",
         autoLoad: false,
-        onRefresh: function() {
+        onRefresh: function () {
           pageview.refresh(
-            function(data) {},
-            function(err) {
+            null,
+            function (err) {
               warning(err);
             },
-            function() {
+            function () {
               pageview.pull.reverse();
             }
           );
-        }
+        },
       });
     }
 
     if (isNull(this.select) === true) {
-      this.select = _getselect($appAuthLevel);
+      _initselect();
     }
 
     if (isNull(this.choose) === true) {
       this.choose = $("#pylon-app-alarm-deviceer");
-      this.choose.on("click", function() {
-        pageview.select.show();
+      this.choose.on("click", function () {
+        if (isNull(pageview.select) === false) {
+          pageview.select.show();
+        }
       });
     }
 
+    if (isNull(this.options) === true) {
+      this.condition();
+    }
+
     _resize();
-    _reset();
   };
 
-  pageview.load = function() {
+  pageview.load = function () {
     if (this.sidebar.isActive()) {
       this.sidebar.close();
     }
 
-    this.reload();
+    _settimer(100);
   };
 
-  pageview.reload = function(data) {
-    _empty();
-
-    var alarms = data || getAlarms();
-    if (isNull(alarms) === true) {
-      alarms = [];
-    }
-
-    if (isNull(_condition) === false) {
-      if (_condition.level.length > 0) {
-        alarms = _.filter(alarms, function(item) {
-          return _.contains(_condition.level, item.AlarmLevel);
+  pageview.refresh = function (conf, fail, done) {
+    getAllAlarms(
+      conf,
+      function (data) {
+        var html = "";
+        $.each(data, function (index, el) {
+          html += `<li class="bui-btn bui-box" href="pages/main/detailalarm.html?Area=${el.Area}&Station=${el.Station}&Device=${el.Device}&Signal=${el.Signal}&SignalID=${el.SignalID}&AlarmLevel=${el.AlarmLevel}&AlarmDesc=${el.AlarmDesc}&StartTime=${el.StartTime}&EndTime=${el.EndTime || ""}&ConfirmTime=${el.ConfirmTime || ""}&Confirmer=${el.Confirmer || ""}&StartValue=${el.StartValue}&EndValue=${el.EndValue || ""}">
+              <div class="alarm-icon ${getAlarmCls1(el.AlarmLevel)}"><i class="appiconfont appicon-bell"></i></div>
+              <div class="span1">
+                  <div class="bui-box item-title-box">
+                      <div class="span1 item-title">${el.Signal}</div>
+                      <div class="item-text item-sub-title ${getAlarmCls1(el.AlarmLevel)}">${getAlarmName(el.AlarmLevel)}</div>
+                  </div>
+                  <div class="bui-box item-text-box">
+                      <div class="span1 item-text">
+                          <span class="item-value">${el.Device}</span> 
+                      </div>
+                      <div class="item-text">
+                          <span class="item-time">${el.StartTime}</span>
+                      </div>
+                  </div>
+              </div>
+              <i class="icon-listright"></i>
+          </li>`;
         });
-      }
 
-      if (_condition.area !== -1) {
-      }
-
-      if (_condition.station !== -1) {
-      }
-
-      if (_condition.device !== -1) {
-        alarms = _.filter(alarms, function(item) {
-          return item.DeviceID === _condition.device;
-        });
-      }
-
-      if (isNullOrEmpty(_condition.signal, true) === false) {
-        var signal = _condition.signal.toLowerCase();
-        alarms = _.filter(alarms, function(item) {
-          return item.SignalName.toLowerCase().indexOf(signal) !== -1;
-        });
-      }
-    }
-
-    alarms = _.sortBy(alarms, function(item) {
-      return moment(item.StartTime).valueOf() * -1;
-    });
-
-    var html = "";
-    $.each(alarms, function(index, el) {
-      html += `<li id="pylon-app-alarm-${el.SerialNO}" class="bui-btn bui-box" href="pages/main/detailalarm.html?id=${el.SerialNO}">
-                <div class="alarm-icon ${getAlarmCls1(el.AlarmLevel)}"><i class="appiconfont appicon-bell"></i></div>
-                <div class="span1">
-                    <div class="bui-box item-title-box">
-                        <div class="span1 item-title">${el.SignalName}</div>
-                        <div class="item-text item-sub-title ${getAlarmCls1(el.AlarmLevel)}">${getAlarmName(el.AlarmLevel)}</div>
-                    </div>
-                    <div class="bui-box item-text-box">
-                        <div class="span1 item-text">
-                            <span class="item-value">${el.DeviceName}</span> 
-                        </div>
-                        <div class="item-text">
-                            <span class="item-time">${el.StartTime}</span>
-                        </div>
-                    </div>
-                </div>
-                <i class="icon-listright"></i>
-            </li>`;
-    });
-
-    if (html !== "") {
-      _more(html);
-    }
-  };
-
-  pageview.refresh = function(success, failure, done) {
-    this.request.Post(
-      "getrealalarm",
-      null,
-      function(result) {
-        var increment = result.data;
-        if ($.isArray(increment) === true && increment.length > 0) {
-          var alarms = getAlarms();
-          if (isNull(alarms) === false) {
-            $.each(increment, function(index, item) {
-              if (isNullOrEmpty(item.EndTime) === true) {
-                var current = _.find(alarms, function(value) {
-                  return item.DeviceID === value.DeviceID && item.SignalID === value.SignalID;
-                });
-
-                if (isNull(current) === true) {
-                  alarms.push(item);
-                }
-              } else {
-                var current = _.find(alarms, function(value) {
-                  return item.DeviceID === value.DeviceID && item.SignalID === value.SignalID;
-                });
-
-                if (isNull(current) === false) {
-                  alarms = _.without(alarms, current);
-                }
-              }
-            });
-
-            window.setAlarms(alarms);
-            pageview.load(alarms);
-          }
+        if (isNullOrEmpty(html, true) === false) {
+          _more(html);
+        } else {
+          _empty();
         }
-        success(result);
       },
-      failure,
+      function (err) {
+        _empty();
+        fail(err);
+      },
       done
     );
   };
 
-  pageview.dispose = function() {
-    _reset();
-    _empty();
+  pageview.dispose = function () {
+    _cleartimer();
+    _initsidebar();
   };
 
-  pageview.destroy = function() {
-    this.choose.off("click");
-    this.menubtn.off("click");
-    this.resetbtn.off("click");
-    this.okbtn.off("click");
-    loader.destroy("pages/main/alarm");
-    router.destroy("pages/main/alarm");
+  pageview.condition = function (data) {
+    this.options = $.extend({ area: null, station: null, device: null, signal: null, level: [] }, data || {});
   };
 
-  pageview.condition = function(data) {
-    _condition = data;
-  };
+  function _settimer(timeout) {
+    pageview.timer = setTimeout(function () {
+      pageview.refresh(
+        _getparams(),
+        function (err) {},
+        function () {
+          _cleartimer();
+          _settimer();
+        }
+      );
+    }, timeout || 10000);
+  }
 
-  function _getselect(level) {
-    if (level === $auth.Area) {
-      var areas = getAreas();
-      var stations = getStations();
-      var devcies = getDevices();
-      var _options = [];
-      var _areamap = {};
-      var _statmap = {};
-      for (var i = 0; i < areas.length; i++) {
-        var current = areas[i];
-        _areamap[current["Id"]] = { d: current.Id, n: current.Name, c: [{ d: -1, n: "全部", c: [{ d: -1, n: "全部" }] }] };
+  function _cleartimer() {
+    if (isNull(pageview.timer) === false) {
+      clearTimeout(pageview.timer);
+      pageview.timer = null;
+    }
+  }
+
+  function _initselect() {
+    getXDevices(
+      null,
+      function (data) {
+        _bindselect(data);
+      },
+      function (err) {
+        warning(err.message);
       }
+    );
+  }
 
-      for (var i = 0; i < stations.length; i++) {
-        var current = stations[i];
-        _statmap[current["Id"]] = { d: current.Id, n: current.Name, c: [{ d: -1, n: "全部" }] };
-      }
-
-      $.each(devcies, function(index, item) {
-        var parent = _statmap[item.PID];
-        if (parent) {
-          parent["c"].push({ d: item.Id, n: item.Name });
-        }
-      });
-
-      $.each(stations, function(index, item) {
-        var parent = _areamap[item.AreaId];
-        if (parent) {
-          parent["c"].push(_statmap[item.Id]);
-        }
-      });
-
-      _options.push({ d: -1, n: "全部", c: [{ d: -1, n: "全部", c: [{ d: -1, n: "全部" }] }] });
-      $.each(areas, function(index, item) {
-        var current = _areamap[item.Id];
-        if (current) {
-          _options.push(current);
-        }
-      });
-
-      router.$("#pylon-app-alarm-deviceer .selector").html('<div class="selected-val"></div><div class="selected-val"></div><div class="selected-val"></div>');
-      return bui.levelselect({
-        data: _options,
-        title: "筛选范围",
-        trigger: "#pylon-app-alarm-deviceer .selected-val",
-        level: 3,
-        field: {
-          name: "n",
-          value: "d",
-          data: ["c", "a"]
-        }
-      });
-    } else if (level === $auth.Station) {
+  function _bindselect(devcies) {
+    var authType = getAppAuthType();
+    if (authType === $ssh.Station) {
       var stations = getStations();
-      var devcies = getDevices();
       var _options = [];
       var _statmap = {};
       for (var i = 0; i < stations.length; i++) {
         var current = stations[i];
-        _statmap[current["Id"]] = { d: current.Id, n: current.Name, c: [{ d: -1, n: "全部" }] };
+        _statmap[current["ID"]] = { d: current.ID, n: current.Name, c: [{ d: "-1", n: "全部" }] };
       }
 
-      $.each(devcies, function(index, item) {
+      $.each(devcies, function (index, item) {
         var parent = _statmap[item.PID];
         if (parent) {
-          parent["c"].push({ d: item.Id, n: item.Name });
+          parent["c"].push({ d: item.ID, n: item.Name });
         }
       });
 
-      _options.push({ d: -1, n: "全部", c: [{ d: -1, n: "全部" }] });
-      $.each(stations, function(index, item) {
-        var current = _statmap[item.Id];
+      _options.push({ d: "-1", n: "全部", c: [{ d: "-1", n: "全部" }] });
+      $.each(stations, function (index, item) {
+        var current = _statmap[item.ID];
         if (current) {
           _options.push(current);
         }
       });
 
       router.$("#pylon-app-alarm-deviceer .selector").html('<div class="selected-val"></div><div class="selected-val"></div>');
-      return bui.levelselect({
+      pageview.select = bui.levelselect({
         data: _options,
         title: "筛选范围",
         trigger: "#pylon-app-alarm-deviceer .selected-val",
@@ -301,15 +213,63 @@ loader.define(function(require, exports, module) {
         field: {
           name: "n",
           value: "d",
-          data: ["c", "a"]
+          data: ["c", "a"],
+        },
+      });
+    } else {
+      var areas = getAreas();
+      var stations = getStations();
+      var _options = [];
+      var _areamap = {};
+      var _statmap = {};
+      for (var i = 0; i < areas.length; i++) {
+        var current = areas[i];
+        _areamap[current["ID"]] = { d: current.ID, n: current.Name, c: [{ d: "-1", n: "全部", c: [{ d: "-1", n: "全部" }] }] };
+      }
+
+      for (var i = 0; i < stations.length; i++) {
+        var current = stations[i];
+        _statmap[current["ID"]] = { d: current.ID, n: current.Name, c: [{ d: "-1", n: "全部" }] };
+      }
+
+      $.each(devcies, function (index, item) {
+        var parent = _statmap[item.PID];
+        if (parent) {
+          parent["c"].push({ d: item.ID, n: item.Name });
         }
       });
-    }
 
-    return null;
+      $.each(stations, function (index, item) {
+        var parent = _areamap[item.PID];
+        if (parent) {
+          parent["c"].push(_statmap[item.ID]);
+        }
+      });
+
+      _options.push({ d: "-1", n: "全部", c: [{ d: "-1", n: "全部", c: [{ d: "-1", n: "全部" }] }] });
+      $.each(areas, function (index, item) {
+        var current = _areamap[item.ID];
+        if (current) {
+          _options.push(current);
+        }
+      });
+
+      router.$("#pylon-app-alarm-deviceer .selector").html('<div class="selected-val"></div><div class="selected-val"></div><div class="selected-val"></div>');
+      pageview.select = bui.levelselect({
+        data: _options,
+        title: "筛选范围",
+        trigger: "#pylon-app-alarm-deviceer .selected-val",
+        level: 3,
+        field: {
+          name: "n",
+          value: "d",
+          data: ["c", "a"],
+        },
+      });
+    }
   }
 
-  function _reset(data) {
+  function _initsidebar() {
     var level1 = router.$("#pylon-app-alarm-level1");
     var level2 = router.$("#pylon-app-alarm-level2");
     var level3 = router.$("#pylon-app-alarm-level3");
@@ -318,50 +278,61 @@ loader.define(function(require, exports, module) {
     var select = pageview.select;
 
     //初始化
-    level1.removeAttr("checked");
-    level2.removeAttr("checked");
-    level3.removeAttr("checked");
-    level4.removeAttr("checked");
+    level1.prop("checked", false);
+    level2.prop("checked", false);
+    level3.prop("checked", false);
+    level4.prop("checked", false);
     signal.val("");
-    if ($appAuthLevel === $auth.Area) {
-      select.value([{ value: -1 }, { value: -1 }, { value: -1 }]);
-    } else if ($appAuthLevel === $auth.Station) {
-      select.value([{ value: -1 }, { value: -1 }]);
+
+    var authType = getAppAuthType();
+    if (authType === $ssh.Station) {
+      select.value([{ value: _getselectvalue() }, { value: _getselectvalue() }]);
+    } else {
+      select.value([{ value: _getselectvalue() }, { value: _getselectvalue() }, { value: _getselectvalue() }]);
     }
 
-    if (isNull(data) === true) {
-      _condition = { area: -1, station: -1, device: -1, signal: null, level: [] };
-      return;
-    }
+    pageview.condition();
+    return {
+      select: select,
+      signal: signal,
+      level1: level1,
+      level2: level2,
+      level3: level3,
+      level4: level4,
+    };
+  }
 
-    $.each(data.level, function(index, ll) {
-      switch (ll) {
+  function _bindsidebar(data) {
+    var sides = _initsidebar();
+    $.each(data.level, function (index, item) {
+      switch (item) {
         case $level.L1:
-          level1.prop("checked", true);
+          sides.level1.prop("checked", true);
           break;
         case $level.L2:
-          level2.prop("checked", true);
+          sides.level2.prop("checked", true);
           break;
         case $level.L3:
-          level3.prop("checked", true);
+          sides.level3.prop("checked", true);
           break;
         case $level.L4:
-          level4.prop("checked", true);
+          sides.level4.prop("checked", true);
           break;
       }
     });
 
     if (isNullOrEmpty(data.signal, true) === false) {
-      signal.val(data.signal);
+      sides.signal.val(data.signal);
     }
 
-    if ($appAuthLevel === $auth.Area) {
-      select.value([{ value: data.area }, { value: data.station }, { value: data.device }]);
-    } else if ($appAuthLevel === $auth.Station) {
-      select.value([{ value: data.station }, { value: data.device }]);
+    var authType = getAppAuthType();
+    if (authType === $ssh.Station) {
+      sides.select.value([{ value: _getselectvalue(data.station) }, { value: _getselectvalue(data.device) }]);
+    } else {
+      sides.select.value([{ value: _getselectvalue(data.area) }, { value: _getselectvalue(data.station) }, { value: _getselectvalue(data.device) }]);
     }
 
-    _condition = data;
+    pageview.options = data;
   }
 
   function _resize() {
@@ -378,35 +349,87 @@ loader.define(function(require, exports, module) {
     var signal = router.$("#pylon-app-alarm-signal");
     var select = pageview.select;
 
-    _condition = { area: -1, station: -1, device: -1, signal: null, level: [] };
+    var _options = { area: null, station: null, device: null, signal: null, level: [] };
     if (level1.is(":checked") === true) {
-      _condition.level.push($level.L1);
+      _options.level.push($level.L1);
     }
     if (level2.is(":checked") === true) {
-      _condition.level.push($level.L2);
+      _options.level.push($level.L2);
     }
     if (level3.is(":checked") === true) {
-      _condition.level.push($level.L3);
+      _options.level.push($level.L3);
     }
     if (level4.is(":checked") === true) {
-      _condition.level.push($level.L4);
+      _options.level.push($level.L4);
     }
-    _condition.signal = signal.val().trim();
+
+    var text = signal.val().trim();
+    if (isNullOrEmpty(text) === false) {
+      _options.signal = text;
+    }
 
     var ranges = select.value();
-    if ($appAuthLevel === $auth.Area) {
-      if (ranges.length >= 1) _condition.area = parseInt(ranges[0].value);
-      if (ranges.length >= 2) _condition.station = parseInt(ranges[1].value);
-      if (ranges.length >= 3) _condition.device = parseInt(ranges[2].value);
-    } else if ($appAuthLevel === $auth.Station) {
-      if (ranges.length >= 1) _condition.station = parseInt(ranges[0].value);
-      if (ranges.length >= 2) _condition.device = parseInt(ranges[1].value);
+    var authType = getAppAuthType();
+    if (authType === $ssh.Station) {
+      if (ranges.length >= 1) {
+        var id = parseInt(ranges[0].value);
+        if (id !== -1) {
+          _options.station = { id: id, name: ranges[0].name };
+        }
+      }
+
+      if (ranges.length >= 2) {
+        var id = parseInt(ranges[1].value);
+        if (id !== -1) {
+          _options.device = { id: id, name: ranges[1].name };
+        }
+      }
+    } else {
+      if (ranges.length >= 1) {
+        var id = parseInt(ranges[0].value);
+        if (id !== -1) {
+          _options.area = { id: id, name: ranges[0].name };
+        }
+      }
+
+      if (ranges.length >= 2) {
+        var id = parseInt(ranges[1].value);
+        if (id !== -1) {
+          _options.station = { id: id, name: ranges[1].name };
+        }
+      }
+
+      if (ranges.length >= 3) {
+        var id = parseInt(ranges[2].value);
+        if (id !== -1) {
+          _options.device = { id: id, name: ranges[2].name };
+        }
+      }
     }
 
-    loader.require(["main"], function(mod) {
-      mod.setparams({ once: false, data: _condition });
+    pageview.options = _options;
+    loader.require(["main"], function (mod) {
+      mod.setparams({ once: false, data: _options });
     });
-    pageview.reload();
+
+    pageview.refresh(_getparams(_options), function (err) {
+      warning(err);
+    });
+  }
+
+  function _getparams(data) {
+    data = data || pageview.options;
+    return {
+      area: data.area == null ? null : [data.area.name],
+      station: data.station == null ? null : [data.station.name],
+      device: data.device == null ? null : [data.device.name],
+      signal: data.signal == null ? null : [String.format("%{0}%", data.signal)],
+      alarmLevel: data.level,
+    };
+  }
+
+  function _getselectvalue(data) {
+    return isNull(data) === true ? "-1" : data.id.toString();
   }
 
   function _empty() {

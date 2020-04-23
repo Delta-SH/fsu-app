@@ -1,5 +1,5 @@
 @charset "utf-8";
-@import url(//at.alicdn.com/t/font_996014_fgcldafdfir.css);
+@import url(//at.alicdn.com/t/font_996014_ffuoh90u9v.css);
 
 .level0 {
   color: #5eb95e;
@@ -242,6 +242,7 @@ ul.report-form > li > .v-menu {
   line-height: 0.6rem;
   font-size: 0.27rem;
   color: #666;
+  overflow: hidden;
 }
 
 ul.report-form .selected-val {
@@ -258,8 +259,13 @@ ul.report-form .selected-val {
   font-size: 0.25rem;
 }
 
-.bui-hint i {
-  display: block;
+.bui-dialog i {
+  background-color: transparent !important;
+}
+
+.bui-dialog .bui-dialog-head {
+  background: #f3f5f8;
+  border-bottom: 1px solid #eee;
 }
 
 .bui-dialog .bui-dialog-head,
@@ -267,9 +273,37 @@ ul.report-form .selected-val {
   font-size: 0.27rem;
 }
 
+.bui-dialog .bui-dialog-close i {
+  font-size: 0.4rem;
+}
+
 .bui-dialog-select > .bui-dialog-head {
   border-bottom: 1px solid #eee;
   background: #f3f5f8;
+}
+
+.bui-dropdown > .bui-list {
+  max-height: none;
+  padding-left: 0.1rem;
+  padding-right: 0.1rem;
+  background: #f3f5f8;
+  border-radius: 3px;
+}
+
+.bui-dropdown > .bui-list > [class*="bui-btn"] {
+  background: transparent;
+}
+
+.bui-dropdown > .bui-list > [class*="bui-btn"].active {
+  background: transparent;
+}
+
+.bui-dropdown .bui-arrow-up:after {
+  border-color: transparent transparent #f3f5f8 transparent;
+}
+
+.bui-dropdown .bui-arrow-down:after {
+  border-color: #f3f5f8 transparent transparent transparent;
 }
 
 input::-webkit-input-placeholder {
@@ -280,4 +314,8 @@ input::-moz-input-placeholder {
 }
 input::-ms-input-placeholder {
   color: #adadad;
+}
+
+.hidden {
+  display: none;
 }

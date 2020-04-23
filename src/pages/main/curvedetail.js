@@ -1,4 +1,4 @@
-loader.define(function(require, exports, module) {
+loader.define(function (require, exports, module) {
   var pageview = {
     name: "测值曲线图表",
     request: null,
@@ -8,15 +8,15 @@ loader.define(function(require, exports, module) {
     options: {
       tooltip: {
         trigger: "axis",
-        formatter: function(data) {
+        formatter: function (data) {
           if (pageview.options.series.length > 0) {
             if (!$.isArray(data)) {
               data = [data];
             }
 
             var tips = [];
-            $.each(data, function(index, item) {
-              tips.push(String.format('<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:{0}"></span>{1}<br/>信号测值：{2} {3}<br/>测值时间：{4}', item.color, item.seriesName, item.value[1], item.data.unit, item.value[0]));
+            $.each(data, function (index, item) {
+              tips.push(String.format('<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:{0}"></span>{1}<br/>信号测值：{2} {3}<br/>测值时间：{4}', item.color, item.seriesName, item.value[0], item.data.unit, item.value[1]));
             });
 
             return tips.join("<br/>");
@@ -24,14 +24,14 @@ loader.define(function(require, exports, module) {
 
           return "无数据";
         },
-        extraCssText: "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);"
+        extraCssText: "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);",
       },
       grid: {
         top: 10,
         left: 10,
         right: 40,
         bottom: 30,
-        containLabel: true
+        containLabel: true,
       },
       xAxis: [
         {
@@ -40,35 +40,46 @@ loader.define(function(require, exports, module) {
           nameRotate: -90,
           scale: true,
           axisLabel: {
-            rotate: 90
+            rotate: 90,
           },
           splitLine: {
-            show: false
+            show: false,
           },
           splitArea: {
             show: true,
             areaStyle: {
-              color: ["rgba(21, 127, 204,0.2)", "rgba(255,255,255,0.2)"]
-            }
-          }
-        }
+              color: ["rgba(21, 127, 204,0.2)", "rgba(255,255,255,0.2)"],
+            },
+          },
+        },
       ],
       yAxis: {
         type: "time",
         boundaryGap: false,
         inverse: "true",
         axisLabel: {
-          rotate: -90
+          rotate: -90,
         },
         splitLine: {
-          show: false
-        }
+          show: false,
+        },
       },
-      series: []
-    }
+      series: [],
+    },
   };
 
-  pageview.init = function() {
+  pageview.init = function () {
+    if (isNull(this.params) === true) {
+      var xparams = router.getPageParams();
+      this.params = {
+        id: parseInt(xparams.id),
+        name: xparams.name,
+        desc: xparams.desc,
+        begin: xparams.begin,
+        end: xparams.end,
+      };
+    }
+
     if (isNull(this.request) === true) {
       this.request = getAppRequest();
     }
@@ -76,7 +87,7 @@ loader.define(function(require, exports, module) {
     if (isNull(this.loading) === true) {
       this.loading = bui.loading({
         appendTo: ".curvedetail-page",
-        text: "正在加载"
+        text: "正在加载",
       });
     }
 
@@ -84,65 +95,60 @@ loader.define(function(require, exports, module) {
       this.chart = echarts.init(document.getElementById("pylon-app-curvedetail-chart"), "shine");
       this.chart.setOption(this.options);
     }
-
-    if (isNull(this.params) === true) {
-      this.params = router.getPageParams();
-    }
   };
 
-  pageview.load = function() {
-    this.draw([
+  pageview.load = function () {
+    this.loading.show();
+    this.request.Post(
       {
-        Value: 1,
-        Time: "2020/02/30 08:00:00"
+        url: "GetMeasure",
+        data: {
+          begin: this.params.begin,
+          end: this.params.end,
+          id: this.params.id,
+        },
       },
-      {
-        Value: 2,
-        Time: "2020/02/30 08:10:00"
+      function (result) {
+        pageview.draw(result.data);
       },
-      {
-        Value: 3,
-        Time: "2020/02/30 08:20:00"
+      function (err) {
+        warning(err.message);
       },
-      {
-        Value: 2,
-        Time: "2020/02/30 08:30:00"
-      },
-      {
-        Value: 1,
-        Time: "2020/02/30 08:40:00"
+      function () {
+        pageview.loading.hide();
       }
-    ]);
+    );
   };
 
-  pageview.dispose = function() {};
+  pageview.dispose = function () {};
 
-  pageview.draw = function(data) {
+  pageview.draw = function (data) {
     var models = [];
-    $.each(data, function(index, item) {
+    var _this = this;
+    $.each(data, function (index, item) {
       models.push({
-        value: [item.Value, item.Time],
-        unit: ""
+        value: [item.V, item.T],
+        unit: _this.params.desc,
       });
     });
 
     this.options.series.push({
-      name: this.params.name,
+      name: _this.params.name,
       type: "line",
       smooth: true,
       showSymbol: false,
       itemStyle: {
         normal: {
-          color: "#0892cd"
-        }
+          color: "#0892cd",
+        },
       },
-      data: models
+      data: models,
     });
 
-    this.chart.setOption(this.options, true);
+    this.chart.setOption(_this.options, true);
   };
 
-  loader.import("js/echarts.common.min.js", function() {
+  loader.import("js/echarts.common.min.js", function () {
     pageview.init();
     pageview.load();
   });

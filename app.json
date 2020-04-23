@@ -1,11 +1,11 @@
 {
   "distServer": {
     "livereload": true,
-    "port": 2869
+    "port": 2078
   },
   "devServer": {
     "livereload": false,
-    "port": 2867
+    "port": 2076
   },
   "qrcode": "/index.html",
   "ignored": [
@@ -19,44 +19,10 @@
       "ssl": false
     }
   },
-  "sass": {
-    "outputStyle": "compressed"
-  },
-  "cleanCss": {
-    "compatibility": "ie8"
-  },
-  "autoprefixer": {
-    "browsers": [
-      "last 2 versions"
-    ],
-    "remove": false,
-    "cascade": false
-  },
-  "babel": {
-    "presets": [
-      "es2015"
-    ]
-  },
-  "uglify": {
-    "compress": {
-      "drop_debugger": false
-    },
-    "output": {
-      "max_line_len": false
-    },
-    "preserveComments": "some",
-    "mangle": true
-  },
-  "htmlmin": {
-    "removeComments": true,
-    "collapseWhitespace": false,
-    "collapseBooleanAttributes": false,
-    "removeEmptyAttributes": false,
-    "removeScriptTypeAttributes": true,
-    "removeStyleLinkTypeAttributes": true,
-    "minifyJS": true,
-    "minifyCSS": true
-  },
-  "imagemin": null,
-  "license": "ISC"
+  "cleancss": false,
+  "autoprefixer": true,
+  "uglify": true,
+  "htmlmin": false,
+  "imagemin": false,
+  "license": "MIT"
 }

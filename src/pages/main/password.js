@@ -1,11 +1,11 @@
-loader.define(function(require, exports, module) {
+loader.define(function (require, exports, module) {
   var pageview = {
     name: "修改密码",
     request: null,
-    savebtn: null
+    savebtn: null,
   };
 
-  pageview.init = function() {
+  pageview.init = function () {
     if (isNull(this.request) === true) {
       this.request = getAppRequest();
     }
@@ -13,26 +13,22 @@ loader.define(function(require, exports, module) {
     bui.input({
       id: ".password-input",
       iconClass: ".appicon-eyeclose",
-      callback: function(e) {
+      callback: function (e) {
         this.toggleType();
         $(e.target).toggleClass("appicon-eyeopen");
       },
-      onFocus: function(e) {
-        $(e.target)
-          .closest(".bui-btn")
-          .addClass("onfocus");
+      onFocus: function (e) {
+        $(e.target).closest(".bui-btn").addClass("onfocus");
       },
-      onBlur: function(e) {
-        $(e.target)
-          .closest(".bui-btn")
-          .removeClass("onfocus");
-      }
+      onBlur: function (e) {
+        $(e.target).closest(".bui-btn").removeClass("onfocus");
+      },
     });
 
     if (isNull(this.savebtn) === true) {
       this.savebtn = bui.btn("#pylon-app-password-save");
       this.savebtn.submit(
-        function(loading) {
+        function (loading) {
           _save(loading);
         },
         { text: "正在保存..." }
@@ -40,9 +36,9 @@ loader.define(function(require, exports, module) {
     }
   };
 
-  pageview.load = function() {};
+  pageview.load = function () {};
 
-  pageview.dispose = function() {};
+  pageview.dispose = function () {};
 
   function _save(loading) {
     var pwd1 = router.$("#pylon-app-password-1").val(),
@@ -73,12 +69,31 @@ loader.define(function(require, exports, module) {
       return false;
     }
 
-    loader.import("js/jquery.base64.min.js", function() {
-      _request(pwd1, pwd2, loading);
+    loader.import("js/md5.min.js", function () {
+      _change(md5(pwd1), md5(pwd2), loading);
     });
   }
 
-  function _request(oldPwd, newPwd, loading) {}
+  function _change(oldPwd, newPwd, loading) {
+    pageview.request.Post(
+      {
+        url: "SetPd",
+        data: {
+          p1: oldPwd,
+          p2: newPwd,
+        },
+      },
+      function (result) {
+        successdialog(result.msg);
+      },
+      function (err) {
+        warningdialog("操作失败", err.message);
+      },
+      function () {
+        loading.stop();
+      }
+    );
+  }
 
   pageview.init();
   return pageview;

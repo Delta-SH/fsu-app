@@ -3,34 +3,34 @@
 window.router = bui.router();
 window.storage = bui.storage();
 window.session = {
-  driver: function() {
+  driver: function () {
     return window.sessionStorage;
   },
-  get: function(key) {
+  get: function (key) {
     return this.driver().getItem(key);
   },
-  set: function(key, data) {
+  set: function (key, data) {
     return this.driver().setItem(key, data);
   },
-  remove: function(key) {
+  remove: function (key) {
     return this.driver().removeItem(key);
   },
-  clear: function() {
+  clear: function () {
     return this.driver().clear();
   },
-  each: function(fn) {
+  each: function (fn) {
     for (var i = this.driver().length - 1; i >= 0; i--) {
       var key = this.driver().key(i);
       fn(this.get(key), key);
     }
-  }
+  },
 };
 window.$level = {
   L0: 0,
   L1: 1,
   L2: 2,
   L3: 3,
-  L4: 4
+  L4: 4,
 };
 window.$state = {
   S0: 0,
@@ -40,66 +40,96 @@ window.$state = {
   S4: 4,
   S5: 5,
   S6: 6,
-  S7: 7
+  S7: 7,
 };
 window.$node = {
-  DO: {
-    id: 2,
-    name: "遥控"
-  },
-  AO: {
-    id: 3,
-    name: "遥调"
+  DI: {
+    id: 0,
+    name: "遥信信号",
   },
   AI: {
     id: 1,
-    name: "遥测"
+    name: "遥测信号",
   },
-  DI: {
-    id: 0,
-    name: "遥信"
-  }
+  DO: {
+    id: 2,
+    name: "遥控信号",
+  },
+  AO: {
+    id: 3,
+    name: "遥调信号",
+  },
+  CI: {
+    id: 4,
+    name: "计数信号",
+  },
+  SI: {
+    id: 5,
+    name: "字符输入",
+  },
+  SO: {
+    id: 6,
+    name: "字符输出",
+  },
+  VI: {
+    id: 7,
+    name: "视频输入",
+  },
+  VO: {
+    id: 8,
+    name: "视频输出",
+  },
+  ADI: {
+    id: 9,
+    name: "音频输入",
+  },
+  ADO: {
+    id: 10,
+    name: "音频输出",
+  },
 };
-window.$auth = {
+window.$ssh = {
   Area: 0,
-  Station: 1
+  Station: 1,
+  Storey: 2,
+  Room: 3,
+  Frame: 4,
+  Device: 5,
 };
 window.$appRequest = null;
-window.$appAuthLevel = 0;
+window.$appAuthType = null;
+window.$appAuthTypeKey = "pylon.app.session.appauthtype";
 window.$appRequestKey = "pylon.app.session.apprequest";
 window.$areaKey = "pylon.app.session.area";
 window.$stationKey = "pylon.app.session.station";
-window.$deviceKey = "pylon.app.session.device";
-window.$alarmKey = "pylon.app.session.alarm";
 window.$rememberKey = "pylon.app.local.remember";
 
-bui.ready(function() {
+bui.ready(function () {
   router.init({
     id: "#bui-router",
     firstAnimate: true,
     progress: true,
-    reloadCache: false
+    hash: true,
+    errorPage: "404.html",
   });
-
-  // router.on("loadfail", function() {
-  //   router.load({ url: "404.html" });
-  // });
 
   bui
     .btn({
       id: "#bui-router",
-      handle: ".bui-btn,a"
+      handle: ".bui-btn,a",
     })
     .load();
 
-  $("#bui-router").on("click", ".btn-back", function(e) {
+  $("#bui-router").on("click", ".btn-back", function (e) {
     bui.back({
-      beforeBack: function(e) {
-        if (isNull(e.target) === true) return false;
+      beforeBack: function (e) {
+        if (isNull(e.target) === true) {
+          return false;
+        }
 
         dispose(e.target);
         return true;
-      }
+      },
     });
   });
 
@@ -110,20 +140,22 @@ bui.ready(function() {
   }
 
   function plusReady() {
-    plus.key.addEventListener("backbutton", function() {
+    plus.key.addEventListener("backbutton", function () {
       if (plus.os.name === "Android") {
         bui.back({
-          beforeBack: function(e) {
-            if (isNull(e.target) === true) return false;
+          beforeBack: function (e) {
+            if (isNull(e.target) === true) {
+              return false;
+            }
 
             dispose(e.target);
-            if (e.target.pid === "pages/login/login") {
+            if (e.target.name === "pages/login/login") {
               plus.runtime.quit();
               return false;
             }
 
             return true;
-          }
+          },
         });
       } else {
         plus.nativeUI.toast("请按Home键切换应用");
@@ -138,47 +170,97 @@ function AppRequest(ip, user, token) {
   var _ip = ip;
   var _user = user;
   var _token = token;
-  var _path = "";
-  var _auth = "X-Token";
-  var _timeout = 30000;
 
-  _this.GetUser = function() {
+  _this.GetUser = function () {
     return _user;
   };
-  _this.SetUser = function(val) {
+  _this.SetUser = function (val) {
     _user = val;
   };
-  _this.GetIP = function() {
+  _this.GetIP = function () {
     return _ip;
   };
-  _this.SetIP = function(val) {
+  _this.SetIP = function (val) {
     _ip = val;
-    setPath();
   };
-  _this.GetToken = function() {
+  _this.GetToken = function () {
     return _token;
   };
-  _this.SetToken = function(val) {
+  _this.SetToken = function (val) {
     _token = val;
   };
-  _this.GetPath = function() {
-    return _path;
+  _this.GetPath = function () {
+    return String.format("http://{0}/api/app/", _ip);
   };
-  var setPath = function() {
-    _path = String.format("http://{0}/api/app", _ip);
-  };
-  _this.Get = function(api, params, resolve, reject, done) {
+  _this.GetList = function (params, resolve, reject, done) {
     var config = {
-      url: String.format("{0}/{1}", _path, api),
-      timeout: _timeout,
-      type: "get",
-      dataType: "text",
-      crossDomain: true,
-      contentType: "application/json;charset=UTF-8",
-      beforeSend: function(xhr) {
-        xhr.setRequestHeader(_auth, _token);
+      url: "",
+      data: {},
+      baseUrl: _this.GetPath(),
+      method: "POST",
+      timeout: 30000,
+      pageSize: 20,
+      contentType: "application/json",
+      cache: false,
+      needJsonString: true,
+      headers: {
+        "X-Token": _token,
       },
-      success: function(data) {
+      field: {
+        page: "page",
+        size: "limit",
+        data: "data",
+      },
+      onLoad: function (me, data) {
+        try {
+          if (data.code === 4002) {
+            logout();
+            return;
+          }
+
+          if (data.code !== 0) {
+            throw new Error(data.msg || getCodeName(data.code));
+          }
+
+          resolve(data);
+        } catch (err) {
+          reject(err);
+        } finally {
+          if (isFunction(done) === true) {
+            done();
+          }
+        }
+      },
+      onFail: function () {
+        try {
+          reject(new Error("系统开小差啦~"));
+        } finally {
+          if (isFunction(done) === true) {
+            done();
+          }
+        }
+      },
+    };
+
+    return bui.list($.extend(config, params || {}));
+  };
+  _this.Get = function (params, resolve, reject, done) {
+    var config = {
+      url: "",
+      data: {},
+      baseUrl: _this.GetPath(),
+      method: "GET",
+      headers: {
+        "X-Token": _token,
+      },
+      timeout: 30000,
+      dataType: "text",
+      cache: false,
+    };
+
+    bui
+      .ajax($.extend(config, params || {}))
+      .done(function (data) {
         try {
           if (isNullOrEmpty(data, true) === true) {
             throw new Error("无效的响应");
@@ -187,6 +269,7 @@ function AppRequest(ip, user, token) {
           var result = JSON.parse(data);
           if (result.code === 4002) {
             logout();
+            return;
           }
 
           if (result.code !== 0) {
@@ -197,30 +280,35 @@ function AppRequest(ip, user, token) {
         } catch (err) {
           reject(err);
         }
+      })
+      .fail(function (xhr, status) {
+        reject(new Error(status + ":" + xhr.status));
+      })
+      .always(function () {
+        if (isFunction(done) === true) {
+          done();
+        }
+      });
+  };
+  _this.Post = function (params, resolve, reject, done) {
+    var config = {
+      url: "",
+      data: {},
+      baseUrl: _this.GetPath(),
+      method: "POST",
+      headers: {
+        "X-Token": _token,
       },
-      error: function(xhr, status, error) {
-        reject(new Error(xhr.status + ":" + xhr.statusText + " " + xhr.responseText));
-      }
+      timeout: 30000,
+      dataType: "text",
+      contentType: "application/json",
+      cache: false,
+      needJsonString: true,
     };
 
-    $.ajax($.extend(config, params || {})).always(function() {
-      if (done && typeof done == "function") {
-        done();
-      }
-    });
-  };
-  _this.Post = function(api, params, resolve, reject, done) {
-    var config = {
-      url: String.format("{0}/{1}", _path, api),
-      timeout: _timeout,
-      type: "post",
-      dataType: "text",
-      crossDomain: true,
-      contentType: "application/json;charset=UTF-8",
-      beforeSend: function(xhr) {
-        xhr.setRequestHeader(_auth, _token);
-      },
-      success: function(data) {
+    bui
+      .ajax($.extend(config, params || {}))
+      .done(function (data) {
         try {
           if (isNullOrEmpty(data, true) === true) {
             throw new Error("无效的响应");
@@ -229,6 +317,7 @@ function AppRequest(ip, user, token) {
           var result = JSON.parse(data);
           if (result.code === 4002) {
             logout();
+            return;
           }
 
           if (result.code !== 0) {
@@ -239,20 +328,16 @@ function AppRequest(ip, user, token) {
         } catch (err) {
           reject(err);
         }
-      },
-      error: function(xhr, status, error) {
-        reject(new Error(xhr.status + ":" + xhr.statusText + " " + xhr.responseText));
-      }
-    };
-
-    $.ajax($.extend(config, params || {})).always(function() {
-      if (done && typeof done == "function") {
-        done();
-      }
-    });
+      })
+      .fail(function (xhr, status) {
+        reject(new Error("系统开小差啦~"));
+      })
+      .always(function () {
+        if (isFunction(done) === true) {
+          done();
+        }
+      });
   };
-
-  setPath();
 }
 
 function getAppRequest(nologout) {
@@ -269,7 +354,7 @@ function getAppRequest(nologout) {
 
   $appRequest = null;
   if (nologout !== false) {
-    setTimeout(function() {
+    setTimeout(function () {
       logout();
     }, 200);
   }
@@ -281,9 +366,31 @@ function setAppRequest(data) {
   session.set($appRequestKey, JSON.stringify(data));
 }
 
+function getAppAuthType() {
+  if (isNull($appAuthType) === false) {
+    return $appAuthType;
+  }
+
+  var data = session.get($appAuthTypeKey);
+  if (isNullOrEmpty(data, true) === false) {
+    return ($appAuthType = parseInt(data));
+  }
+
+  return $ssh.Area;
+}
+
+function setAppAuthType(auth) {
+  session.set($appAuthTypeKey, auth);
+}
+
 function removeAppRequest() {
   $appRequest = null;
   session.remove($appRequestKey);
+}
+
+function removeAppAuthType() {
+  $appAuthType = null;
+  session.remove($appAuthTypeKey);
 }
 
 function getRemember() {
@@ -308,7 +415,7 @@ function setAreas(data) {
     data = [];
   }
 
-  $appAuthLevel = data.length > 0 ? $auth.Area : $auth.Station;
+  setAppAuthType(($appAuthType = data.length > 0 ? $ssh.Area : $ssh.Station));
   session.set($areaKey, JSON.stringify(data));
 }
 
@@ -329,68 +436,60 @@ function setStations(data) {
   session.set($stationKey, JSON.stringify(data));
 }
 
-function getDevices() {
-  var data = session.get($deviceKey);
-  if (isNullOrEmpty(data, true) === true) {
-    return [];
-  }
-
-  return JSON.parse(data);
-}
-
-function setDevices(data) {
-  if (isNull(data) === true) {
-    data = [];
-  }
-
-  session.set($deviceKey, JSON.stringify(data));
-}
-
-function getAlarms() {
-  var data = session.get($alarmKey);
-  if (isNullOrEmpty(data, true) === true) {
-    return [];
-  }
-
-  return JSON.parse(data);
-}
-
-function setAlarms(data) {
-  if (isNull(data) === true) {
-    data = [];
-  }
-
-  session.set($alarmKey, JSON.stringify(data));
-}
-
 function loadData(before, done, fail, always) {
-  before();
-  $.when(areaTask(), stationTask(), deviceTask(), alarmTask())
-    .done(function(v1, v2, v3, v4) {
-      done({
-        data1: v1,
-        data2: v2,
-        data3: v3,
-        data4: v4
-      });
+  if (isFunction(before) === true) {
+    if (before() === false) {
+      return false;
+    }
+  }
+
+  $.when(getAllAreasTask(), getAllStationsTask())
+    .done(function (v1, v2) {
+      setAreas(v1);
+      setStations(v2);
+      done({ data1: v1, data2: v2 });
     })
     .fail(fail)
-    .always(always);
+    .always(function () {
+      if (isFunction(always) === true) {
+        always();
+      }
+    });
 }
 
-function areaTask() {
-  var dtd = $.Deferred();
+function getAllAreas(params, resolve, reject, done) {
   try {
     var appRequest = getAppRequest();
-    storage.remove($areaKey);
     appRequest.Post(
-      "getareas",
-      null,
-      function(result) {
-        setAreas(result.data);
-        dtd.resolve(result.data);
+      $.extend(
+        {
+          url: "GetAreas",
+          data: { id: null },
+        },
+        params || {}
+      ),
+      function (result) {
+        resolve(result.data);
       },
-      function(err) {
+      function (err) {
+        reject(err.message);
+      },
+      done
+    );
+  } catch (err) {
+    reject(err.message);
+  }
+}
+
+function getAllAreasTask(params) {
+  var dtd = $.Deferred();
+  try {
+    getAllAreas(
+      params || {},
+      function (data) {
+        dtd.resolve(data);
+      },
+      function (err) {
         dtd.reject(err.message);
       }
     );
@@ -401,19 +500,39 @@ function areaTask() {
   return dtd.promise();
 }
 
-function stationTask() {
-  var dtd = $.Deferred();
+function getAllStations(params, resolve, reject, done) {
   try {
     var appRequest = getAppRequest();
-    storage.remove($stationKey);
     appRequest.Post(
-      "getstations",
-      null,
-      function(result) {
-        setStations(result.data);
-        dtd.resolve(result.data);
+      $.extend(
+        {
+          url: "GetStations",
+          data: { id: null },
+        },
+        params || {}
+      ),
+      function (result) {
+        resolve(result.data);
       },
-      function(err) {
+      function (err) {
+        reject(err.message);
+      },
+      done
+    );
+  } catch (err) {
+    reject(err.message);
+  }
+}
+
+function getAllStationsTask(params) {
+  var dtd = $.Deferred();
+  try {
+    getAllStations(
+      params || {},
+      function (data) {
+        dtd.resolve(data);
+      },
+      function (err) {
         dtd.reject(err.message);
       }
     );
@@ -424,19 +543,44 @@ function stationTask() {
   return dtd.promise();
 }
 
-function deviceTask() {
-  var dtd = $.Deferred();
+function getStation(id, params, resolve, reject, done) {
   try {
     var appRequest = getAppRequest();
-    storage.remove($deviceKey);
     appRequest.Post(
-      "getdevices",
-      null,
-      function(result) {
-        setDevices(result.data);
-        dtd.resolve(result.data);
+      $.extend(
+        {
+          url: "GetStations",
+          data: { id: [id] },
+        },
+        params || {}
+      ),
+      function (result) {
+        if (result.data.length > 0) {
+          resolve(result.data[0]);
+        } else {
+          throw new Error("未查找到对象");
+        }
       },
-      function(err) {
+      function (err) {
+        reject(err.message);
+      },
+      done
+    );
+  } catch (err) {
+    reject(err.message);
+  }
+}
+
+function getStationTask(id, params) {
+  var dtd = $.Deferred();
+  try {
+    getStation(
+      id,
+      params || {},
+      function (data) {
+        dtd.resolve(data);
+      },
+      function (err) {
         dtd.reject(err.message);
       }
     );
@@ -447,19 +591,44 @@ function deviceTask() {
   return dtd.promise();
 }
 
-function alarmTask() {
-  var dtd = $.Deferred();
+function getDevice(id, params, resolve, reject, done) {
   try {
     var appRequest = getAppRequest();
-    storage.remove($alarmKey);
     appRequest.Post(
-      "getactalarm",
-      null,
-      function(result) {
-        setAlarms(result.data);
-        dtd.resolve(result.data);
+      $.extend(
+        {
+          url: "GetDevices",
+          data: { id: [id] },
+        },
+        params || {}
+      ),
+      function (result) {
+        if (result.data.length > 0) {
+          resolve(result.data[0]);
+        } else {
+          throw new Error("未查找到对象");
+        }
       },
-      function(err) {
+      function (err) {
+        reject(err.message);
+      },
+      done
+    );
+  } catch (err) {
+    reject(err.message);
+  }
+}
+
+function getDeviceTask(id, params) {
+  var dtd = $.Deferred();
+  try {
+    getDevice(
+      id,
+      params || {},
+      function (data) {
+        dtd.resolve(data);
+      },
+      function (err) {
         dtd.reject(err.message);
       }
     );
@@ -468,68 +637,381 @@ function alarmTask() {
   }
 
   return dtd.promise();
+}
+
+function getAllDevices(params, resolve, reject, done) {
+  try {
+    var appRequest = getAppRequest();
+    appRequest.Post(
+      $.extend(
+        {
+          url: "GetDevices",
+          data: { id: null },
+        },
+        params || {}
+      ),
+      function (result) {
+        resolve(result.data);
+      },
+      function (err) {
+        reject(err.message);
+      },
+      done
+    );
+  } catch (err) {
+    reject(err.message);
+  }
+}
+
+function getVDevices(params, resolve, reject, done) {
+  try {
+    getAllDevices(
+      params,
+      function (data) {
+        var devices = [];
+        $.each(data, function (index, item) {
+          if (item.Type === "影音设备") {
+            devices.push(item);
+          }
+        });
+        resolve(devices);
+      },
+      reject,
+      done
+    );
+  } catch (err) {
+    reject(err.message);
+  }
+}
+
+function getXDevices(params, resolve, reject, done) {
+  try {
+    getAllDevices(
+      params,
+      function (data) {
+        var devices = [];
+        $.each(data, function (index, item) {
+          if (item.Type !== "影音设备") {
+            devices.push(item);
+          }
+        });
+        resolve(devices);
+      },
+      reject,
+      done
+    );
+  } catch (err) {
+    reject(err.message);
+  }
+}
+
+function getVDevicesTask(params) {
+  var dtd = $.Deferred();
+  try {
+    getVDevices(
+      params || {},
+      function (data) {
+        dtd.resolve(data);
+      },
+      function (err) {
+        dtd.reject(err.message);
+      }
+    );
+  } catch (err) {
+    dtd.reject(err.message);
+  }
+
+  return dtd.promise();
+}
+
+function getXDevicesTask(params) {
+  var dtd = $.Deferred();
+  try {
+    getXDevices(
+      params || {},
+      function (data) {
+        dtd.resolve(data);
+      },
+      function (err) {
+        dtd.reject(err.message);
+      }
+    );
+  } catch (err) {
+    dtd.reject(err.message);
+  }
+
+  return dtd.promise();
+}
+
+function getAllDevicesByPid(pid, params, resolve, reject, done) {
+  try {
+    var appRequest = getAppRequest();
+    appRequest.Post(
+      $.extend(
+        {
+          url: "GetDevicesByPID",
+          data: { id: pid },
+        },
+        params || {}
+      ),
+      function (result) {
+        resolve(result.data);
+      },
+      function (err) {
+        reject(err.message);
+      },
+      done
+    );
+  } catch (err) {
+    reject(err.message);
+  }
+}
+
+function getVDevicesByPid(pid, params, resolve, reject, done) {
+  try {
+    getAllDevicesByPid(
+      pid,
+      params,
+      function (data) {
+        var devices = [];
+        $.each(data, function (index, item) {
+          if (item.Type === "影音设备") {
+            devices.push(item);
+          }
+        });
+        resolve(devices);
+      },
+      reject,
+      done
+    );
+  } catch (err) {
+    reject(err.message);
+  }
+}
+
+function getXDevicesByPid(pid, params, resolve, reject, done) {
+  try {
+    getAllDevicesByPid(
+      pid,
+      params,
+      function (data) {
+        var devices = [];
+        $.each(data, function (index, item) {
+          if (item.Type !== "影音设备") {
+            devices.push(item);
+          }
+        });
+        resolve(devices);
+      },
+      reject,
+      done
+    );
+  } catch (err) {
+    reject(err.message);
+  }
+}
+
+function getVDevicesByPidTask(pid, params) {
+  var dtd = $.Deferred();
+  try {
+    getVDevicesByPid(
+      pid,
+      params || {},
+      function (data) {
+        dtd.resolve(data);
+      },
+      function (err) {
+        dtd.reject(err.message);
+      }
+    );
+  } catch (err) {
+    dtd.reject(err.message);
+  }
+
+  return dtd.promise();
+}
+
+function getXDevicesByPidTask(pid, params) {
+  var dtd = $.Deferred();
+  try {
+    getXDevicesByPid(
+      pid,
+      params || {},
+      function (data) {
+        dtd.resolve(data);
+      },
+      function (err) {
+        dtd.reject(err.message);
+      }
+    );
+  } catch (err) {
+    dtd.reject(err.message);
+  }
+
+  return dtd.promise();
+}
+
+function getAllSignalsByPid(pid, params, resolve, reject, done) {
+  try {
+    var appRequest = getAppRequest();
+    appRequest.Post(
+      $.extend(
+        {
+          url: "GetSignalsByPID",
+          data: { id: pid },
+        },
+        params || {}
+      ),
+      function (result) {
+        resolve(result.data);
+      },
+      function (err) {
+        reject(err.message);
+      },
+      done
+    );
+  } catch (err) {
+    reject(err.message);
+  }
+}
+
+function getAllSignalsByPidTask(pid, params) {
+  var dtd = $.Deferred();
+  try {
+    getAllSignalsByPid(
+      pid,
+      params || {},
+      function (data) {
+        dtd.resolve(data);
+      },
+      function (err) {
+        dtd.reject(err.message);
+      }
+    );
+  } catch (err) {
+    dtd.reject(err.message);
+  }
+
+  return dtd.promise();
+}
+
+function getAllAlarms(params, resolve, reject, done) {
+  try {
+    var appRequest = getAppRequest();
+    appRequest.Post(
+      {
+        url: "GetActAlarms",
+        data: $.extend(
+          {
+            sortAttribute: 7,
+            sortMode: 2,
+            id: 0,
+            area: null,
+            station: null,
+            device: null,
+            signal: null,
+            alarmLevel: null,
+            alarmDesc: null,
+          },
+          params || {}
+        ),
+      },
+      function (result) {
+        resolve(result.data);
+      },
+      function (err) {
+        reject(err.message);
+      },
+      done
+    );
+  } catch (err) {
+    reject(err.message);
+  }
 }
 
 function success(message, timeout) {
   bui.hint({
-    content: String.format("<i class='icon-success'></i>{0}", message),
+    content: String.format("<i class='appiconfont appicon-ok'></i><span>{0}</span>", message),
     timeout: timeout || 2000,
-    skin: "success"
+    skin: "success",
   });
 }
 
 function warning(message, timeout) {
   bui.hint({
-    content: String.format("<i class='icon-info'></i>{0}", message),
+    content: String.format("<i class='appiconfont appicon-delete'></i><span>{0}</span>", message),
     timeout: timeout || 2000,
-    skin: "danger"
+    skin: "danger",
   });
 }
 
 function successdialog(message, detail) {
+  detail = isNullOrEmpty(detail) === true ? "" : String.format("<p>{0}</p>", detail);
   bui.confirm({
     title: "",
     height: 400,
     autoClose: true,
-    content: `<div class="bui-box-center"><i class="icon-successfill success"></i><h3>${message}</h3><p>${detail}</p></div>`,
+    content: `<div><i class="appiconfont appicon-confirmed success"></i><h3>${message}</h3>${detail}</div>`,
     buttons: [
       {
         name: "我知道了",
-        className: "primary-reverse"
-      }
-    ]
+        className: "primary-reverse",
+      },
+    ],
   });
 }
 
 function warningdialog(message, detail) {
+  detail = isNullOrEmpty(detail) === true ? "" : String.format("<p>{0}</p>", detail);
   bui.confirm({
     title: "",
     height: 400,
     autoClose: true,
-    content: `<div class="bui-box-center"><i class="icon-errorfill danger"></i><h3>${message}</h3><p>${detail}</p></div>`,
+    content: `<div><i class="appiconfont appicon-error danger"></i><h3>${message}</h3>${detail}</div>`,
     buttons: [
       {
         name: "我知道了",
-        className: "primary-reverse"
-      }
-    ]
+        className: "danger-reverse",
+      },
+    ],
   });
 }
 
 function dispose(target) {
-  loader.require(target.pid, function(mod) {
+  loader.require(target.name, function (mod) {
     mod.dispose();
   });
 }
 
 function logout() {
-  loader.require(["main"], function(mod) {
+  loader.require(["main"], function (mod) {
     mod.dispose();
+    sayGoodbye();
+    session.clear();
     bui.load({
       url: "pages/login/login",
-      effect: "zoom"
+      effect: "zoom",
+      callback: function () {
+        window.setTimeout(function () {
+          window.location.reload();
+        }, 100);
+      },
     });
   });
+}
+
+function sayGoodbye() {
+  var request = getAppRequest(false);
+  if (request != null) {
+    request.Post(
+      {
+        url: "Logout",
+        timeout: 5000,
+      },
+      function (result) {},
+      function (err) {}
+    );
+  }
 }
 
 // 自定义函数
@@ -555,6 +1037,27 @@ function getAlarmName(level) {
   else if (level === $level.L3) return "三级告警";
   else if (level === $level.L4) return "四级告警";
   else return "正常数据";
+}
+
+function getNodeName(node) {
+  switch (node) {
+    case 0:
+      return "区域";
+    case 1:
+      return "站点";
+    case 2:
+      return "楼层";
+    case 3:
+      return "机房";
+    case 4:
+      return "机架";
+    case 5:
+      return "设备";
+    case 6:
+      return "信号";
+    default:
+      return "未定义";
+  }
 }
 
 function getStateCls1(state) {
@@ -617,11 +1120,15 @@ function getStateName(state) {
   }
 }
 
-function getUnit(value, type, desc) {
-  if (type == $node.DI.name || type == $node.DI.id || type == $node.DO.name || type == $node.DO.id) {
-    var unit = "";
+function getNodeValue(type, value, desc) {
+  if (type === $node.AI.id || type === $node.AO.id || type === $node.CI.id) {
+    return String.format("{0} {1}", value, desc);
+  }
+
+  if (type === $node.DI.id || type === $node.DO.id) {
+    var unit = "未定义";
     var keys = desc.split(";");
-    $.each(keys, function(index, item) {
+    $.each(keys, function (index, item) {
       var values = item.split("&");
       if (values.length !== 2) return true;
 
@@ -633,19 +1140,19 @@ function getUnit(value, type, desc) {
     return unit;
   }
 
-  return String.format("{0} {1}", value, desc);
+  return value;
 }
 
 function getUnits(desc) {
   var data = [];
   var pairs = desc.split(";");
-  $.each(pairs, function(index, item) {
+  $.each(pairs, function (index, item) {
     var _values = item.split("&");
     if (_values.length !== 2) return true;
 
     data.push({
       id: _values[0].trim(),
-      name: _values[1].trim()
+      name: _values[1].trim(),
     });
   });
 
@@ -680,8 +1187,8 @@ function onInput(option) {
   opt.target = option.target || "input";
   opt.event = option.event || "keyup";
   opt.icon = option.icon || "icon-remove";
-  opt.onInput = option.onInput || function() {};
-  opt.callback = option.callback || function() {};
+  opt.onInput = option.onInput || function () {};
+  opt.callback = option.callback || function () {};
   if (opt.id == "" || opt.id === null) {
     return;
   }
@@ -692,7 +1199,7 @@ function onInput(option) {
 
   $target.on(
     opt.event,
-    bui.unit.debounce(function() {
+    bui.unit.debounce(function () {
       var val = $(this).val(),
         $parent = $(this).parent(),
         $btnRemove = $parent.find(iconClass);
@@ -709,13 +1216,11 @@ function onInput(option) {
       opt.onInput && opt.onInput.call(this);
     }, 100)
   );
-  $target.on("focus", function() {
+  $target.on("focus", function () {
     $id.find(iconClass).css("display", "none");
-    $(this)
-      .next()
-      .css("display", "block");
+    $(this).next().css("display", "block");
   });
-  $id.on("click", iconClass, function() {
+  $id.on("click", iconClass, function () {
     opt.callback && opt.callback.call(this);
   });
 }
@@ -733,23 +1238,24 @@ function isNullOrEmpty(value, whitespace) {
   return isEmpty(value, whitespace);
 }
 
+function isFunction(func) {
+  return func && typeof func == "function";
+}
+
 function getTimespan(start, end) {
-  var from = moment(start);
-  var to = isNull(end) ? moment() : moment(end);
-  var diff = to.diff(from);
+  var from = bui.date.convert(start);
+  var to = isNull(end) ? new Date() : bui.date.convert(end);
+  var diff = (to - from) / 1000;
   if (diff < 0) diff = 0;
-  var duration = moment.duration(diff);
-  return (
-    parseInt(duration.asHours(), 10) +
-    ":" +
-    moment([2000, 1, 1])
-      .add(duration)
-      .format("mm:ss")
-  );
+
+  var hours = parseInt(diff / 3600);
+  var minutes = parseInt((diff % 3600) / 60);
+  var seconds = parseInt(diff % 60);
+  return String.format("{0}小时{1}分{2}秒", hours, minutes > 9 ? minutes : "0" + minutes, seconds > 9 ? seconds : "0" + seconds);
 }
 
 // 扩展方法
-String.format = function() {
+String.format = function () {
   if (arguments.length == 0) return null;
 
   var str = arguments[0];
@@ -760,7 +1266,7 @@ String.format = function() {
 
   return str;
 };
-String.prototype.startWith = function(value, ignoreCase) {
+String.prototype.startWith = function (value, ignoreCase) {
   if (value == null || value == "" || this.length == 0 || value.length > this.length) {
     return false;
   }
@@ -772,7 +1278,7 @@ String.prototype.startWith = function(value, ignoreCase) {
 
   return this.substr(0, value.length) === value;
 };
-String.prototype.endWith = function(value, ignoreCase) {
+String.prototype.endWith = function (value, ignoreCase) {
   if (value == null || value == "" || this.length == 0 || value.length > this.length) {
     return false;
   }

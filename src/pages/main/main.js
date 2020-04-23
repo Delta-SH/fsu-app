@@ -1,14 +1,15 @@
-loader.define(function(require, exports, module) {
+loader.define(function (require, exports, module) {
   var pageview = {
     name: "数据机房监控系统",
     request: null,
     maintab: null,
     loading: null,
     timer: null,
-    params: null
+    params: null,
+    increment: 0,
   };
 
-  pageview.init = function() {
+  pageview.init = function () {
     if (isNull(this.request) === true) {
       this.request = getAppRequest();
     }
@@ -16,7 +17,7 @@ loader.define(function(require, exports, module) {
     if (isNull(this.loading) === true) {
       this.loading = bui.loading({
         appendTo: ".main-page",
-        text: "正在加载"
+        text: "正在加载",
       });
     }
 
@@ -27,7 +28,7 @@ loader.define(function(require, exports, module) {
         animate: false,
         swipe: false,
         autoload: true,
-        onBeforeTo: function(e) {
+        onBeforeTo: function (e) {
           switch (e.prevIndex) {
             case 0:
               _dishome();
@@ -42,10 +43,10 @@ loader.define(function(require, exports, module) {
               _disuser();
               break;
           }
-        }
+        },
       });
 
-      this.maintab.on("to", function(index) {
+      this.maintab.on("to", function (index) {
         switch (index) {
           case 0:
             _loadhome();
@@ -64,7 +65,7 @@ loader.define(function(require, exports, module) {
     }
   };
 
-  pageview.load = function() {
+  pageview.load = function () {
     if (this.request == null) {
       return false;
     }
@@ -72,102 +73,68 @@ loader.define(function(require, exports, module) {
     _cleartimer();
     _hidebadges(true);
     _loaddata(
-      function(data) {
-        _settimer();
+      function (data) {
+        _settimer(200);
         _loadhome();
       },
-      function(err) {
+      function (err) {
         warning(err);
       }
     );
   };
 
-  pageview.refresh = function(success, failure, done) {
+  pageview.refresh = function (success, failure, done) {
     _cleartimer();
     _hidebadges(true);
     _loaddata(
-      function(data) {
-        _settimer();
+      function (data) {
+        _settimer(200);
         success(data);
       },
-      function(err) {
+      function (err) {
         failure(err);
       },
       done
     );
   };
 
-  pageview.dispose = function() {
+  pageview.dispose = function () {
     this.totab(0, "none");
     this.params = null;
     _cleartimer();
   };
 
-  pageview.incalarm = function() {
+  pageview.message = function () {
     this.request.Post(
-      "getrealalarm",
-      null,
-      function(result) {
-        var increment = result.data;
-        if ($.isArray(increment) === false) {
-          return;
-        }
-
-        if (increment.length === 0) {
-          return;
-        }
-
-        var alarms = getAlarms();
-        if (isNull(alarms) === false) {
-          $.each(increment, function(index, item) {
-            if (isNullOrEmpty(item.EndTime) === true) {
-              var current = _.find(alarms, function(value) {
-                return item.DeviceID === value.DeviceID && item.SignalID === value.SignalID;
-              });
-
-              if (isNull(current) === true) {
-                alarms.push(item);
-              }
-            } else {
-              var current = _.find(alarms, function(value) {
-                return item.DeviceID === value.DeviceID && item.SignalID === value.SignalID;
-              });
-
-              if (isNull(current) === false) {
-                alarms = _.without(alarms, current);
-              }
-            }
+      { url: "GetRealMessage" },
+      function (result) {
+        var counter = result.data.TotalCountor;
+        if (isNull(counter) === false) {
+          loader.require(["pages/main/home"], function (mod) {
+            mod.load({
+              level1: counter.AL1Count,
+              level2: counter.AL2Count,
+              level3: counter.AL3Count,
+              level4: counter.AL4Count,
+            });
           });
+        }
 
-          window.setAlarms(alarms);
-          pageview.updalarm(alarms);
+        var index = pageview.maintab.index();
+        if (index !== 2) {
+          pageview.increment += result.data.NewAlarmNumber;
+          _hidebadges(pageview.increment <= 0);
         }
       },
-      function(err) {},
-      function() {
+      function (err) {},
+      function () {
         _cleartimer();
         _settimer();
       }
     );
   };
 
-  pageview.updalarm = function(total) {
-    _hidebadges(false);
-    if (isNull(this.maintab) === false) {
-      var index = this.maintab.index();
-      if (index === 0) {
-        loader.require(["pages/main/home"], function(mod) {
-          mod.load(total);
-        });
-      } else if (index === 2) {
-        loader.require(["pages/main/alarm"], function(mod) {
-          mod.reload(total);
-        });
-      }
-    }
-  };
-
-  pageview.totab = function(index, transition) {
+  pageview.totab = function (index, transition) {
     if (isNull(transition) === true) {
       this.maintab.to(index);
     } else {
@@ -175,7 +142,7 @@ loader.define(function(require, exports, module) {
     }
   };
 
-  pageview.setparams = function(params) {
+  pageview.setparams = function (params) {
     if (isNull(params) === false) {
       this.params = params;
     } else {
@@ -184,26 +151,25 @@ loader.define(function(require, exports, module) {
   };
 
   function _loaddata(success, failure, done) {
-    var _loading = pageview.loading;
     loadData(
-      function() {
-        _loading.show();
+      function () {
+        pageview.loading.show();
       },
       success,
       failure,
-      function() {
-        _loading.hide();
-        if (done && typeof done == "function") {
+      function () {
+        pageview.loading.hide();
+        if (isFunction(done) === true) {
           done();
         }
       }
     );
   }
 
-  function _settimer() {
-    pageview.timer = setTimeout(function() {
-      pageview.incalarm();
-    }, 10000);
+  function _settimer(timeout) {
+    pageview.timer = setTimeout(function () {
+      pageview.message();
+    }, timeout || 10000);
   }
 
   function _cleartimer() {
@@ -213,41 +179,36 @@ loader.define(function(require, exports, module) {
     }
   }
 
-  function _hidebadges(hidden) {
-    if (hidden === true) {
-      $("#pylon-app-main-alarm > span.bui-badges").remove();
-    } else {
-      $("#pylon-app-main-alarm").html('<span class="bui-badges"></span>');
-    }
+  function _hidebadges(hidden, num) {
+    router.$("#pylon-app-main-alarm").html(hidden === true ? "" : String.format('<span class="bui-badges">{0}</span>', _getbadges(num)));
   }
 
   function _loadhome() {
-    loader.require(["pages/main/home"], function(mod) {
-      mod.load();
-    });
+    loader.require(["pages/main/home"], function (mod) {});
   }
 
   function _dishome() {
-    loader.require(["pages/main/home"], function(mod) {
+    loader.require(["pages/main/home"], function (mod) {
       mod.dispose();
     });
   }
 
   function _loadactdata() {
-    loader.require(["pages/main/data"], function(mod) {
-      mod.refresh();
+    loader.require(["pages/main/data"], function (mod) {
+      mod.load();
     });
   }
 
   function _disactdata() {
-    loader.require(["pages/main/data"], function(mod) {
+    loader.require(["pages/main/data"], function (mod) {
       mod.dispose();
     });
   }
 
   function _loadalarm() {
     _hidebadges(true);
-    loader.require(["pages/main/alarm"], function(mod) {
+    pageview.increment = 0;
+    loader.require(["pages/main/alarm"], function (mod) {
       if (isNull(pageview.params) === false) {
         mod.condition(pageview.params.data);
         if (pageview.params.once === true) {
@@ -260,21 +221,37 @@ loader.define(function(require, exports, module) {
   }
 
   function _disalarm() {
-    loader.require(["pages/main/alarm"], function(mod) {
+    loader.require(["pages/main/alarm"], function (mod) {
       mod.dispose();
     });
   }
 
   function _loaduser() {
-    loader.require(["pages/main/user"], function(mod) {
+    loader.require(["pages/main/user"], function (mod) {
       mod.load();
     });
   }
 
   function _disuser() {
-    loader.require(["pages/main/user"], function(mod) {
+    loader.require(["pages/main/user"], function (mod) {
       mod.dispose();
     });
+  }
+
+  function _getbadges(num) {
+    if (isNull(num) === true) {
+      return "";
+    }
+
+    if (num <= 0) {
+      return "";
+    }
+
+    if (num > 99) {
+      return "99+";
+    }
+
+    return num.toString();
   }
 
   pageview.init();

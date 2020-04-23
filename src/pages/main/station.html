@@ -42,25 +42,31 @@
               <div class="bui-btn bui-box">
                 <div class="bui-label">站点编号</div>
                 <div class="span1">
-                  <div id="pylon-app-device-base-id" class="bui-value"></div>
+                  <div id="pylon-app-station-base-id" class="bui-value"></div>
                 </div>
               </div>
               <div class="bui-btn bui-box">
                 <div class="bui-label">站点名称</div>
                 <div class="span1">
-                  <div id="pylon-app-device-base-name" class="bui-value"></div>
+                  <div id="pylon-app-station-base-name" class="bui-value"></div>
                 </div>
               </div>
               <div class="bui-btn bui-box">
                 <div class="bui-label">站点类型</div>
                 <div class="span1">
-                  <div id="pylon-app-device-base-type" class="bui-value"></div>
+                  <div id="pylon-app-station-base-type" class="bui-value"></div>
                 </div>
               </div>
               <div class="bui-btn bui-box">
-                <div class="bui-label">所属区域</div>
+                <div class="bui-label">经纬度</div>
                 <div class="span1">
-                  <div id="pylon-app-device-base-room" class="bui-value"></div>
+                  <div id="pylon-app-station-base-lonlat" class="bui-value"></div>
+                </div>
+              </div>
+              <div class="bui-btn bui-box">
+                <div class="bui-label">管理编码</div>
+                <div class="span1">
+                  <div id="pylon-app-station-base-mid" class="bui-value"></div>
                 </div>
               </div>
             </div>
@@ -71,7 +77,7 @@
                 <div class="span1 short-cut">图形组态</div>
                 <i class="icon-listright"></i>
               </div>
-              <div class="bui-btn bui-box" href="pages/main/webcam.html">
+              <div id="pylon-app-station-webcam" class="bui-btn bui-box" href="pages/main/webcam.html">
                 <div class="icon"><i class="appiconfont appicon-video primary-icon"></i></div>
                 <div class="span1 short-cut">实时视频</div>
                 <i class="icon-listright"></i>
@@ -88,40 +94,7 @@
               </div>
               <div class="btn-search">搜索</div>
             </div>
-            <div id="pylon-app-device-list">
-              <ul class="bui-list detail-list">
-                <li class="bui-btn bui-box" href="pages/main/device.html?id=222">
-                  <div class="bui-icon round success"><i class="appiconfont appicon-server"></i></div>
-                  <div class="span1">静安设备#001</div>
-                  <i class="icon-listright"></i>
-                </li>
-                <li class="bui-btn bui-box">
-                  <div class="bui-icon round warning"><i class="appiconfont appicon-server"></i></div>
-                  <div class="span1">静安设备#002 <span class="bui-badges">6</span></div>
-                  <i class="icon-listright"></i>
-                </li>
-                <li class="bui-btn bui-box">
-                  <div class="bui-icon round success"><i class="appiconfont appicon-server"></i></div>
-                  <div class="span1">静安设备#003</div>
-                  <i class="icon-listright"></i>
-                </li>
-                <li class="bui-btn bui-box">
-                  <div class="bui-icon round danger"><i class="appiconfont appicon-server"></i></div>
-                  <div class="span1">静安设备#004 <span class="bui-badges">8</span></div>
-                  <i class="icon-listright"></i>
-                </li>
-                <li class="bui-btn bui-box">
-                  <div class="bui-icon round warning"><i class="appiconfont appicon-server"></i></div>
-                  <div class="span1">静安设备#005 <span class="bui-badges">2</span></div>
-                  <i class="icon-listright"></i>
-                </li>
-                <li class="bui-btn bui-box">
-                  <div class="bui-icon round success"><i class="appiconfont appicon-server"></i></div>
-                  <div class="span1">静安设备#006</div>
-                  <i class="icon-listright"></i>
-                </li>
-              </ul>
-            </div>
+            <div id="pylon-app-device-list"></div>
           </li>
         </ul>
       </div>

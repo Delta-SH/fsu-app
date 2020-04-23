@@ -1,10 +1,10 @@
 <style type="text/css"></style>
-<div class="bui-page device-page">
+<div class="bui-page detailalarm-page">
   <header class="bui-bar">
     <div class="bui-bar-left">
       <a class="bui-btn btn-back"><i class="icon-back"></i></a>
     </div>
-    <div class="bui-bar-main">告警详情</div>
+    <div class="bui-bar-main">活动告警详情</div>
     <div class="bui-bar-right"></div>
   </header>
   <main>
@@ -12,21 +12,27 @@
       <h3 class="section-title">基本信息</h3>
       <div class="bui-list">
         <div class="bui-btn bui-box">
-          <div class="bui-label">告警序号</div>
+          <div class="bui-label">信号编码</div>
           <div class="span1">
-            <div id="pylon-app-alarm-id" class="bui-value"></div>
+            <div id="pylon-app-signal-id" class="bui-value"></div>
           </div>
         </div>
         <div class="bui-btn bui-box">
-          <div class="bui-label">告警名称</div>
+          <div class="bui-label">信号名称</div>
           <div class="span1">
-            <div id="pylon-app-alarm-name" class="bui-value"></div>
+            <div id="pylon-app-signal-name" class="bui-value"></div>
           </div>
         </div>
         <div class="bui-btn bui-box">
           <div class="bui-label">告警等级</div>
           <div class="span1">
             <div id="pylon-app-alarm-level" class="bui-value"></div>
+          </div>
+        </div>
+        <div class="bui-btn bui-box">
+          <div class="bui-label">告警描述</div>
+          <div class="span1">
+            <div id="pylon-app-alarm-desc" class="bui-value"></div>
           </div>
         </div>
         <div class="bui-btn bui-box">
@@ -48,9 +54,15 @@
           </div>
         </div>
         <div class="bui-btn bui-box">
-          <div class="bui-label">告警描述</div>
+          <div class="bui-label">确认人员</div>
           <div class="span1">
-            <div id="pylon-app-alarm-desc" class="bui-value"></div>
+            <div id="pylon-app-alarm-confirmer" class="bui-value"></div>
+          </div>
+        </div>
+        <div class="bui-btn bui-box">
+          <div class="bui-label">确认时间</div>
+          <div class="span1">
+            <div id="pylon-app-alarm-confirmtime" class="bui-value"></div>
           </div>
         </div>
       </div>
@@ -60,12 +72,6 @@
           <div class="bui-label">所属设备</div>
           <div class="span1">
             <div id="pylon-app-alarm-device" class="bui-value"></div>
-          </div>
-        </div>
-        <div class="bui-btn bui-box">
-          <div class="bui-label">设备类型</div>
-          <div class="span1">
-            <div id="pylon-app-alarm-device-type" class="bui-value"></div>
           </div>
         </div>
         <div class="bui-btn bui-box">

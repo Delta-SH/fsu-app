@@ -1,4 +1,4 @@
-loader.define(function(require, exports, module) {
+loader.define(function (require, exports, module) {
   var _request = null;
   var _session = true;
   var pageview = {
@@ -6,56 +6,48 @@ loader.define(function(require, exports, module) {
     ip: null,
     user: null,
     password: null,
-    loading: null
+    loading: null,
   };
 
   // 模块初始化
-  pageview.init = function() {
+  pageview.init = function () {
     this.ip = router.$("#app-login-ip");
     this.user = router.$("#app-login-user");
     this.password = router.$("#app-login-password");
     if (isNull(this.loading) === true) {
       this.loading = bui.loading({
         appendTo: ".login-page",
-        text: "正在加载"
+        text: "正在加载",
       });
     }
 
     bui.input({
       id: ".user-input",
       showIcon: false,
-      onFocus: function(e) {
-        $(e.target)
-          .closest(".bui-btn")
-          .addClass("onfocus");
+      onFocus: function (e) {
+        $(e.target).closest(".bui-btn").addClass("onfocus");
       },
-      onBlur: function(e) {
-        $(e.target)
-          .closest(".bui-btn")
-          .removeClass("onfocus");
-      }
+      onBlur: function (e) {
+        $(e.target).closest(".bui-btn").removeClass("onfocus");
+      },
     });
 
     bui.input({
       id: ".password-input",
       iconClass: ".appicon-eyeclose",
-      callback: function(e) {
+      callback: function (e) {
         this.toggleType();
         $(e.target).toggleClass("appicon-eyeopen");
       },
-      onFocus: function(e) {
-        $(e.target)
-          .closest(".bui-btn")
-          .addClass("onfocus");
+      onFocus: function (e) {
+        $(e.target).closest(".bui-btn").addClass("onfocus");
       },
-      onBlur: function(e) {
-        $(e.target)
-          .closest(".bui-btn")
-          .removeClass("onfocus");
-      }
+      onBlur: function (e) {
+        $(e.target).closest(".bui-btn").removeClass("onfocus");
+      },
     });
 
-    router.$("#app-login-login").on("click", function(e) {
+    router.$("#app-login-login").on("click", function (e) {
       var iptext = pageview.ip.val().trim(),
         usertext = pageview.user.val().trim(),
         pwdtext = pageview.password.val().trim();
@@ -85,20 +77,22 @@ loader.define(function(require, exports, module) {
       _reqakey(usertext, pwdtext);
     });
 
-    router.$("#app-login-forgot").on("click", function(e) {
+    router.$("#app-login-forgot").on("click", function (e) {
       bui.alert("请与系统管理员联系~");
     });
   };
 
   // 模块加载
-  pageview.load = function() {
-    _destroy();
-    _reqout();
-    _rememberme();
+  pageview.load = function () {
+    var remeber = getRemember();
+    if (isNull(remeber) === false) {
+      this.ip.val(remeber.ip);
+      this.user.val(remeber.user);
+    }
   };
 
   // 销毁资源
-  pageview.dispose = function() {};
+  pageview.dispose = function () {};
 
   // 获取token
   function _reqakey(uid, pwd) {
@@ -106,21 +100,21 @@ loader.define(function(require, exports, module) {
     _loading.option("text", "请求令牌");
     _loading.show();
     _request.Post(
-      "gettoken",
       {
-        timeout: 10000
+        url: "GetToken",
+        timeout: 5000,
       },
-      function(result) {
+      function (result) {
         var token = result.data.Token;
         _request.SetToken(token);
-        loader.import("js/jquery.md5.min.js", function() {
-          _reqatu(uid, $.md5(token + pwd));
+        loader.import("js/md5.min.js", function () {
+          _reqatu(uid, md5(token + "2" + md5(pwd)));
         });
       },
-      function(err) {
+      function (err) {
         warning(err.message);
       },
-      function() {
+      function () {
         _loading.hide();
       }
     );
@@ -132,82 +126,50 @@ loader.define(function(require, exports, module) {
     _loading.option("text", "验证用户");
     _loading.show();
     _request.Post(
-      "login",
       {
+        url: "Login",
         timeout: 10000,
-        data: JSON.stringify({ uid: uid, pwd: pwd })
+        data: {
+          uid: uid,
+          pwd: pwd,
+        },
       },
-      function(result) {
+      function (result) {
         $appRequest = _request;
         if (_session === true) {
           setAppRequest({
             ip: _request.GetIP(),
             user: _request.GetUser(),
-            token: _request.GetToken()
+            token: _request.GetToken(),
           });
         }
 
         if (router.isLoad("main")) {
           router.back({
             name: "main",
-            callback: function(mod) {
+            callback: function (mod) {
               mod.init();
               mod.load();
               success("欢迎回来", 1500);
-            }
+            },
           });
         } else {
           router.load({
             url: "main",
             effect: "zoom",
-            callback: function(mod) {
+            callback: function (mod) {
               success("欢迎使用", 1500);
-            }
+            },
           });
         }
       },
-      function(err) {
+      function (err) {
         warning(err.message);
       },
-      function() {
+      function () {
         _loading.hide();
       }
     );
-  }
-
-  // 模块销毁
-  function _destroy() {
-    if (loader.checkLoad("pages/main/alarm")) {
-      loader.require(["pages/main/alarm"], function(mod) {
-        mod.destroy();
-      });
-    }
-  }
-
-  // 用户注销
-  function _reqout() {
-    var request = getAppRequest(false);
-    removeAppRequest();
-    session.clear();
-    if (request != null) {
-      request.Post(
-        "logout",
-        {
-          timeout: 5000
-        },
-        function(result) {},
-        function(err) {}
-      );
-    }
-  }
-
-  // 记住我
-  function _rememberme() {
-    var remeber = getRemember();
-    if (isNull(remeber) === false) {
-      pageview.ip.val(remeber.ip);
-      pageview.user.val(remeber.user);
-    }
   }
 
   // 初始化

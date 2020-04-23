@@ -8,6 +8,34 @@
     font-size: 0.28rem;
   }
 
+  #pylon-data-signal-dropdown .bui-list {
+    padding-left: 0.1rem;
+    padding-right: 0.1rem;
+    background: #fff;
+    border: 1px solid #fff;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+  }
+
+  #pylon-data-signal-dropdown .bui-list > [class*="bui-btn"] {
+    font-size: 0.3rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    background: transparent;
+  }
+
+  #pylon-data-signal-dropdown .bui-list > [class*="bui-btn"].active {
+    color: #39a4ff !important;
+  }
+
+  #pylon-data-signal-dropdown .bui-arrow-up:after {
+    border-color: transparent transparent #fff transparent;
+  }
+
+  #pylon-app-device-detail .overlist .bui-listview {
+    border-top: none;
+  }
+
   #pylon-app-device-detail .overlist .item-title-box {
     margin-bottom: 0.15rem;
   }
@@ -25,54 +53,31 @@
   }
 
   #pylon-app-device-detail .overlist .signal-icon i {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
   }
 
-  #pylon-app-signal-dialog .bui-dialog {
-    display: none;
+  #pylon-app-device-detail .device-dialog .bui-list > [class*="bui-btn"] {
+    padding: 0.15rem;
   }
 
-  #pylon-app-signal-dialog .bui-dialog .bui-dialog-head > i {
-    font-size: 0.35rem;
-  }
-
-  #pylon-app-signal-dialog .bui-dialog .bui-dialog-head > .words {
-    font-size: 0.3rem;
-  }
-
-  #pylon-app-signal-dialog .bui-dialog .bui-dialog-main {
+  #pylon-app-device-detail .device-dialog .bui-input {
+    padding-left: 0.2rem;
+    padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+    border: 1px solid #f3f5f8;
+    border-radius: 0.1rem;
     background: #f3f5f8;
   }
 
-  #pylon-app-signal-dialog .bui-dialog .content {
-    border-top: 1px solid #eee;
+  #pylon-app-device-detail .device-dialog .unit-label {
+    width: auto;
+    max-width: 1.5rem;
+    text-align: right;
+    padding-right: 0.2rem;
   }
 
-  #pylon-app-signal-dialog .bui-dialog .content .section-title {
-    text-align: left;
-    font-size: 0.25rem;
-  }
-
-  #pylon-app-signal-dialog .bui-dialog .content .bui-btn {
-    padding-top: 0.2rem;
-    padding-bottom: 0.2rem;
-  }
-
-  #pylon-app-signal-dialog .bui-dialog .content .bui-value {
-    font-size: 0.25rem;
+  #pylon-app-device-detail .device-dialog .bui-dropdown > [class*="bui-btn"] {
     padding-left: 0;
-  }
-
-  #pylon-app-signal-dialog .bui-dialog .content label {
-    font-size: 0.25rem;
-  }
-
-  #pylon-app-signal-dialog .bui-dialog .foot > [class*="bui-btn"] {
-    margin-top: 0.1rem;
-  }
-
-  #pylon-app-aoctrl-unit {
-    padding-left: 0.2rem;
   }
 </style>
 <div id="pylon-app-device-detail" class="bui-page device-page">
@@ -80,7 +85,14 @@
     <div class="bui-bar-left">
       <a class="bui-btn btn-back"><i class="icon-back"></i></a>
     </div>
-    <div class="bui-bar-main">设备信号</div>
+    <div class="bui-bar-main">
+      <div id="pylon-data-signal-dropdown" class="bui-dropdown bui-arrow-center">
+        <div class="bui-btn">
+          <span class="span1">信号类型</span>
+          <i class="icon-dropdown"></i>
+        </div>
+      </div>
+    </div>
     <div class="bui-bar-right"></div>
   </header>
   <main>
@@ -93,19 +105,7 @@
           </li>
           <li class="bui-btn bui-box-center tab-title">
             <i class="appiconfont appicon-signal"></i>
-            <div class="tab-text">遥信</div>
-          </li>
-          <li class="bui-btn bui-box-center tab-title">
-            <i class="appiconfont appicon-signal"></i>
-            <div class="tab-text">遥测</div>
-          </li>
-          <li class="bui-btn bui-box-center tab-title">
-            <i class="appiconfont appicon-wifi"></i>
-            <div class="tab-text">遥调</div>
-          </li>
-          <li class="bui-btn bui-box-center tab-title">
-            <i class="appiconfont appicon-wifi"></i>
-            <div class="tab-text">遥控</div>
+            <div class="tab-text">信号</div>
           </li>
         </ul>
       </div>
@@ -133,21 +133,27 @@
                 </div>
               </div>
               <div class="bui-btn bui-box">
+                <div class="bui-label">设备型号</div>
+                <div class="span1">
+                  <div id="pylon-app-device-base-model" class="bui-value"></div>
+                </div>
+              </div>
+              <div class="bui-btn bui-box">
                 <div class="bui-label">设备品牌</div>
                 <div class="span1">
                   <div id="pylon-app-device-base-brand" class="bui-value"></div>
                 </div>
               </div>
               <div class="bui-btn bui-box">
-                <div class="bui-label">型号版本</div>
+                <div class="bui-label">设备容量</div>
                 <div class="span1">
-                  <div id="pylon-app-device-base-model" class="bui-value"></div>
+                  <div id="pylon-app-device-base-capacity" class="bui-value"></div>
                 </div>
               </div>
               <div class="bui-btn bui-box">
-                <div class="bui-label">所属站点</div>
+                <div class="bui-label">设备版本</div>
                 <div class="span1">
-                  <div id="pylon-app-device-base-room" class="bui-value"></div>
+                  <div id="pylon-app-device-base-version" class="bui-value"></div>
                 </div>
               </div>
               <div class="bui-btn bui-box">
@@ -167,7 +173,7 @@
             </div>
           </li>
           <li class="overlist" style="display: none;">
-            <div id="pylon-app-di-search" class="bui-searchbar bui-box">
+            <div id="pylon-app-node-search" class="bui-searchbar bui-box">
               <div class="span1">
                 <div class="bui-input">
                   <i class="icon-search"></i>
@@ -176,64 +182,10 @@
               </div>
               <div class="btn-search">搜索</div>
             </div>
-            <div id="pylon-app-di-scroll" class="bui-scroll">
+            <div id="pylon-app-node-scroll" class="bui-scroll">
               <div class="bui-scroll-head"></div>
               <div class="bui-scroll-main">
-                <ul id="pylon-app-di-listview" class="bui-listview detail-list"></ul>
-              </div>
-              <div class="bui-scroll-foot"></div>
-            </div>
-          </li>
-          <li class="overlist" style="display: none;">
-            <div id="pylon-app-ai-search" class="bui-searchbar bui-box">
-              <div class="span1">
-                <div class="bui-input">
-                  <i class="icon-search"></i>
-                  <input type="search" value="" placeholder="请输入关键字" />
-                </div>
-              </div>
-              <div class="btn-search">搜索</div>
-            </div>
-            <div id="pylon-app-ai-scroll" class="bui-scroll">
-              <div class="bui-scroll-head"></div>
-              <div class="bui-scroll-main">
-                <ul id="pylon-app-ai-listview" class="bui-listview detail-list"></ul>
-              </div>
-              <div class="bui-scroll-foot"></div>
-            </div>
-          </li>
-          <li class="overlist" style="display: none;">
-            <div id="pylon-app-ao-search" class="bui-searchbar bui-box">
-              <div class="span1">
-                <div class="bui-input">
-                  <i class="icon-search"></i>
-                  <input type="search" value="" placeholder="请输入关键字" />
-                </div>
-              </div>
-              <div class="btn-search">搜索</div>
-            </div>
-            <div id="pylon-app-ao-scroll" class="bui-scroll">
-              <div class="bui-scroll-head"></div>
-              <div class="bui-scroll-main">
-                <ul id="pylon-app-ao-listview" class="bui-listview detail-list"></ul>
-              </div>
-              <div class="bui-scroll-foot"></div>
-            </div>
-          </li>
-          <li class="overlist" style="display: none;">
-            <div id="pylon-app-do-search" class="bui-searchbar bui-box">
-              <div class="span1">
-                <div class="bui-input">
-                  <i class="icon-search"></i>
-                  <input type="search" value="" placeholder="请输入关键字" />
-                </div>
-              </div>
-              <div class="btn-search">搜索</div>
-            </div>
-            <div id="pylon-app-do-scroll" class="bui-scroll">
-              <div class="bui-scroll-head"></div>
-              <div class="bui-scroll-main">
-                <ul id="pylon-app-do-listview" class="bui-listview detail-list"></ul>
+                <ul id="pylon-app-node-listview" class="bui-listview"></ul>
               </div>
               <div class="bui-scroll-foot"></div>
             </div>
@@ -243,172 +195,172 @@
     </div>
   </main>
   <footer></footer>
-</div>
-<div id="pylon-app-signal-dialog">
-  <div id="pylon-app-do-dialog" class="bui-dialog">
+  <div id="pylon-app-do-dialog" class="bui-dialog device-dialog">
     <div class="bui-dialog-head">
-      <i class="icon-setting"></i>
+      <i class="appiconfont appicon-wifi"></i>
       <span class="words">远程控制</span>
     </div>
     <div class="bui-dialog-main">
-      <div class="content">
-        <input id="pylon-app-doctrl-id" type="hidden" value="" />
-        <div class="section-title">信号名称</div>
-        <ul class="bui-list">
-          <li class="bui-btn bui-box">
-            <div class="span1">
-              <div id="pylon-app-doctrl-name" class="bui-value">信号名字</div>
+      <ul class="bui-list">
+        <li class="bui-btn bui-box clearactive">
+          <div class="bui-label">信号名称</div>
+          <div class="span1">
+            <div class="bui-input">
+              <input id="pylon-app-data-do-name" type="text" value="" readonly />
             </div>
-          </li>
-        </ul>
-        <div class="section-title">控制参数</div>
-        <ul id="pylon-app-doctrl-param" class="bui-list"></ul>
-      </div>
-      <div class="foot">
-        <div class="bui-box">
-          <div class="span1">
-            <div id="pylon-app-doctrl-cancel" class="bui-btn">取消</div>
           </div>
+        </li>
+        <li class="bui-btn bui-box clearactive">
+          <label class="bui-label">控制参数</label>
           <div class="span1">
-            <div id="pylon-app-doctrl-ok" class="bui-btn primary">确定</div>
+            <ul id="pylon-app-data-do-option" class="bui-list"></ul>
           </div>
+        </li>
+      </ul>
+    </div>
+    <div class="bui-dialog-foot">
+      <div class="bui-box">
+        <div class="span1">
+          <div class="bui-btn">取消</div>
+        </div>
+        <div class="span1">
+          <div class="bui-btn primary-reverse" data-cmd="ok">确定</div>
         </div>
       </div>
     </div>
+    <div class="bui-dialog-close"><i class="icon-close"></i></div>
   </div>
-  <div id="pylon-app-ao-dialog" class="bui-dialog">
+  <div id="pylon-app-ao-dialog" class="bui-dialog device-dialog">
     <div class="bui-dialog-head">
-      <i class="icon-setting"></i>
+      <i class="appiconfont appicon-wifi"></i>
       <span class="words">远程设定</span>
     </div>
     <div class="bui-dialog-main">
-      <div class="content">
-        <input id="pylon-app-aoctrl-id" type="hidden" value="" />
-        <div class="section-title">信号名称</div>
-        <ul class="bui-list">
-          <li class="bui-btn bui-box">
-            <div class="span1">
-              <div id="pylon-app-aoctrl-name" class="bui-value">信号名字</div>
-            </div>
-          </li>
-        </ul>
-        <div class="section-title">设定参数</div>
-        <ul class="bui-list">
-          <li class="bui-btn bui-box">
-            <div class="span1">
-              <div class="bui-input">
-                <input id="pylon-app-aoctrl-param" type="number" class="bui-input" placeholder="遥调数值" />
-              </div>
-            </div>
-            <label id="pylon-app-aoctrl-unit" class="bui-label" for="pylon-app-aoctrl-param"></label>
-          </li>
-        </ul>
-      </div>
-      <div class="foot">
-        <div class="bui-box">
+      <ul class="bui-list">
+        <li class="bui-btn bui-box clearactive">
+          <div class="bui-label">信号名称</div>
           <div class="span1">
-            <div id="pylon-app-aoctrl-cancel" class="bui-btn">取消</div>
+            <div class="bui-input">
+              <input id="pylon-app-data-ao-name" type="text" value="" readonly />
+            </div>
           </div>
+        </li>
+        <li class="bui-btn bui-box clearactive">
+          <label class="bui-label">设定参数</label>
           <div class="span1">
-            <div id="pylon-app-aoctrl-ok" class="bui-btn primary">确定</div>
+            <div class="bui-input">
+              <input id="pylon-app-ao-adjust" type="number" value="" placeholder="遥调数值" />
+              <label id="pylon-app-ao-unit" class="bui-label unit-label" for="pylon-app-ao-adjust"></label>
+            </div>
           </div>
+        </li>
+      </ul>
+    </div>
+    <div class="bui-dialog-foot">
+      <div class="bui-box">
+        <div class="span1">
+          <div class="bui-btn">取消</div>
+        </div>
+        <div class="span1">
+          <div class="bui-btn primary-reverse" data-cmd="ok">确定</div>
         </div>
       </div>
     </div>
+    <div class="bui-dialog-close"><i class="icon-close"></i></div>
   </div>
-  <div id="pylon-app-di-alarm-dialog" class="bui-dialog">
+  <div id="pylon-app-alarm-dialog" class="bui-dialog device-dialog">
     <div class="bui-dialog-head">
-      <i class="icon-setting"></i>
+      <i class="appiconfont appicon-alarm"></i>
       <span class="words">告警设定</span>
     </div>
     <div class="bui-dialog-main">
-      <div class="content">
-        <input id="pylon-app-dialarm-id" type="hidden" value="" />
-        <div class="section-title">信号名称</div>
-        <ul class="bui-list">
-          <li class="bui-btn bui-box">
-            <div class="span1">
-              <div id="pylon-app-dialarm-name" class="bui-value">信号名字</div>
-            </div>
-          </li>
-        </ul>
-        <div class="section-title">告警等级</div>
-        <ul class="bui-list">
-          <li class="bui-btn bui-box">
-            <div class="span1">
-              <label for="pylon-app-dialarm-option1">一级告警</label>
-            </div>
-            <input id="pylon-app-dialarm-option1" type="radio" class="bui-choose" name="dialarmparam" value="1" checked="checked" />
-          </li>
-          <li class="bui-btn bui-box">
-            <div class="span1">
-              <label for="pylon-app-dialarm-option2">二级告警</label>
-            </div>
-            <input id="pylon-app-dialarm-option2" type="radio" class="bui-choose" name="dialarmparam" value="2" />
-          </li>
-          <li class="bui-btn bui-box">
-            <div class="span1">
-              <label for="pylon-app-dialarm-option3">三级告警</label>
-            </div>
-            <input id="pylon-app-dialarm-option3" type="radio" class="bui-choose" name="dialarmparam" value="3" />
-          </li>
-          <li class="bui-btn bui-box">
-            <div class="span1">
-              <label for="pylon-app-dialarm-option4">四级告警</label>
-            </div>
-            <input id="pylon-app-dialarm-option4" type="radio" class="bui-choose" name="dialarmparam" value="4" />
-          </li>
-        </ul>
-      </div>
-      <div class="foot">
-        <div class="bui-box">
+      <ul class="bui-list">
+        <li class="bui-btn bui-box clearactive">
+          <div class="bui-label">信号名称</div>
           <div class="span1">
-            <div id="pylon-app-dialarm-cancel" class="bui-btn">取消</div>
-          </div>
-          <div class="span1">
-            <div id="pylon-app-dialarm-ok" class="bui-btn primary">确定</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div id="pylon-app-di-value-dialog" class="bui-dialog">
-    <div class="bui-dialog-head">
-      <i class="icon-setting"></i>
-      <span class="words">阈值设定</span>
-    </div>
-    <div class="bui-dialog-main">
-      <div class="content">
-        <input id="pylon-app-divalue-id" type="hidden" value="" />
-        <div class="section-title">信号名称</div>
-        <ul class="bui-list">
-          <li class="bui-btn bui-box">
-            <div class="span1">
-              <div id="pylon-app-divalue-name" class="bui-value">信号名字</div>
+            <div class="bui-input">
+              <input id="pylon-app-data-signal-name" type="text" value="" readonly />
             </div>
-          </li>
-        </ul>
-        <div class="section-title">告警阈值</div>
-        <ul class="bui-list">
-          <li class="bui-btn bui-box">
-            <div class="span1">
-              <div class="bui-input">
-                <input id="pylon-app-divalue-param" type="number" class="bui-input" placeholder="告警阈值" />
+          </div>
+        </li>
+        <li class="bui-btn bui-box clearactive">
+          <label class="bui-label">参数名称</label>
+          <div class="span1 bui-value">
+            <div id="pylon-app-data-param-num" class="bui-dropdown">
+              <div class="bui-btn bui-box">
+                <div class="span1">请选择</div>
+                <i class="icon-dropdown"></i>
               </div>
             </div>
-          </li>
-        </ul>
-      </div>
-      <div class="foot">
-        <div class="bui-box">
-          <div class="span1">
-            <div id="pylon-app-divalue-cancel" class="bui-btn">取消</div>
           </div>
-          <div class="span1">
-            <div id="pylon-app-divalue-ok" class="bui-btn primary">确定</div>
+        </li>
+        <li class="bui-btn bui-box clearactive">
+          <label class="bui-label">触发模式</label>
+          <div class="span1 bui-value">
+            <div id="pylon-app-data-trigger-model" class="bui-dropdown">
+              <div class="bui-btn bui-box">
+                <div class="span1">请选择</div>
+                <i class="icon-dropdown"></i>
+              </div>
+              <ul class="bui-list">
+                <li class="bui-btn" value="0">等于</li>
+                <li class="bui-btn" value="1">不等于</li>
+                <li class="bui-btn" value="2">小于</li>
+                <li class="bui-btn" value="3">小于等于</li>
+                <li class="bui-btn" value="4">大于等于</li>
+                <li class="bui-btn" value="5">大于</li>
+                <li class="bui-btn" value="6">改变即触发</li>
+                <li class="bui-btn" value="7">范围内</li>
+                <li class="bui-btn" value="8">范围外</li>
+              </ul>
+            </div>
           </div>
+        </li>
+        <li class="bui-btn bui-box clearactive">
+          <label class="bui-label">告警等级</label>
+          <div class="span1 bui-value">
+            <div id="pylon-app-data-alarm-level" class="bui-dropdown">
+              <div class="bui-btn bui-box">
+                <div class="span1">请选择</div>
+                <i class="icon-dropdown"></i>
+              </div>
+              <ul class="bui-list">
+                <li class="bui-btn" value="1">一级告警</li>
+                <li class="bui-btn" value="2">二级告警</li>
+                <li class="bui-btn" value="3">三级告警</li>
+                <li class="bui-btn" value="4">四级告警</li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="bui-btn bui-box clearactive">
+          <label class="bui-label" for="pylon-app-data-threshold-start">告警阀值</label>
+          <div class="span1">
+            <div class="bui-input">
+              <input id="pylon-app-data-threshold-start" type="number" value="" placeholder="当前阀值/上限阈值" />
+            </div>
+          </div>
+        </li>
+        <li class="bui-btn bui-box clearactive">
+          <label class="bui-label" for="pylon-app-data-threshold-end">辅助阀值</label>
+          <div class="span1">
+            <div class="bui-input">
+              <input id="pylon-app-data-threshold-end" type="number" value="" placeholder="下限阀值(仅适用范围内、范围外触发模式)" />
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="bui-dialog-foot">
+      <div class="bui-box">
+        <div class="span1">
+          <div class="bui-btn">取消</div>
+        </div>
+        <div class="span1">
+          <div class="bui-btn primary-reverse" data-cmd="ok">确定</div>
         </div>
       </div>
     </div>
+    <div class="bui-dialog-close"><i class="icon-close"></i></div>
   </div>
 </div>
