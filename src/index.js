@@ -1,5 +1,11 @@
 // 全局变量
-//bui.isWebapp = false;
+window.$appRequest = null;
+window.$appAuthType = null;
+window.$appAuthTypeKey = "pylon.app.session.appauthtype";
+window.$appRequestKey = "pylon.app.session.apprequest";
+window.$areaKey = "pylon.app.session.area";
+window.$stationKey = "pylon.app.session.station";
+window.$rememberKey = "pylon.app.local.remember";
 window.router = bui.router();
 window.storage = bui.storage();
 window.session = {
@@ -96,76 +102,9 @@ window.$ssh = {
   Frame: 4,
   Device: 5,
 };
-window.$appRequest = null;
-window.$appAuthType = null;
-window.$appAuthTypeKey = "pylon.app.session.appauthtype";
-window.$appRequestKey = "pylon.app.session.apprequest";
-window.$areaKey = "pylon.app.session.area";
-window.$stationKey = "pylon.app.session.station";
-window.$rememberKey = "pylon.app.local.remember";
 
-bui.ready(function () {
-  router.init({
-    id: "#bui-router",
-    firstAnimate: true,
-    progress: true,
-    hash: true,
-    errorPage: "404.html",
-  });
-
-  bui
-    .btn({
-      id: "#bui-router",
-      handle: ".bui-btn,a",
-    })
-    .load();
-
-  $("#bui-router").on("click", ".btn-back", function (e) {
-    bui.back({
-      beforeBack: function (e) {
-        if (isNull(e.target) === true) {
-          return false;
-        }
-
-        dispose(e.target);
-        return true;
-      },
-    });
-  });
-
-  if (window.plus) {
-    plusReady();
-  } else {
-    document.addEventListener("plusready", plusReady, false);
-  }
-
-  function plusReady() {
-    plus.key.addEventListener("backbutton", function () {
-      if (plus.os.name === "Android") {
-        bui.back({
-          beforeBack: function (e) {
-            if (isNull(e.target) === true) {
-              return false;
-            }
-
-            dispose(e.target);
-            if (e.target.name === "pages/login/login") {
-              plus.runtime.quit();
-              return false;
-            }
-
-            return true;
-          },
-        });
-      } else {
-        plus.nativeUI.toast("请按Home键切换应用");
-      }
-    });
-  }
-});
-
-// 自定义函数
-function AppRequest(ip, user, token) {
+// 全局函数
+window.AppRequest = function (ip, user, token) {
   var _this = this;
   var _ip = ip;
   var _user = user;
@@ -338,9 +277,9 @@ function AppRequest(ip, user, token) {
         }
       });
   };
-}
+};
 
-function getAppRequest(nologout) {
+window.getAppRequest = function (nologout) {
   if (isNull($appRequest) === false) {
     return $appRequest;
   }
@@ -360,13 +299,13 @@ function getAppRequest(nologout) {
   }
 
   return $appRequest;
-}
+};
 
-function setAppRequest(data) {
+window.setAppRequest = function (data) {
   session.set($appRequestKey, JSON.stringify(data));
-}
+};
 
-function getAppAuthType() {
+window.getAppAuthType = function () {
   if (isNull($appAuthType) === false) {
     return $appAuthType;
   }
@@ -377,66 +316,66 @@ function getAppAuthType() {
   }
 
   return $ssh.Area;
-}
+};
 
-function setAppAuthType(auth) {
+window.setAppAuthType = function (auth) {
   session.set($appAuthTypeKey, auth);
-}
+};
 
-function removeAppRequest() {
+window.removeAppRequest = function () {
   $appRequest = null;
   session.remove($appRequestKey);
-}
+};
 
-function removeAppAuthType() {
+window.removeAppAuthType = function () {
   $appAuthType = null;
   session.remove($appAuthTypeKey);
-}
+};
 
-function getRemember() {
+window.getRemember = function () {
   return storage.get($rememberKey, 0);
-}
+};
 
-function setRemember(data) {
+window.setRemember = function (data) {
   storage.set($rememberKey, data);
-}
+};
 
-function getAreas() {
+window.getAreas = function () {
   var data = session.get($areaKey);
   if (isNullOrEmpty(data, true) === true) {
     return [];
   }
 
   return JSON.parse(data);
-}
+};
 
-function setAreas(data) {
+window.setAreas = function (data) {
   if (isNull(data) === true) {
     data = [];
   }
 
   setAppAuthType(($appAuthType = data.length > 0 ? $ssh.Area : $ssh.Station));
   session.set($areaKey, JSON.stringify(data));
-}
+};
 
-function getStations() {
+window.getStations = function () {
   var data = session.get($stationKey);
   if (isNullOrEmpty(data, true) === true) {
     return [];
   }
 
   return JSON.parse(data);
-}
+};
 
-function setStations(data) {
+window.setStations = function (data) {
   if (isNull(data) === true) {
     data = [];
   }
 
   session.set($stationKey, JSON.stringify(data));
-}
+};
 
-function loadData(before, done, fail, always) {
+window.loadData = function (before, done, fail, always) {
   if (isFunction(before) === true) {
     if (before() === false) {
       return false;
@@ -455,9 +394,9 @@ function loadData(before, done, fail, always) {
         always();
       }
     });
-}
+};
 
-function getAllAreas(params, resolve, reject, done) {
+window.getAllAreas = function (params, resolve, reject, done) {
   try {
     var appRequest = getAppRequest();
     appRequest.Post(
@@ -479,9 +418,9 @@ function getAllAreas(params, resolve, reject, done) {
   } catch (err) {
     reject(err.message);
   }
-}
+};
 
-function getAllAreasTask(params) {
+window.getAllAreasTask = function (params) {
   var dtd = $.Deferred();
   try {
     getAllAreas(
@@ -498,9 +437,9 @@ function getAllAreasTask(params) {
   }
 
   return dtd.promise();
-}
+};
 
-function getAllStations(params, resolve, reject, done) {
+window.getAllStations = function (params, resolve, reject, done) {
   try {
     var appRequest = getAppRequest();
     appRequest.Post(
@@ -522,9 +461,9 @@ function getAllStations(params, resolve, reject, done) {
   } catch (err) {
     reject(err.message);
   }
-}
+};
 
-function getAllStationsTask(params) {
+window.getAllStationsTask = function (params) {
   var dtd = $.Deferred();
   try {
     getAllStations(
@@ -541,9 +480,9 @@ function getAllStationsTask(params) {
   }
 
   return dtd.promise();
-}
+};
 
-function getStation(id, params, resolve, reject, done) {
+window.getStation = function (id, params, resolve, reject, done) {
   try {
     var appRequest = getAppRequest();
     appRequest.Post(
@@ -569,9 +508,9 @@ function getStation(id, params, resolve, reject, done) {
   } catch (err) {
     reject(err.message);
   }
-}
+};
 
-function getStationTask(id, params) {
+window.getStationTask = function (id, params) {
   var dtd = $.Deferred();
   try {
     getStation(
@@ -589,9 +528,9 @@ function getStationTask(id, params) {
   }
 
   return dtd.promise();
-}
+};
 
-function getDevice(id, params, resolve, reject, done) {
+window.getDevice = function (id, params, resolve, reject, done) {
   try {
     var appRequest = getAppRequest();
     appRequest.Post(
@@ -617,9 +556,9 @@ function getDevice(id, params, resolve, reject, done) {
   } catch (err) {
     reject(err.message);
   }
-}
+};
 
-function getDeviceTask(id, params) {
+window.getDeviceTask = function (id, params) {
   var dtd = $.Deferred();
   try {
     getDevice(
@@ -637,9 +576,9 @@ function getDeviceTask(id, params) {
   }
 
   return dtd.promise();
-}
+};
 
-function getAllDevices(params, resolve, reject, done) {
+window.getAllDevices = function (params, resolve, reject, done) {
   try {
     var appRequest = getAppRequest();
     appRequest.Post(
@@ -661,9 +600,9 @@ function getAllDevices(params, resolve, reject, done) {
   } catch (err) {
     reject(err.message);
   }
-}
+};
 
-function getVDevices(params, resolve, reject, done) {
+window.getVDevices = function (params, resolve, reject, done) {
   try {
     getAllDevices(
       params,
@@ -682,9 +621,9 @@ function getVDevices(params, resolve, reject, done) {
   } catch (err) {
     reject(err.message);
   }
-}
+};
 
-function getXDevices(params, resolve, reject, done) {
+window.getXDevices = function (params, resolve, reject, done) {
   try {
     getAllDevices(
       params,
@@ -703,9 +642,9 @@ function getXDevices(params, resolve, reject, done) {
   } catch (err) {
     reject(err.message);
   }
-}
+};
 
-function getVDevicesTask(params) {
+window.getVDevicesTask = function (params) {
   var dtd = $.Deferred();
   try {
     getVDevices(
@@ -722,9 +661,9 @@ function getVDevicesTask(params) {
   }
 
   return dtd.promise();
-}
+};
 
-function getXDevicesTask(params) {
+window.getXDevicesTask = function (params) {
   var dtd = $.Deferred();
   try {
     getXDevices(
@@ -741,9 +680,9 @@ function getXDevicesTask(params) {
   }
 
   return dtd.promise();
-}
+};
 
-function getAllDevicesByPid(pid, params, resolve, reject, done) {
+window.getAllDevicesByPid = function (pid, params, resolve, reject, done) {
   try {
     var appRequest = getAppRequest();
     appRequest.Post(
@@ -765,9 +704,9 @@ function getAllDevicesByPid(pid, params, resolve, reject, done) {
   } catch (err) {
     reject(err.message);
   }
-}
+};
 
-function getVDevicesByPid(pid, params, resolve, reject, done) {
+window.getVDevicesByPid = function (pid, params, resolve, reject, done) {
   try {
     getAllDevicesByPid(
       pid,
@@ -787,9 +726,9 @@ function getVDevicesByPid(pid, params, resolve, reject, done) {
   } catch (err) {
     reject(err.message);
   }
-}
+};
 
-function getXDevicesByPid(pid, params, resolve, reject, done) {
+window.getXDevicesByPid = function (pid, params, resolve, reject, done) {
   try {
     getAllDevicesByPid(
       pid,
@@ -809,9 +748,9 @@ function getXDevicesByPid(pid, params, resolve, reject, done) {
   } catch (err) {
     reject(err.message);
   }
-}
+};
 
-function getVDevicesByPidTask(pid, params) {
+window.getVDevicesByPidTask = function (pid, params) {
   var dtd = $.Deferred();
   try {
     getVDevicesByPid(
@@ -829,9 +768,9 @@ function getVDevicesByPidTask(pid, params) {
   }
 
   return dtd.promise();
-}
+};
 
-function getXDevicesByPidTask(pid, params) {
+window.getXDevicesByPidTask = function (pid, params) {
   var dtd = $.Deferred();
   try {
     getXDevicesByPid(
@@ -849,9 +788,9 @@ function getXDevicesByPidTask(pid, params) {
   }
 
   return dtd.promise();
-}
+};
 
-function getAllSignalsByPid(pid, params, resolve, reject, done) {
+window.getAllSignalsByPid = function (pid, params, resolve, reject, done) {
   try {
     var appRequest = getAppRequest();
     appRequest.Post(
@@ -873,9 +812,9 @@ function getAllSignalsByPid(pid, params, resolve, reject, done) {
   } catch (err) {
     reject(err.message);
   }
-}
+};
 
-function getAllSignalsByPidTask(pid, params) {
+window.getAllSignalsByPidTask = function (pid, params) {
   var dtd = $.Deferred();
   try {
     getAllSignalsByPid(
@@ -893,9 +832,9 @@ function getAllSignalsByPidTask(pid, params) {
   }
 
   return dtd.promise();
-}
+};
 
-function getAllAlarms(params, resolve, reject, done) {
+window.getAllAlarms = function (params, resolve, reject, done) {
   try {
     var appRequest = getAppRequest();
     appRequest.Post(
@@ -927,25 +866,25 @@ function getAllAlarms(params, resolve, reject, done) {
   } catch (err) {
     reject(err.message);
   }
-}
+};
 
-function success(message, timeout) {
+window.success = function (message, timeout) {
   bui.hint({
     content: String.format("<i class='appiconfont appicon-ok'></i><span>{0}</span>", message),
     timeout: timeout || 2000,
     skin: "success",
   });
-}
+};
 
-function warning(message, timeout) {
+window.warning = function (message, timeout) {
   bui.hint({
     content: String.format("<i class='appiconfont appicon-delete'></i><span>{0}</span>", message),
     timeout: timeout || 2000,
     skin: "danger",
   });
-}
+};
 
-function successdialog(message, detail) {
+window.successdialog = function (message, detail) {
   detail = isNullOrEmpty(detail) === true ? "" : String.format("<p>{0}</p>", detail);
   bui.confirm({
     title: "",
@@ -959,9 +898,9 @@ function successdialog(message, detail) {
       },
     ],
   });
-}
+};
 
-function warningdialog(message, detail) {
+window.warningdialog = function (message, detail) {
   detail = isNullOrEmpty(detail) === true ? "" : String.format("<p>{0}</p>", detail);
   bui.confirm({
     title: "",
@@ -975,15 +914,15 @@ function warningdialog(message, detail) {
       },
     ],
   });
-}
+};
 
-function dispose(target) {
+window.dispose = function (target) {
   loader.require(target.name, function (mod) {
     mod.dispose();
   });
-}
+};
 
-function logout() {
+window.logout = function () {
   loader.require(["main"], function (mod) {
     mod.dispose();
     sayGoodbye();
@@ -998,9 +937,9 @@ function logout() {
       },
     });
   });
-}
+};
 
-function sayGoodbye() {
+window.sayGoodbye = function () {
   var request = getAppRequest(false);
   if (request != null) {
     request.Post(
@@ -1012,33 +951,33 @@ function sayGoodbye() {
       function (err) {}
     );
   }
-}
+};
 
-function getAlarmCls1(level) {
+window.getAlarmCls1 = function (level) {
   if (level === $level.L1) return "level1";
   else if (level === $level.L2) return "level2";
   else if (level === $level.L3) return "level3";
   else if (level === $level.L4) return "level4";
   else return "level0";
-}
+};
 
-function getAlarmCls2(level) {
+window.getAlarmCls2 = function (level) {
   if (level === $level.L1) return "level1-bg";
   else if (level === $level.L2) return "level2-bg";
   else if (level === $level.L3) return "level3-bg";
   else if (level === $level.L4) return "level4-bg";
   else return "level0-bg";
-}
+};
 
-function getAlarmName(level) {
+window.getAlarmName = function (level) {
   if (level === $level.L1) return "一级告警";
   else if (level === $level.L2) return "二级告警";
   else if (level === $level.L3) return "三级告警";
   else if (level === $level.L4) return "四级告警";
   else return "正常数据";
-}
+};
 
-function getNodeName(node) {
+window.getNodeName = function (node) {
   switch (node) {
     case 0:
       return "区域";
@@ -1057,9 +996,9 @@ function getNodeName(node) {
     default:
       return "未定义";
   }
-}
+};
 
-function getStateCls1(state) {
+window.getStateCls1 = function (state) {
   if (state === $state.S1) {
     return "state1";
   } else if (state === $state.S2) {
@@ -1077,9 +1016,9 @@ function getStateCls1(state) {
   } else {
     return "state0";
   }
-}
+};
 
-function getStateCls2(state) {
+window.getStateCls2 = function (state) {
   if (state === $state.S1) {
     return "state1-bg";
   } else if (state === $state.S2) {
@@ -1097,9 +1036,9 @@ function getStateCls2(state) {
   } else {
     return "state0-bg";
   }
-}
+};
 
-function getStateName(state) {
+window.getStateName = function (state) {
   if (state === $state.S1) {
     return "一级告警";
   } else if (state === $state.S2) {
@@ -1117,9 +1056,9 @@ function getStateName(state) {
   } else {
     return "正常数据";
   }
-}
+};
 
-function getNodeValue(type, value, desc) {
+window.getNodeValue = function (type, value, desc) {
   if (type === $node.AI.id || type === $node.AO.id || type === $node.CI.id) {
     return String.format("{0} {1}", value, desc);
   }
@@ -1140,9 +1079,9 @@ function getNodeValue(type, value, desc) {
   }
 
   return value;
-}
+};
 
-function getUnits(desc) {
+window.getUnits = function (desc) {
   var data = [];
   var pairs = desc.split(";");
   $.each(pairs, function (index, item) {
@@ -1156,9 +1095,9 @@ function getUnits(desc) {
   });
 
   return data;
-}
+};
 
-function getCodeName(code) {
+window.getCodeName = function (code) {
   if (code === -1) {
     return "系统繁忙";
   } else if (code === 0) {
@@ -1178,9 +1117,9 @@ function getCodeName(code) {
   } else {
     return "未知错误";
   }
-}
+};
 
-function onInput(option) {
+window.onInput = function (option) {
   var opt = option || {};
   opt.id = option.id || "";
   opt.target = option.target || "input";
@@ -1222,9 +1161,9 @@ function onInput(option) {
   $id.on("click", iconClass, function () {
     opt.callback && opt.callback.call(this);
   });
-}
+};
 
-function getTimespan(start, end) {
+window.getTimespan = function (start, end) {
   var from = bui.date.convert(start);
   var to = isNull(end) ? new Date() : bui.date.convert(end);
   var diff = (to - from) / 1000;
@@ -1234,4 +1173,121 @@ function getTimespan(start, end) {
   var minutes = parseInt((diff % 3600) / 60);
   var seconds = parseInt(diff % 60);
   return String.format("{0}小时{1}分{2}秒", hours, minutes > 9 ? minutes : "0" + minutes, seconds > 9 ? seconds : "0" + seconds);
-}
+};
+
+// 扩展方法
+window.isNull = function (value) {
+  return typeof value == "undefined" || value === null;
+};
+
+window.isEmpty = function (value, whitespace) {
+  return (whitespace || false) === true ? value.trim() === "" : value === "";
+};
+
+window.isNullOrEmpty = function (value, whitespace) {
+  if (isNull(value) === true) return true;
+  return isEmpty(value, whitespace);
+};
+
+window.isFunction = function (func) {
+  return func && typeof func == "function";
+};
+
+String.format = function () {
+  if (arguments.length == 0) return null;
+
+  var str = arguments[0];
+  for (var i = 1; i < arguments.length; i++) {
+    var re = new RegExp("\\{" + (i - 1) + "\\}", "gm");
+    str = str.replace(re, arguments[i]);
+  }
+
+  return str;
+};
+
+String.prototype.startWith = function (value, ignoreCase) {
+  if (value == null || value == "" || this.length == 0 || value.length > this.length) {
+    return false;
+  }
+
+  ignoreCase = ignoreCase || false;
+  if (ignoreCase === true) {
+    return this.substr(0, value.length).toLowerCase() === value.toLowerCase();
+  }
+
+  return this.substr(0, value.length) === value;
+};
+
+String.prototype.endWith = function (value, ignoreCase) {
+  if (value == null || value == "" || this.length == 0 || value.length > this.length) {
+    return false;
+  }
+
+  ignoreCase = ignoreCase || false;
+  if (ignoreCase === true) {
+    return this.substr(this.length - value.length).toLowerCase() === value.toLowerCase();
+  }
+
+  return this.substr(this.length - value.length) === value;
+};
+
+//初始化操作
+bui.ready(function () {
+  router.init({
+    id: "#bui-router",
+    firstAnimate: true,
+    progress: true,
+    hash: true,
+    errorPage: "404.html",
+  });
+
+  bui
+    .btn({
+      id: "#bui-router",
+      handle: ".bui-btn,a",
+    })
+    .load();
+
+  $("#bui-router").on("click", ".btn-back", function (e) {
+    bui.back({
+      beforeBack: function (e) {
+        if (isNull(e.target) === true) {
+          return false;
+        }
+
+        dispose(e.target);
+        return true;
+      },
+    });
+  });
+
+  if (window.plus) {
+    plusReady();
+  } else {
+    document.addEventListener("plusready", plusReady, false);
+  }
+
+  function plusReady() {
+    plus.key.addEventListener("backbutton", function () {
+      if (plus.os.name === "Android") {
+        bui.back({
+          beforeBack: function (e) {
+            if (isNull(e.target) === true) {
+              return false;
+            }
+
+            dispose(e.target);
+            if (e.target.name === "pages/login/login") {
+              plus.runtime.quit();
+              return false;
+            }
+
+            return true;
+          },
+        });
+      } else {
+        plus.nativeUI.toast("请按Home键切换应用");
+      }
+    });
+  }
+});
