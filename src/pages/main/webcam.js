@@ -21,7 +21,7 @@ loader.define(function (require, exports, module) {
 
     if (isNull(this.loading) === true) {
       this.loading = bui.loading({
-        appendTo: ".webcam-page",
+        appendTo: "#pylon-app-webcam",
         text: "正在加载",
       });
     }

@@ -16,7 +16,7 @@ loader.define(function (require, exports, module) {
     this.password = router.$("#app-login-password");
     if (isNull(this.loading) === true) {
       this.loading = bui.loading({
-        appendTo: ".login-page",
+        appendTo: "#pylon-app-login",
         text: "正在加载",
       });
     }

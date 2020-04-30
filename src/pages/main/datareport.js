@@ -19,7 +19,7 @@ loader.define(function (require, exports, module) {
 
     if (isNull(this.loading) === true) {
       this.loading = bui.loading({
-        appendTo: ".datareport-page",
+        appendTo: "#pylon-app-datareport",
         text: "正在加载",
       });
     }

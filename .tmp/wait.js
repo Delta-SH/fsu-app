@@ -1,1 +1,0 @@
-"use strict";loader.define(function(n,i,t){var e={name:"系统提示",init:function(){},load:function(){},dispose:function(){}};return e.init(),e});

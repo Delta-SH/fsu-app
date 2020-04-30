@@ -1,1 +1,0 @@
-"use strict";loader.define(function(n,i,t){var o={name:"版本信息",init:function(){bui.btn("#about-check-version").submit(function(n){setTimeout(function(){bui.hint({content:"<i class='appiconfont appicon-ok'></i><div>已经是最新版本</div>",position:"center",effect:"fadeInDown"}),n.stop()},500)},{text:"正在检查..."})},load:function(){},dispose:function(){}};return o.init(),o});

@@ -19,7 +19,7 @@ loader.define(function (require, exports, module) {
 
     if (isNull(this.loading) === true) {
       this.loading = bui.loading({
-        appendTo: ".camera-page",
+        appendTo: "#pylon-app-camera",
         text: "正在加载",
       });
     }

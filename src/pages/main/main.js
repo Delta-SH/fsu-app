@@ -16,7 +16,7 @@ loader.define(function (require, exports, module) {
 
     if (isNull(this.loading) === true) {
       this.loading = bui.loading({
-        appendTo: ".main-page",
+        appendTo: "#pylon-app-main",
         text: "正在加载",
       });
     }

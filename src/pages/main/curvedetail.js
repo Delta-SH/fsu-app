@@ -86,7 +86,7 @@ loader.define(function (require, exports, module) {
 
     if (isNull(this.loading) === true) {
       this.loading = bui.loading({
-        appendTo: ".curvedetail-page",
+        appendTo: "#pylon-app-curvedetail",
         text: "正在加载",
       });
     }

@@ -34,7 +34,7 @@ loader.define(function () {
 
     if (isNull(this.loading) === true) {
       this.loading = bui.loading({
-        appendTo: ".device-page",
+        appendTo: "#pylon-app-device-detail",
         text: "正在执行",
       });
     }
