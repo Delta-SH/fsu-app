@@ -1,0 +1,1 @@
+"use strict";loader.define(function(n,i,t){var e={name:"全部菜单",init:function(){},load:function(){},dispose:function(){}};return e.init(),e});
