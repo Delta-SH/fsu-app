@@ -128,14 +128,17 @@ window.AppRequest = function (ip, user, token) {
   _this.SetToken = function (val) {
     _token = val;
   };
-  _this.GetPath = function () {
-    return String.format("http://{0}/api/app/", _ip);
+  _this.GetBasePath = function () {
+    return String.format("http://{0}/api/ci/rsc/", _ip);
+  };
+  _this.GetAuthPath = function () {
+    return String.format("http://{0}/api/ci/auth/", _ip);
   };
   _this.GetList = function (params, resolve, reject, done) {
     var config = {
       url: "",
       data: {},
-      baseUrl: _this.GetPath(),
+      baseUrl: _this.GetBasePath(),
       method: "POST",
       timeout: 30000,
       pageSize: 20,
@@ -187,7 +190,7 @@ window.AppRequest = function (ip, user, token) {
     var config = {
       url: "",
       data: {},
-      baseUrl: _this.GetPath(),
+      baseUrl: _this.GetBasePath(),
       method: "GET",
       headers: {
         "X-Token": _token,
@@ -233,7 +236,7 @@ window.AppRequest = function (ip, user, token) {
     var config = {
       url: "",
       data: {},
-      baseUrl: _this.GetPath(),
+      baseUrl: _this.GetBasePath(),
       method: "POST",
       headers: {
         "X-Token": _token,

@@ -102,6 +102,7 @@ loader.define(function (require, exports, module) {
     _request.Post(
       {
         url: "GetToken",
+        baseUrl: _request.GetAuthPath(),
         timeout: 5000,
       },
       function (result) {
@@ -128,6 +129,7 @@ loader.define(function (require, exports, module) {
     _request.Post(
       {
         url: "Login",
+        baseUrl: _request.GetAuthPath(),
         timeout: 10000,
         data: {
           uid: uid,
