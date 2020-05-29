@@ -84,7 +84,7 @@ loader.define(function (require, exports, module) {
         },
       },
       function (result) {
-        successdialog(result.msg);
+        successdialog(isNullOrEmpty(result.msg, true) ? "保存成功" : result.msg);
       },
       function (err) {
         warningdialog("操作失败", err.message);

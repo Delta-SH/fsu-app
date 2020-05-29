@@ -1168,7 +1168,7 @@ window.onInput = function (option) {
 
 window.getTimespan = function (start, end) {
   var from = bui.date.convert(start);
-  var to = isNull(end) ? new Date() : bui.date.convert(end);
+  var to = isNullOrEmpty(end, true) ? new Date() : bui.date.convert(end);
   var diff = (to - from) / 1000;
   if (diff < 0) diff = 0;
 

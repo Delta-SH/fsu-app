@@ -705,7 +705,7 @@ loader.define(function () {
       },
       function (result) {
         node.AlarmSets = data;
-        successdialog(result.msg);
+        successdialog(isNullOrEmpty(result.msg, true) ? "执行成功" : result.msg);
       },
       function (err) {
         warningdialog("执行失败", err.message);
@@ -769,7 +769,7 @@ loader.define(function () {
         data: { id: id, value: data },
       },
       function (result) {
-        successdialog(result.msg);
+        successdialog(isNullOrEmpty(result.msg, true) ? "执行成功" : result.msg);
       },
       function (err) {
         warningdialog("执行失败", err.message);

@@ -300,29 +300,49 @@ loader.define(function (require, exports, module) {
   }
 
   function _submit(loading) {
+    var _devices = pageview.deviceer.value();
+    if (_devices.length === 0) {
+      warning("请选择设备哦");
+      loading.stop();
+      return false;
+    }
+
+    var _area = null;
+    var _station = null;
+    var _device = null;
+    var authType = getAppAuthType();
+    if (authType === $ssh.Station) {
+      if (_devices.length >= 2) {
+        _station = _devices[_devices.length - 2].name;
+        _device = _devices[_devices.length - 1].name;
+      } else {
+        warning("请选择设备哦");
+        loading.stop();
+        return false;
+      }
+    } else {
+      if (_devices.length >= 3) {
+        _area = _devices[_devices.length - 3].name;
+        _station = _devices[_devices.length - 2].name;
+        _device = _devices[_devices.length - 1].name;
+      } else {
+        warning("请选择设备哦");
+        loading.stop();
+        return false;
+      }
+    }
+
     var _nodes = [];
     var _selectedValues = pageview.signaler.values();
     if (_selectedValues.length > 0) {
       $.each(_selectedValues, function (index, item) {
         _nodes.push(parseInt(item.value));
       });
-    } else {
-      var _allValues = pageview.signaler.allValues();
-      $.each(_allValues, function (index, item) {
-        _nodes.push(parseInt(item.value));
-      });
     }
 
-    if (_nodes.length === 0) {
-      warning("无效的设备~");
-      loading.stop();
-      return false;
-    }
-
-    var _levels = null;
+    var _levels = [];
     var _selectedLevels = pageview.leveler.values();
     if (_selectedLevels.length > 0) {
-      _levels = [];
       $.each(_selectedLevels, function (index, item) {
         _levels.push(parseInt(item.value));
       });
@@ -343,6 +363,9 @@ loader.define(function (require, exports, module) {
     }
 
     pageview.options = {
+      area: _area,
+      station: _station,
+      device: _device,
       ids: _nodes,
       levels: _levels,
       begin: _start,

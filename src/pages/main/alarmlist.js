@@ -16,18 +16,41 @@ loader.define(["pages/main/alarmreport"], function (report, require, exports, mo
     }
 
     if (isNull(this.pull) === true) {
+      var conf = {
+        sortAttribute: 7,
+        sortMode: 2,
+        begin: this.params.begin,
+        end: this.params.end,
+        alarmLevel: this.params.levels,
+      };
+
+      if (this.params.ids.length > 0) {
+        conf.signalId = this.params.ids;
+      } else {
+        conf.area = null;
+        conf.station = null;
+        conf.device = null;
+        conf.signal = null;
+        conf.alarmDesc = null;
+
+        if (isNullOrEmpty(this.params.area) === false) {
+          conf.area = [this.params.area];
+        }
+
+        if (isNullOrEmpty(this.params.station) === false) {
+          conf.station = [this.params.station];
+        }
+
+        if (isNullOrEmpty(this.params.device) === false) {
+          conf.device = [this.params.device];
+        }
+      }
+
       this.pull = this.request.GetList(
         {
           id: "#pylon-app-alarmdetail-scroll",
           url: "GetHistAlarms",
-          data: {
-            sortAttribute: 7,
-            sortMode: 2,
-            begin: this.params.begin,
-            end: this.params.end,
-            signalId: this.params.ids,
-            alarmLevel: this.params.levels,
-          },
+          data: conf,
           template: function (data) {
             var html = "";
             if (isNull(data) === true) {
