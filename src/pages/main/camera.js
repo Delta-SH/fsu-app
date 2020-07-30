@@ -33,7 +33,7 @@ loader.define(function (require, exports, module) {
     this.nodes = [];
     this.loading.show();
     getAllSignalsByPid(
-      this.params,
+      this.params.id,
       null,
       function (data) {
         var xnodes = [];
@@ -67,7 +67,7 @@ loader.define(function (require, exports, module) {
     html += '<ul class="bui-nav-icon bui-fluid-4">';
     $.each(data, function (index, item) {
       html += `
-            <li class="bui-btn" href="pages/main/player.html?url=${encodeURI(item.ValueDesc)}">
+            <li class="bui-btn" href="pages/main/player.html?id=${item.ID}">
                 <div class="bui-icon primary round"><i class="appiconfont appicon-camera"></i></div>
                 <div class="span1 camera-title">${item.Name}</div>
             </li>`;

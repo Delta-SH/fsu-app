@@ -106,7 +106,7 @@ loader.define(function (require, exports, module) {
         timeout: 5000,
       },
       function (result) {
-        var token = result.data.Token;
+        var token = result.token;
         _request.SetToken(token);
         loader.import("js/md5.min.js", function () {
           _reqatu(uid, md5(token + "2" + md5(pwd)));
