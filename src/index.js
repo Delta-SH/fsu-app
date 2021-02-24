@@ -1383,35 +1383,32 @@ bui.ready(function () {
   })
 
   if (window.plus) {
-    plusReady()
+    plusReady();
   } else {
-    document.addEventListener('plusready', plusReady, false)
+    document.addEventListener("plusready", plusReady, false);
   }
 
   function plusReady() {
-    plus.key.addEventListener('backbutton', function () {
-      if (plus.os.name === 'Android') {
+    plus.key.addEventListener("backbutton", function () {
+      if (plus.os.name === "Android") {
         bui.back({
           beforeBack: function (e) {
             if (isNull(e.target) === true) {
-              return false
+              return false;
             }
 
-            dispose(e.target)
-            if (e.target.name === 'pages/login/login') {
-              if (peims && isFunction(peims.quit) === true) {
-                peims.quit()
-              } else if (plus.runtime) {
-                plus.runtime.quit()
-              }
-
-              return false
+            dispose(e.target);
+            if (e.target.name === "pages/login/login") {
+              plus.runtime.quit();
+              return false;
             }
 
-            return true
+            return true;
           },
-        })
+        });
+      } else {
+        plus.nativeUI.toast("请按Home键切换应用");
       }
-    })
+    });
   }
 })

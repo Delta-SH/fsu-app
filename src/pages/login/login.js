@@ -79,23 +79,6 @@ loader.define(function (require, exports, module) {
       _request.Login(
         function (token) {
           $appRequest = _request
-          if (window.peims && isFunction(window.peims.startFunction) === true) {
-            var ip = '127.0.0.1'
-            var port = '80'
-            var iptext = _request.GetIP()
-            var accout = _request.GetUser()
-            var pwdtext = _request.GetPass()
-            var ips = iptext.split(':')
-            if (ips.length > 0) {
-              ip = ips[0]
-            }
-            if (ips.length > 1) {
-              port = ips[1]
-            }
-
-            window.peims.startFunction(ip, port, token, accout, pwdtext)
-          }
-
           router.load({
             url: 'main',
             effect: 'zoom',
