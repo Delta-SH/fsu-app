@@ -1388,6 +1388,8 @@ bui.ready(function () {
     document.addEventListener("plusready", plusReady, false);
   }
 
+  var firstclick = null;
+  var clicklong = 1200;
   function plusReady() {
     plus.key.addEventListener("backbutton", function () {
       if (plus.os.name === "Android") {
@@ -1397,14 +1399,29 @@ bui.ready(function () {
               return false;
             }
 
-            dispose(e.target);
-            if (e.target.name === "pages/login/login") {
+            if (e.target.pid === "pages/login/login") {
               plus.runtime.quit();
               return false;
             }
+            
+            if (e.target.pid === "main") {
+              if (!firstclick) { 
+                firstclick = (new Date()).getTime();  
+                  plus.nativeUI.toast('再按一次退出应用');  
+                  setTimeout(function() {  
+                    firstclick = null;  
+                  }, clicklong);  
+              } else {  
+                  if ((new Date()).getTime() - firstclick < clicklong) {  
+                      plus.runtime.quit();  
+                  }  
+              }  
+              return false;
+            }
 
+            dispose(e.target);
             return true;
-          },
+          }
         });
       } else {
         plus.nativeUI.toast("请按Home键切换应用");
