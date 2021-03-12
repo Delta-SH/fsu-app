@@ -1372,7 +1372,6 @@ bui.ready(function () {
   $('#bui-router').on('click', '.btn-back', function (e) {
     bui.back({
       beforeBack: function (e) {
-        console.log(e);
         if (isNull(e.target) === true) {
           return false
         }

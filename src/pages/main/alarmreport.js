@@ -104,7 +104,24 @@ loader.define(function (require, exports, module) {
         bindValue: true,
         handle: "#pylon-app-alarmreport-start",
         formatValue: "yyyy-MM-dd hh:mm:ss",
-        value: bui.date.format(new Date(), "yyyy-MM-dd"),
+        value: bui.date.after(new Date(), -7, "yyyy-MM-dd"),
+        callback: function() {
+          $('input[type=radio][name=recenttime]').prop("checked",false);
+        }
+      });
+
+      $('input[type=radio][name=recenttime]').change(function() {
+        if(this.value == 7){
+          pageview.starter.value(bui.date.after(new Date(), -7, "yyyy-MM-dd"))
+        } else if(this.value == 30){
+          var date =new Date();
+          date = date.setMonth(date.getMonth()-1)
+          pageview.starter.value(bui.date.format(date, "yyyy-MM-dd"))
+        } else if(this.value == 90){
+          var date =new Date();
+          date = date.setMonth(date.getMonth()-3)
+          pageview.starter.value(bui.date.format(date, "yyyy-MM-dd"))
+        }
       });
     }
 
@@ -114,6 +131,9 @@ loader.define(function (require, exports, module) {
         handle: "#pylon-app-alarmreport-end",
         formatValue: "yyyy-MM-dd hh:mm:ss",
         value: new Date(),
+        callback: function() {
+          $('input[type=radio][name=recenttime]').prop("checked",false);
+        }
       });
     }
 
@@ -165,6 +185,7 @@ loader.define(function (require, exports, module) {
         }
       });
 
+      _options.push({ d: "-1", n: "全部", c: [{ d: "-1", n: "全部" }] });
       $.each(stations, function (index, item) {
         var current = _statmap[item.ID];
         if (current) {
@@ -178,6 +199,7 @@ loader.define(function (require, exports, module) {
         title: "筛选范围",
         trigger: "#pylon-app-alarmreport-deviceer .selected-val",
         level: 2,
+        value:[{ value: "-1" }, { value: "-1" }],
         field: {
           name: "n",
           value: "d",
@@ -214,6 +236,7 @@ loader.define(function (require, exports, module) {
         }
       });
 
+      _options.push({ d: "-1", n: "全部", c: [{ d: "-1", n: "全部", c: [{ d: "-1", n: "全部" }] }] });
       $.each(areas, function (index, item) {
         var current = _areamap[item.ID];
         if (current) {
@@ -226,6 +249,7 @@ loader.define(function (require, exports, module) {
         data: _options,
         title: "筛选范围",
         trigger: "#pylon-app-alarmreport-deviceer .selected-val",
+        value:[{ value: "-1" }, { value: "-1" }, { value: "-1" }],
         level: 3,
         field: {
           name: "n",
@@ -363,9 +387,9 @@ loader.define(function (require, exports, module) {
     }
 
     pageview.options = {
-      area: _area,
-      station: _station,
-      device: _device,
+      area: _area === '全部' ? null : _area,
+      station: _station === '全部' ? null : _station,
+      device: _device === '全部' ? null : _device,
       ids: _nodes,
       levels: _levels,
       begin: _start,

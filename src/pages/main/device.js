@@ -48,6 +48,7 @@ loader.define(function () {
         id: "#pylon-app-device-tab",
         swipe: false,
         scroll: true,
+        index: 1,
       });
     }
 
@@ -56,12 +57,12 @@ loader.define(function () {
         id: "#pylon-data-signal-dropdown",
         data: [
           {
-            name: $node.DI.name,
-            value: $node.DI.id.toString(),
-          },
-          {
             name: $node.AI.name,
             value: $node.AI.id.toString(),
+          },
+          {
+            name: $node.DI.name,
+            value: $node.DI.id.toString(),
           },
           {
             name: $node.DO.name,
@@ -71,19 +72,19 @@ loader.define(function () {
             name: $node.AO.name,
             value: $node.AO.id.toString(),
           },
-          {
-            name: $node.CI.name,
-            value: $node.CI.id.toString(),
-          },
-          {
-            name: $node.SI.name,
-            value: $node.SI.id.toString(),
-          },
+          // {
+          //   name: $node.CI.name,
+          //   value: $node.CI.id.toString(),
+          // },
+          // {
+          //   name: $node.SI.name,
+          //   value: $node.SI.id.toString(),
+          // },
         ],
         showArrow: true,
         showActive: true,
         relative: false,
-        value: $node.DI.name,
+        value: $node.AI.name,
         callback: function (el) {
           _inittab1();
           pageview.refresh();

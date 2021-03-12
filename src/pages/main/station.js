@@ -25,6 +25,7 @@ loader.define(function () {
         id: "#pylon-app-station-tab",
         swipe: false,
         scroll: true,
+        index: 1
       });
     }
 

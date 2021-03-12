@@ -5,6 +5,7 @@ loader.define(function (require, exports, module) {
     ip: null,
     user: null,
     password: null,
+    rembck: null,
     loading: null,
   }
 
@@ -13,6 +14,7 @@ loader.define(function (require, exports, module) {
     this.ip = router.$('#app-login-ip')
     this.user = router.$('#app-login-user')
     this.password = router.$('#app-login-password')
+    this.rembck = router.$('#app-login-remember')
     if (isNull(this.loading) === true) {
       this.loading = bui.loading({
         appendTo: '#pylon-app-login',
@@ -49,7 +51,8 @@ loader.define(function (require, exports, module) {
     router.$('#app-login-login').on('click', function (e) {
       var iptext = pageview.ip.val().trim(),
         usertext = pageview.user.val().trim(),
-        pwdtext = pageview.password.val().trim()
+        pwdtext = pageview.password.val().trim(),
+        remtext = pageview.rembck.prop("checked");
 
       if (isEmpty(iptext) === true) {
         warning('服务器地址不能为空')
@@ -67,7 +70,7 @@ loader.define(function (require, exports, module) {
       }
 
       //记住我
-      setRemember({ ip: iptext, user: usertext })
+      setRemember({ ip: iptext, user: usertext, pwd: remtext === true ? pwdtext : '', remb: remtext })
 
       //初始化请求对象
       _request = new AppRequest(iptext, usertext, pwdtext)
@@ -107,6 +110,8 @@ loader.define(function (require, exports, module) {
     if (isNull(remeber) === false) {
       this.ip.val(remeber.ip)
       this.user.val(remeber.user)
+      this.password.val(remeber.pwd)
+      this.rembck.prop("checked",remeber.remb)
     }
   }
 
