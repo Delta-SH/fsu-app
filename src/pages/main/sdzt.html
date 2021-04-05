@@ -1,0 +1,50 @@
+<style type="text/css">
+  #app-sdzt-tab-data {
+    height: 100%;
+  }
+  #app-sdzt-tab-data .data-list-container {
+    overflow: auto;
+  }
+
+  #app-sdzt-tab-data .bui-accordion {
+    border-top: none;
+  }
+
+  #app-sdzt-tab-data .accordion-details .item-title-box {
+    margin-bottom: 0.15rem;
+  }
+
+  #app-sdzt-tab-data .accordion-details .item-title {
+    font-size: 0.3rem;
+  }
+
+  #app-sdzt-tab-data .accordion-details .item-box {
+    padding: 0.2rem;
+  }
+
+  #app-sdzt-tab-data .accordion-details .signal-icon {
+    margin-right: 0.2rem;
+  }
+
+  #app-sdzt-tab-data .accordion-details .signal-icon i {
+    font-size: 0.6rem;
+  }
+</style>
+<div id="app-sdzt-tab-data" class="app-sdzt-tab">
+  <header class="bui-bar">
+    <div class="bui-bar-left">
+      <a class="bui-btn btn-back"><i class="icon-back"></i></a>
+    </div>
+    <div class="bui-bar-main">市电状态信号</div>
+    <div class="bui-bar-right"></div>
+  </header>
+  <main class="overlist">
+    <div id="pylon-app-sdzt-scroll" class="bui-scroll">
+      <div class="bui-scroll-head"></div>
+      <div class="bui-scroll-main">
+        <dl id="pylon-app-sdzt-accordion" class="bui-accordion"></dl>
+      </div>
+      <div class="bui-scroll-foot"></div>
+    </div>
+  </main>
+</div>

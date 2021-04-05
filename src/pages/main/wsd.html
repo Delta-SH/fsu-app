@@ -1,0 +1,50 @@
+<style type="text/css">
+  #app-wsd-tab-data {
+    height: 100%;
+  }
+  #app-wsd-tab-data .data-list-container {
+    overflow: auto;
+  }
+
+  #app-wsd-tab-data .bui-accordion {
+    border-top: none;
+  }
+
+  #app-wsd-tab-data .accordion-details .item-title-box {
+    margin-bottom: 0.15rem;
+  }
+
+  #app-wsd-tab-data .accordion-details .item-title {
+    font-size: 0.3rem;
+  }
+
+  #app-wsd-tab-data .accordion-details .item-box {
+    padding: 0.2rem;
+  }
+
+  #app-wsd-tab-data .accordion-details .signal-icon {
+    margin-right: 0.2rem;
+  }
+
+  #app-wsd-tab-data .accordion-details .signal-icon i {
+    font-size: 0.6rem;
+  }
+</style>
+<div id="app-wsd-tab-data" class="app-wsd-tab">
+  <header class="bui-bar">
+    <div class="bui-bar-left">
+      <a class="bui-btn btn-back"><i class="icon-back"></i></a>
+    </div>
+    <div class="bui-bar-main">温湿度信号</div>
+    <div class="bui-bar-right"></div>
+  </header>
+  <main class="overlist">
+    <div id="pylon-app-wsd-scroll" class="bui-scroll">
+      <div class="bui-scroll-head"></div>
+      <div class="bui-scroll-main">
+        <dl id="pylon-app-wsd-accordion" class="bui-accordion"></dl>
+      </div>
+      <div class="bui-scroll-foot"></div>
+    </div>
+  </main>
+</div>

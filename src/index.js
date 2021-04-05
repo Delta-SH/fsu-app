@@ -102,6 +102,151 @@ window.$ssh = {
   Frame: 4,
   Device: 5,
 }
+window.$wsd = [
+  {
+      id: 1056768, 
+      name: '106号楼机房温湿度',
+      nodes:[
+          {id: 1056775, name: '106号楼冷通道温度1', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056776, name: '106号楼冷通道湿度1', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056777, name: '106号楼冷通道温度2', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056778, name: '106号楼冷通道湿度2', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056779, name: '106号楼冷通道温度3', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056780, name: '106号楼冷通道湿度3', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056781, name: '106号楼冷通道温度4', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056782, name: '106号楼冷通道湿度4', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056783, name: '106号楼冷通道温度5', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056784, name: '106号楼冷通道湿度5', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056785, name: '106号楼冷通道温度6', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056786, name: '106号楼冷通道湿度6', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056787, name: '106号楼冷通道温度7', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056788, name: '106号楼冷通道湿度7', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056789, name: '106号楼冷通道温度8', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056790, name: '106号楼冷通道湿度8', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056794, name: '106号楼机房区域温度9', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056795, name: '106号楼机房区域湿度9', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
+      ]
+  },
+  {
+      id:1050624,
+      name:'106号楼列间空调01',
+      nodes:[
+          {id: 1050691, name: '回风温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1050692, name: '回风湿度', type: 1, unit: '%RH', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1050693, name: '送风温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1050694, name: '送风湿度', type: 1, unit: '%RH', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1050699, name: '排气温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0}
+      ]
+  },
+  {
+      id: 1052672, 
+      name: '106号楼列间空调02',
+      nodes:[
+          {id: 1052739, name: '回风温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1052740, name: '回风湿度', type: 1, unit: '%RH', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1052741, name: '送风温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1052742, name: '送风湿度', type: 1, unit: '%RH', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1052747, name: '排气温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0}
+      ]
+  },
+  {
+      id: 1054720, 
+      name: '106号楼列间空调03',
+      nodes:[
+          {id: 1054787, name: '回风温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1054788, name: '回风湿度', type: 1, unit: '%RH', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1054789, name: '送风温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1054790, name: '送风湿度', type: 1, unit: '%RH', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1054795, name: '排气温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0}
+      ]
+  },
+  {
+      id: 1060864, 
+      name: '106号楼列间空调04',
+      nodes:[
+          {id: 1060931, name: '回风温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1060932, name: '回风湿度', type: 1, unit: '%RH', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1060933, name: '送风温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1060934, name: '送风湿度', type: 1, unit: '%RH', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1060939, name: '排气温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0}
+      ]
+  },
+  {
+      id: 1062912, 
+      name: '106号楼列间空调05',
+      nodes:[
+          {id: 1062979, name: '回风温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1062980, name: '回风湿度', type: 1, unit: '%RH', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1062981, name: '送风温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1062982, name: '送风湿度', type: 1, unit: '%RH', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1062987, name: '排气温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0}
+      ]
+  },
+  {
+      id: 1075200, 
+      name: '73号楼机房温湿度',
+      nodes:[
+          {id: 1075207, name: '73号楼机房区域温度1', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1075208, name: '73号楼机房区域湿度1', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1075209, name: '73号楼机房区域温度2', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1075210, name: '73号楼机房区域湿度2', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1075211, name: '73号楼机房区域温度3', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1075212, name: '73号楼机房区域湿度3', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1075213, name: '73号楼机房区域温度4', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1075214, name: '73号楼机房区域湿度4', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1075215, name: '73号楼设备间温度5', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1075216, name: '73号楼设备间湿度5', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1075217, name: '73号楼设备间温度6', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1075218, name: '73号楼设备间湿度6', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0}
+      ]
+  },
+  {
+      id: 1064960, 
+      name: '73号楼精密空调06',
+      nodes:[
+          {id: 1065006, name: '室内温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1065007, name: '室内湿度', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1065008, name: '室外温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0}
+      ]
+  }
+]
+window.$sdzt = [
+  {
+      id:1071104,
+      name:'106号楼UPS设备1',
+      nodes:[
+          {id: 1071106, name: '市电停电告警', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1071107, name: '市电输入A相欠压', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1071108, name: '市电输入A相过压', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1071109, name: '市电输入B相欠压', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1071110, name: '市电输入B相过压', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1071111, name: '市电输入C相欠压', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1071112, name: '市电输入C相过压', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1071150, name: '市电短路切旁路', type: 0, desc: '0&否;1&是', value: 0, time: '2000-01-01 00:00:00', state: 0}
+      ]
+  },
+  {
+      id:1073152,
+      name:'106号楼UPS设备2',
+      nodes:[
+          {id: 1073154, name: '市电停电告警', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1073155, name: '市电输入A相欠压', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1073156, name: '市电输入A相过压', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1073157, name: '市电输入B相欠压', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1073158, name: '市电输入B相过压', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1073159, name: '市电输入C相欠压', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1073160, name: '市电输入C相过压', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1073198, name: '市电短路切旁路', type: 0, desc: '0&否;1&是', value: 0, time: '2000-01-01 00:00:00', state: 0}
+      ]
+  },
+  {
+      id:1067008,
+      name:'73号楼UPS设备',
+      nodes:[
+          {id: 1067034, name: '并机系统供电:市电供电', type: 0, desc: '0&否;1&是', value: 0, time: '2000-01-01 00:00:00', state: 0}
+      ]
+  }
+]
 
 // 全局函数
 window.AppRequest = function (ip, user, passwd, token) {
