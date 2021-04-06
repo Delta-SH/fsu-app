@@ -5,6 +5,9 @@ loader.define(function (require, exports, module) {
     pull: null,
     slide: null,
     tips: null,
+    wsdicon: null,
+    sdzticon: null,
+    refreshing: false
   };
 
   pageview.init = function () {
@@ -53,6 +56,14 @@ loader.define(function (require, exports, module) {
         });
       });
     }
+
+    if (isNull(this.wsdicon) === true) {
+      this.wsdicon = router.$("#pylon-home-icon-wsd");
+    }
+
+    if (isNull(this.sdzticon) === true) {
+      this.sdzticon = router.$("#pylon-home-icon-sdwt");
+    }
   };
 
   pageview.load = function (data) {
@@ -65,9 +76,47 @@ loader.define(function (require, exports, module) {
     lct2.html(data.level2);
     lct3.html(data.level3);
     lct4.html(data.level4);
+    this.refresh();
   };
 
-  pageview.dispose = function () {};
+  pageview.refresh = function(){
+    if(this.refreshing === true)
+      return;
+    
+    this.refreshing = true;
+    var xwsd = [], xsdzt = [];
+    $.each($wsd, function (a, device) {
+      $.each(device.nodes, function (s, item) {
+        xwsd.push(item.id);
+      });
+    });
+
+    $.each($sdzt, function (a, device) {
+      $.each(device.nodes, function (s, item) {
+        xsdzt.push(item.id);
+      });
+    });
+    
+    getActAlarms(
+    {signalId: xwsd.concat(xsdzt)},
+    function(data){
+      var xkeys = [];
+      $.each(data, function (index, el) {
+        xkeys.push(el.SignalID);
+      });
+
+      var _xwsd = xwsd.filter(function(v){ return xkeys.indexOf(v) > -1 });
+      var _xsdzt = xsdzt.filter(function(v){ return xkeys.indexOf(v) > -1 });
+      pageview.wsdicon.html(_xwsd.length > 0 ? `<span class="bui-badges">${_xwsd.length}</span>` : '');
+      pageview.sdzticon.html(_xsdzt.length > 0 ? `<span class="bui-badges">${_xsdzt.length}</span>` : '');
+    },function(err){
+    },function(){
+      pageview.refreshing = false;
+    });
+  };
+
+  pageview.dispose = function () {
+  };
 
   pageview.init();
   return pageview;

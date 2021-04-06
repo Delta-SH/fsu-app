@@ -123,8 +123,8 @@ window.$wsd = [
           {id: 1056788, name: '106号楼冷通道湿度7', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
           {id: 1056789, name: '106号楼冷通道温度8', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
           {id: 1056790, name: '106号楼冷通道湿度8', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
-          {id: 1056794, name: '106号楼机房区域温度9', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
-          {id: 1056795, name: '106号楼机房区域湿度9', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056794, name: '106号楼机房区域湿度', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1056795, name: '106号楼机房区域温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
       ]
   },
   {
@@ -194,10 +194,10 @@ window.$wsd = [
           {id: 1075212, name: '73号楼机房区域湿度3', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
           {id: 1075213, name: '73号楼机房区域温度4', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
           {id: 1075214, name: '73号楼机房区域湿度4', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
-          {id: 1075215, name: '73号楼设备间温度5', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
-          {id: 1075216, name: '73号楼设备间湿度5', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
-          {id: 1075217, name: '73号楼设备间温度6', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
-          {id: 1075218, name: '73号楼设备间湿度6', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0}
+          {id: 1075215, name: '73号楼机房区域温度5', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1075216, name: '73号楼机房区域湿度5', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1075217, name: '73号楼设备间温度', type: 1, unit: '℃', value: 0, time: '2000-01-01 00:00:00', state: 0},
+          {id: 1075218, name: '73号楼设备间湿度', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0}
       ]
   },
   {
@@ -1112,6 +1112,36 @@ window.getAllAlarms = function (params, resolve, reject, done) {
             signal: null,
             alarmLevel: null,
             alarmDesc: null,
+          },
+          params || {}
+        ),
+      },
+      function (result) {
+        resolve(result.data)
+      },
+      function (err) {
+        reject(err.message)
+      },
+      done
+    )
+  } catch (err) {
+    reject(err.message)
+  }
+}
+
+window.getActAlarms = function (params, resolve, reject, done) {
+  try {
+    var appRequest = getAppRequest()
+    appRequest.Post(
+      {
+        url: 'GetActAlarms',
+        data: $.extend(
+          {
+            sortAttribute: 7,
+            sortMode: 2,
+            id: 0,
+            signalId: null,
+            alarmLevel: null
           },
           params || {}
         ),
