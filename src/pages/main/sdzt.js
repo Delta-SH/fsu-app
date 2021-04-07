@@ -35,7 +35,7 @@ loader.define(function (require, exports, module) {
 
       _drawui(this.nodes);
       this.accordion.init();
-      this.accordion.showFirst();
+      this.accordion.showAll();
     };
   
     pageview.load = function () {

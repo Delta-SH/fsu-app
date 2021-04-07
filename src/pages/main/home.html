@@ -40,6 +40,18 @@
   #app-main-tab-home .bui-scroll > .bui-scroll-main {
     background: transparent;
   }
+
+  #app-main-tab-home .first-show .item-title {
+    margin-bottom: .2rem;
+  }
+
+  #app-main-tab-home .first-show .item-text{
+    font-size: .3rem;
+  }
+
+  #app-main-tab-home .first-show .item-text > .bui-label{
+    width: 1.2rem;
+  }
 </style>
 
 <div id="app-main-tab-home" class="app-main-tab">
@@ -112,24 +124,81 @@
               <div class="span1">测值曲线</div>
             </li>
             <li class="bui-btn bui-box-vertical span4" href="pages/main/wsd.html">
-              <i id="pylon-home-icon-wsd" class="appiconfont appicon-gauge short-config-data"></i>
+              <i class="appiconfont appicon-gauge short-config-data"></i>
               <div class="span1">温湿度</div>
             </li>
             <li class="bui-btn bui-box-vertical span4" href="pages/main/sdzt.html">
-              <i id="pylon-home-icon-sdwt" class="appiconfont appicon-level1 short-video-real"></i>
+              <i class="appiconfont appicon-level1 short-video-real"></i>
               <div class="span1">市电状态</div>
             </li>
-            <!-- <li class="bui-btn bui-box-vertical span4" href="wait.html">
-              <i class="appiconfont appicon-zutai short-config-data"></i>
-              <div class="span1">图形组态</div>
-            </li>
-            <li class="bui-btn bui-box-vertical span4" href="pages/main/video.html">
-              <i class="appiconfont appicon-video short-video-real"></i>
-              <div class="span1">实时视频</div>
-            </li> -->
             <li class="bui-btn bui-box-vertical span4" href="pages/main/menu.html">
               <i class="appiconfont appicon-all short-all"></i>
               <div class="span1">全部</div>
+            </li>
+          </ul>
+        </div>
+        <div class="short-nav first-show">
+          <ul class="bui-list">
+            <li class="bui-btn">
+              <h6 class="item-title">106号楼机房区域温湿度</h6>
+              <p class="item-text">
+                <span class="bui-label">温度</span>
+                <span id="pylon-home-first-show-1056795" class="primary-reverse" data-type="1" data-desc="℃">--</span>
+                <span class="bui-label"></span>
+                <span class="bui-label">湿度</span>
+                <span id="pylon-home-first-show-1056794" class="primary-reverse" data-type="1" data-desc="%">--</span>
+              </p>
+            </li>
+            <li class="bui-btn">
+              <h6 class="item-title">106号楼冷通道温湿度</h6>
+              <p class="item-text">
+                <span class="bui-label">温度</span>
+                <span id="pylon-home-first-show-1056779" class="primary-reverse" data-type="1" data-desc="℃">--</span>
+                <span class="bui-label"></span>
+                <span class="bui-label">湿度</span>
+                <span id="pylon-home-first-show-1056780" class="primary-reverse" data-type="1" data-desc="%">--</span>
+              </p>
+            </li>
+            <li class="bui-btn">
+              <h6 class="item-title">73号楼机房区域温湿度</h6>
+              <p class="item-text">
+                <span class="bui-label">温度</span>
+                <span id="pylon-home-first-show-1075211" class="primary-reverse" data-type="1" data-desc="℃">--</span>
+                <span class="bui-label"></span>
+                <span class="bui-label">湿度</span>
+                <span id="pylon-home-first-show-1075212" class="primary-reverse" data-type="1" data-desc="%">--</span>
+              </p>
+            </li>
+            <li class="bui-btn">
+              <h6 class="item-title">73号楼设备间温湿度</h6>
+              <p class="item-text">
+                <span class="bui-label">温度</span>
+                <span id="pylon-home-first-show-1075217" class="primary-reverse" data-type="1" data-desc="℃">--</span>
+                <span class="bui-label"></span>
+                <span class="bui-label">湿度</span>
+                <span id="pylon-home-first-show-1075218" class="primary-reverse" data-type="1" data-desc="%">--</span>
+              </p>
+            </li>
+            <li class="bui-btn">
+              <h6 class="item-title">106号楼UPS设备1市电情况</h6>
+              <p class="item-text">
+                <span class="bui-label">状态</span>
+                <span id="pylon-home-first-show-1071106" class="primary-reverse" data-type="0" data-desc="0&正常;1&告警">--</span>
+              </p>
+            </li>
+            <li class="bui-btn">
+              <h6 class="item-title">106号楼UPS设备2市电情况</h6>
+              <p class="item-text">
+                <span class="bui-label">状态</span>
+                <span id="pylon-home-first-show-1073154" class="primary-reverse" data-type="0" data-desc="0&正常;1&告警">--</span>
+              </p>
+            </li>
+            <li class="bui-btn">
+              <h6 class="item-title">73号楼UPS设备市电情况</h6>
+              <p class="item-text">
+                <span class="bui-label">状态</span>
+                <span id="pylon-home-first-show-1067051" class="primary-reverse" data-type="0" data-desc="0&正常;1&告警">--</span>
+              </p>
             </li>
           </ul>
         </div>

@@ -5,8 +5,6 @@ loader.define(function (require, exports, module) {
     pull: null,
     slide: null,
     tips: null,
-    wsdicon: null,
-    sdzticon: null,
     refreshing: false
   };
 
@@ -56,14 +54,6 @@ loader.define(function (require, exports, module) {
         });
       });
     }
-
-    if (isNull(this.wsdicon) === true) {
-      this.wsdicon = router.$("#pylon-home-icon-wsd");
-    }
-
-    if (isNull(this.sdzticon) === true) {
-      this.sdzticon = router.$("#pylon-home-icon-sdwt");
-    }
   };
 
   pageview.load = function (data) {
@@ -84,35 +74,38 @@ loader.define(function (require, exports, module) {
       return;
     
     this.refreshing = true;
-    var xwsd = [], xsdzt = [];
-    $.each($wsd, function (a, device) {
-      $.each(device.nodes, function (s, item) {
-        xwsd.push(item.id);
-      });
+    var xkeys = [];
+    $.each($shows, function (a, node) {
+      xkeys.push(node.id);
     });
 
-    $.each($sdzt, function (a, device) {
-      $.each(device.nodes, function (s, item) {
-        xsdzt.push(item.id);
-      });
-    });
-    
-    getActAlarms(
-    {signalId: xwsd.concat(xsdzt)},
-    function(data){
-      var xkeys = [];
-      $.each(data, function (index, el) {
-        xkeys.push(el.SignalID);
-      });
+    if (xkeys.length === 0) {
+      this.refreshing = false;
+      return false;
+    }
 
-      var _xwsd = xwsd.filter(function(v){ return xkeys.indexOf(v) > -1 });
-      var _xsdzt = xsdzt.filter(function(v){ return xkeys.indexOf(v) > -1 });
-      pageview.wsdicon.html(_xwsd.length > 0 ? `<span class="bui-badges">${_xwsd.length}</span>` : '');
-      pageview.sdzticon.html(_xsdzt.length > 0 ? `<span class="bui-badges">${_xsdzt.length}</span>` : '');
-    },function(err){
-    },function(){
-      pageview.refreshing = false;
-    });
+    this.request.Post(
+      {
+        url: "GetSignalDatas",
+        data: { id: xkeys },
+      },
+      function (result) {
+        $.each(result.data, function (index, item) {
+          var current = router.$(String.format("#pylon-home-first-show-{0}", item.ID));
+          if(current.length > 0){
+            var type = parseInt(current.attr("data-type"));
+            var desc = current.attr("data-desc");
+  
+            current.attr("class", getStateCls1(item.State));
+            current.html(getNodeValue(type, item.Value, desc));
+          }
+        });
+      },
+      function (err) {},
+      function () {
+        pageview.refreshing = false;
+      }
+    );
   };
 
   pageview.dispose = function () {
