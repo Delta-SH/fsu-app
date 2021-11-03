@@ -149,16 +149,23 @@ window.$wsd = [
 window.$sdzt = [
   {
       id:1071104,
-      name:'106号楼UPS设备1',
+      name:'106专网机房UPS1',
       nodes:[
           {id: 1071106, name: '市电停电告警', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0}
       ]
   },
   {
       id:1073152,
-      name:'106号楼UPS设备2',
+      name:'106专网机房UPS2',
       nodes:[
           {id: 1073154, name: '市电停电告警', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0}
+      ]
+  },
+  {
+      id:1077248,
+      name:'106号微模块机房UPS',
+      nodes:[
+          {id: 1077260, name: '交流输入停电告警', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0}
       ]
   },
   {
@@ -180,6 +187,7 @@ window.$shows = [
   {id: 1075218, name: '73号楼设备间湿度', type: 1, unit: '%', value: 0, time: '2000-01-01 00:00:00', state: 0},
   {id: 1071106, name: '市电停电告警', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0},
   {id: 1073154, name: '市电停电告警', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0},
+  {id: 1077260, name: '交流输入停电告警', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0},
   {id: 1067051, name: '主路电压异常', type: 0, desc: '0&正常;1&告警', value: 0, time: '2000-01-01 00:00:00', state: 0}
 ]
 
