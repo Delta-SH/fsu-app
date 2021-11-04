@@ -5,7 +5,6 @@ loader.define(function (require, exports, module) {
     pull: null,
     slide: null,
     tips: null,
-    refreshing: false
   };
 
   pageview.init = function () {
@@ -66,50 +65,9 @@ loader.define(function (require, exports, module) {
     lct2.html(data.level2);
     lct3.html(data.level3);
     lct4.html(data.level4);
-    this.refresh();
   };
 
-  pageview.refresh = function(){
-    if(this.refreshing === true)
-      return;
-    
-    this.refreshing = true;
-    var xkeys = [];
-    $.each($shows, function (a, node) {
-      xkeys.push(node.id);
-    });
-
-    if (xkeys.length === 0) {
-      this.refreshing = false;
-      return false;
-    }
-
-    this.request.Post(
-      {
-        url: "GetSignalDatas",
-        data: { id: xkeys },
-      },
-      function (result) {
-        $.each(result.data, function (index, item) {
-          var current = router.$(String.format("#pylon-home-first-show-{0}", item.ID));
-          if(current.length > 0){
-            var type = parseInt(current.attr("data-type"));
-            var desc = current.attr("data-desc");
-  
-            current.attr("class", getStateCls1(item.State));
-            current.html(getNodeValue(type, item.Value, desc));
-          }
-        });
-      },
-      function (err) {},
-      function () {
-        pageview.refreshing = false;
-      }
-    );
-  };
-
-  pageview.dispose = function () {
-  };
+  pageview.dispose = function () {};
 
   pageview.init();
   return pageview;
