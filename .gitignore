@@ -69,6 +69,7 @@ typings/
 *.log
 */build
 dist/
+.tmp/
 
 *.xcworkspace
 */Podfile.lock

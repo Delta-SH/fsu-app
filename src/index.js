@@ -1,4 +1,5 @@
 // 全局变量
+window.$systemOs = "Webapp";
 window.$appRequest = null;
 window.$appAuthType = null;
 window.$appAuthTypeKey = "pylon.app.session.appauthtype";
@@ -1455,6 +1456,7 @@ bui.ready(function () {
   var firstclick = null;
   var clicklong = 1200;
   function plusReady() {
+    window.$systemOs = plus.os.name;
     plus.key.addEventListener("backbutton", function () {
       if (plus.os.name === "Android") {
         bui.back({
