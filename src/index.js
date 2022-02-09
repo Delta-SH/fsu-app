@@ -181,7 +181,7 @@ window.AppRequest = function (ip, user, passwd, token) {
           }
         })
         .fail(function (xhr, status) {
-          reject(new Error("系统开小差啦~"));
+          reject(new Error("网络不稳定~"));
         })
         .always(function () {
           if (isFunction(done) === true) {
@@ -246,7 +246,7 @@ window.AppRequest = function (ip, user, passwd, token) {
       },
       onFail: function () {
         try {
-          reject(new Error("系统开小差啦~"));
+          reject(new Error("网络不稳定~"));
         } finally {
           if (isFunction(done) === true) {
             done();
@@ -357,7 +357,7 @@ window.AppRequest = function (ip, user, passwd, token) {
         }
       })
       .fail(function (xhr, status) {
-        reject(new Error("系统开小差啦~"));
+        reject(new Error("网络不稳定~"));
       })
       .always(function () {
         if (isFunction(done) === true) {
@@ -1023,6 +1023,27 @@ window.getActAlarms = function (params, resolve, reject, done) {
   }
 };
 
+window.confirmAlarms = function (params, resolve, reject, done) {
+  try {
+    var appRequest = getAppRequest();
+    appRequest.Post(
+      {
+        url: "ConfirmAlarms",
+        data: params || { id: [] },
+      },
+      function (result) {
+        resolve(result.data);
+      },
+      function (err) {
+        reject(err.message);
+      },
+      done
+    );
+  } catch (err) {
+    reject(err.message);
+  }
+};
+
 window.success = function (message, timeout) {
   bui.hint({
     content: String.format(
@@ -1415,6 +1436,30 @@ String.prototype.endWith = function (value, ignoreCase) {
   }
 
   return this.substr(this.length - value.length) === value;
+};
+
+Date.prototype.Format = function (fmt) {
+  var o = {
+    "M+": this.getMonth() + 1, //月份
+    "d+": this.getDate(), //日
+    "h+": this.getHours(), //小时
+    "m+": this.getMinutes(), //分
+    "s+": this.getSeconds(), //秒
+    "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+    S: this.getMilliseconds(), //毫秒
+  };
+  if (/(y+)/.test(fmt))
+    fmt = fmt.replace(
+      RegExp.$1,
+      (this.getFullYear() + "").substr(4 - RegExp.$1.length)
+    );
+  for (var k in o)
+    if (new RegExp("(" + k + ")").test(fmt))
+      fmt = fmt.replace(
+        RegExp.$1,
+        RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length)
+      );
+  return fmt;
 };
 
 //初始化操作

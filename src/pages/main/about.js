@@ -6,7 +6,8 @@ loader.define(function (require, exports, module) {
       function (loading) {
         setTimeout(function () {
           bui.hint({
-            content: "<i class='appiconfont appicon-ok'></i><div>已经是最新版本</div>",
+            content:
+              "<i class='appiconfont appicon-ok'></i><div>已经是最新版本</div>",
             position: "center",
             effect: "fadeInDown",
           });

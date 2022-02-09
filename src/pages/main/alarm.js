@@ -103,12 +103,30 @@ loader.define(function (require, exports, module) {
       function (data) {
         var html = "";
         $.each(data, function (index, el) {
-          html += `<li class="bui-btn bui-box" href="pages/main/detailalarm.html?Area=${el.Area}&Station=${el.Station}&Device=${el.Device}&Signal=${el.Signal}&SignalID=${el.SignalID}&AlarmLevel=${el.AlarmLevel}&AlarmDesc=${el.AlarmDesc}&StartTime=${el.StartTime}&EndTime=${el.EndTime || ""}&ConfirmTime=${el.ConfirmTime || ""}&Confirmer=${el.Confirmer || ""}&StartValue=${el.StartValue}&EndValue=${el.EndValue || ""}">
-              <div class="alarm-icon ${getAlarmCls1(el.AlarmLevel)}"><i class="appiconfont appicon-bell"></i></div>
+          html += `<li class="bui-btn bui-box" href="pages/main/detailalarm.html?ID=${
+            el.ID || ""
+          }&Area=${el.Area}&Station=${el.Station}&Device=${el.Device}&Signal=${
+            el.Signal
+          }&SignalID=${el.SignalID}&AlarmLevel=${el.AlarmLevel}&AlarmDesc=${
+            el.AlarmDesc
+          }&StartTime=${el.StartTime}&EndTime=${el.EndTime || ""}&ConfirmTime=${
+            el.ConfirmTime || ""
+          }&Confirmer=${el.Confirmer || ""}&StartValue=${
+            el.StartValue
+          }&EndValue=${el.EndValue || ""}">
+              <div class="alarm-icon ${getAlarmCls1(
+                el.AlarmLevel
+              )}"><i class="appiconfont appicon-bell"></i></div>
               <div class="span1">
                   <div class="bui-box item-title-box">
                       <div class="span1 item-title">${el.Signal}</div>
-                      <div class="item-text item-sub-title ${getAlarmCls1(el.AlarmLevel)}">${getAlarmName(el.AlarmLevel)}</div>
+                      <div class="item-text item-sub-title ${getAlarmCls1(
+                        el.AlarmLevel
+                      )}">${
+            isNullOrEmpty(el.ConfirmTime)
+              ? ""
+              : "<i class='appiconfont appicon-ok'></i> "
+          }${getAlarmName(el.AlarmLevel)}</div>
                   </div>
                   <div class="bui-box item-text-box">
                       <div class="span1 item-text">
@@ -143,7 +161,10 @@ loader.define(function (require, exports, module) {
   };
 
   pageview.condition = function (data) {
-    this.options = $.extend({ area: null, station: null, device: null, signal: null, level: [] }, data || {});
+    this.options = $.extend(
+      { area: null, station: null, device: null, signal: null, level: [] },
+      data || {}
+    );
   };
 
   function _settimer(timeout) {
@@ -186,7 +207,11 @@ loader.define(function (require, exports, module) {
       var _statmap = {};
       for (var i = 0; i < stations.length; i++) {
         var current = stations[i];
-        _statmap[current["ID"]] = { d: current.ID, n: current.Name, c: [{ d: "-1", n: "全部" }] };
+        _statmap[current["ID"]] = {
+          d: current.ID,
+          n: current.Name,
+          c: [{ d: "-1", n: "全部" }],
+        };
       }
 
       $.each(devcies, function (index, item) {
@@ -204,7 +229,11 @@ loader.define(function (require, exports, module) {
         }
       });
 
-      router.$("#pylon-app-alarm-deviceer .selector").html('<div class="selected-val"></div><div class="selected-val"></div>');
+      router
+        .$("#pylon-app-alarm-deviceer .selector")
+        .html(
+          '<div class="selected-val"></div><div class="selected-val"></div>'
+        );
       pageview.select = bui.levelselect({
         data: _options,
         title: "筛选范围",
@@ -224,12 +253,20 @@ loader.define(function (require, exports, module) {
       var _statmap = {};
       for (var i = 0; i < areas.length; i++) {
         var current = areas[i];
-        _areamap[current["ID"]] = { d: current.ID, n: current.Name, c: [{ d: "-1", n: "全部", c: [{ d: "-1", n: "全部" }] }] };
+        _areamap[current["ID"]] = {
+          d: current.ID,
+          n: current.Name,
+          c: [{ d: "-1", n: "全部", c: [{ d: "-1", n: "全部" }] }],
+        };
       }
 
       for (var i = 0; i < stations.length; i++) {
         var current = stations[i];
-        _statmap[current["ID"]] = { d: current.ID, n: current.Name, c: [{ d: "-1", n: "全部" }] };
+        _statmap[current["ID"]] = {
+          d: current.ID,
+          n: current.Name,
+          c: [{ d: "-1", n: "全部" }],
+        };
       }
 
       $.each(devcies, function (index, item) {
@@ -246,7 +283,11 @@ loader.define(function (require, exports, module) {
         }
       });
 
-      _options.push({ d: "-1", n: "全部", c: [{ d: "-1", n: "全部", c: [{ d: "-1", n: "全部" }] }] });
+      _options.push({
+        d: "-1",
+        n: "全部",
+        c: [{ d: "-1", n: "全部", c: [{ d: "-1", n: "全部" }] }],
+      });
       $.each(areas, function (index, item) {
         var current = _areamap[item.ID];
         if (current) {
@@ -254,7 +295,11 @@ loader.define(function (require, exports, module) {
         }
       });
 
-      router.$("#pylon-app-alarm-deviceer .selector").html('<div class="selected-val"></div><div class="selected-val"></div><div class="selected-val"></div>');
+      router
+        .$("#pylon-app-alarm-deviceer .selector")
+        .html(
+          '<div class="selected-val"></div><div class="selected-val"></div><div class="selected-val"></div>'
+        );
       pageview.select = bui.levelselect({
         data: _options,
         title: "筛选范围",
@@ -286,9 +331,16 @@ loader.define(function (require, exports, module) {
 
     var authType = getAppAuthType();
     if (authType === $ssh.Station) {
-      select.value([{ value: _getselectvalue() }, { value: _getselectvalue() }]);
+      select.value([
+        { value: _getselectvalue() },
+        { value: _getselectvalue() },
+      ]);
     } else {
-      select.value([{ value: _getselectvalue() }, { value: _getselectvalue() }, { value: _getselectvalue() }]);
+      select.value([
+        { value: _getselectvalue() },
+        { value: _getselectvalue() },
+        { value: _getselectvalue() },
+      ]);
     }
 
     pageview.condition();
@@ -327,9 +379,16 @@ loader.define(function (require, exports, module) {
 
     var authType = getAppAuthType();
     if (authType === $ssh.Station) {
-      sides.select.value([{ value: _getselectvalue(data.station) }, { value: _getselectvalue(data.device) }]);
+      sides.select.value([
+        { value: _getselectvalue(data.station) },
+        { value: _getselectvalue(data.device) },
+      ]);
     } else {
-      sides.select.value([{ value: _getselectvalue(data.area) }, { value: _getselectvalue(data.station) }, { value: _getselectvalue(data.device) }]);
+      sides.select.value([
+        { value: _getselectvalue(data.area) },
+        { value: _getselectvalue(data.station) },
+        { value: _getselectvalue(data.device) },
+      ]);
     }
 
     pageview.options = data;
@@ -349,7 +408,13 @@ loader.define(function (require, exports, module) {
     var signal = router.$("#pylon-app-alarm-signal");
     var select = pageview.select;
 
-    var _options = { area: null, station: null, device: null, signal: null, level: [] };
+    var _options = {
+      area: null,
+      station: null,
+      device: null,
+      signal: null,
+      level: [],
+    };
     if (level1.is(":checked") === true) {
       _options.level.push($level.L1);
     }
@@ -423,7 +488,8 @@ loader.define(function (require, exports, module) {
       area: data.area == null ? null : [data.area.name],
       station: data.station == null ? null : [data.station.name],
       device: data.device == null ? null : [data.device.name],
-      signal: data.signal == null ? null : [String.format("%{0}%", data.signal)],
+      signal:
+        data.signal == null ? null : [String.format("%{0}%", data.signal)],
       alarmLevel: data.level,
     };
   }
@@ -434,12 +500,18 @@ loader.define(function (require, exports, module) {
 
   function _empty() {
     router.$("#pylon-app-alarm-list").html("");
-    router.$(".overlist .bui-scroll-foot").html('<div class="nodata"><i class="appiconfont appicon-empty-face"></i> <span>列表空空如也~</span></div>');
+    router
+      .$(".overlist .bui-scroll-foot")
+      .html(
+        '<div class="nodata"><i class="appiconfont appicon-empty-face"></i> <span>列表空空如也~</span></div>'
+      );
   }
 
   function _more(content) {
     router.$("#pylon-app-alarm-list").html(content);
-    router.$(".overlist .bui-scroll-foot").html('<div class="nomore">没有更多内容</div>');
+    router
+      .$(".overlist .bui-scroll-foot")
+      .html('<div class="nomore">没有更多内容</div>');
   }
 
   pageview.init();
