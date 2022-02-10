@@ -1484,6 +1484,12 @@ bui.ready(function () {
     errorPage: "404.html",
   });
 
+  router.on("pageshow", function () {
+    if (this && isFunction(this.show) === true) {
+      this.show();
+    }
+  });
+
   bui
     .btn({
       id: "#bui-router",

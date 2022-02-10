@@ -180,7 +180,16 @@ loader.define(function (require, exports, module) {
   }
 
   function _hidebadges(hidden, num) {
-    router.$("#pylon-app-main-alarm").html(hidden === true ? "" : String.format('<span class="bui-badges">{0}</span>', _getbadges(num)));
+    router
+      .$("#pylon-app-main-alarm")
+      .html(
+        hidden === true
+          ? ""
+          : String.format(
+              '<span class="bui-badges">{0}</span>',
+              _getbadges(num)
+            )
+      );
   }
 
   function _loadhome() {
@@ -253,6 +262,15 @@ loader.define(function (require, exports, module) {
 
     return num.toString();
   }
+
+  this.show = function () {
+    var index = pageview.maintab.index();
+    if (index === 2) {
+      loader.require(["pages/main/alarm"], function (mod) {
+        mod.reload();
+      });
+    }
+  };
 
   pageview.init();
   pageview.load();

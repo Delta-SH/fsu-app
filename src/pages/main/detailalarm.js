@@ -78,13 +78,7 @@ loader.define(function (require, exports, module) {
 
   pageview.load = function () {};
 
-  pageview.dispose = function () {
-    loader.require(["pages/main/alarm"], function (mod) {
-      setTimeout(function () {
-        mod.reload();
-      }, 1000);
-    });
-  };
+  pageview.dispose = function () {};
 
   pageview.init();
   return pageview;
