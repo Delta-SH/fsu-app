@@ -1353,8 +1353,8 @@ window.onInput = function (option) {
 };
 
 window.getTimespan = function (start, end) {
-  var from = bui.date.convert(start);
-  var to = isNullOrEmpty(end, true) ? new Date() : bui.date.convert(end);
+  var from = convertDate(start).getTime();
+  var to = convertDate(end).getTime();
   var diff = (to - from) / 1000;
   if (diff < 0) diff = 0;
 
@@ -1367,6 +1367,18 @@ window.getTimespan = function (start, end) {
     minutes > 9 ? minutes : "0" + minutes,
     seconds > 9 ? seconds : "0" + seconds
   );
+};
+
+window.convertDate = function (date) {
+  if (isNullOrEmpty(date, true)) return new Date();
+
+  var index = date.lastIndexOf(".");
+  if (index > -1) {
+    var base = new Date(date.substring(0, index).replace(/-/g, "/"));
+    return new Date(base.getTime() + parseInt(date.substring(index + 1)));
+  } else {
+    return bui.date.convert(start);
+  }
 };
 
 // 扩展方法

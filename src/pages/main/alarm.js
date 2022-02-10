@@ -56,15 +56,9 @@ loader.define(function (require, exports, module) {
         id: "#pylon-app-alarm-scroll",
         autoLoad: false,
         onRefresh: function () {
-          pageview.refresh(
-            null,
-            function (err) {
-              warning(err);
-            },
-            function () {
-              pageview.pull.reverse();
-            }
-          );
+          pageview.reload(function () {
+            pageview.pull.reverse();
+          });
         },
       });
     }
@@ -95,6 +89,23 @@ loader.define(function (require, exports, module) {
     }
 
     _settimer(100);
+  };
+
+  pageview.reload = function (done) {
+    _cleartimer();
+    pageview.refresh(
+      _getparams(),
+      function (err) {
+        warning(err);
+      },
+      function () {
+        _cleartimer();
+        _settimer();
+        if (isFunction(done) === true) {
+          done();
+        }
+      }
+    );
   };
 
   pageview.refresh = function (conf, fail, done) {
