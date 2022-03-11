@@ -116,7 +116,7 @@ loader.define(function (require, exports, module) {
         $.each(data, function (index, el) {
           html += `<li class="bui-btn bui-box" href="pages/main/detailalarm.html?ID=${
             el.ID || ""
-          }&Area=${el.Area}&Station=${el.Station}&Device=${el.Device}&Signal=${
+          }&Area=${el.Area}&Station=${el.Room}&Device=${el.Device}&Signal=${
             el.Signal
           }&SignalID=${el.SignalID}&AlarmLevel=${el.AlarmLevel}&AlarmDesc=${
             el.AlarmDesc

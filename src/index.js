@@ -570,7 +570,7 @@ window.getAllStations = function (params, resolve, reject, done) {
     appRequest.Post(
       $.extend(
         {
-          url: "GetStations",
+          url: "GetRooms",
           data: { id: null },
         },
         params || {}
@@ -613,7 +613,7 @@ window.getStation = function (id, params, resolve, reject, done) {
     appRequest.Post(
       $.extend(
         {
-          url: "GetStations",
+          url: "GetRooms",
           data: { id: [id] },
         },
         params || {}
@@ -971,7 +971,7 @@ window.getAllAlarms = function (params, resolve, reject, done) {
             sortMode: 2,
             id: 0,
             area: null,
-            station: null,
+            room: null,
             device: null,
             signal: null,
             alarmLevel: null,
