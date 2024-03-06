@@ -113,13 +113,14 @@ loader.define(function (require, exports, module) {
   pageview.load = function () {
     var remeber = getRemember();
     if (isNull(remeber) === false) {
-      this.ip.val(remeber.ip);
+      //this.ip.val(remeber.ip);
       this.user.val(remeber.user);
       this.password.val(remeber.pwd);
       this.rembck.prop("checked", remeber.remb);
-    } else if (window.$systemOs === "Webapp") {
-      this.ip.val(window.location.host);
     }
+    // else if (window.$systemOs === "Webapp") {
+    //   this.ip.val(window.location.host);
+    // }
   };
 
   // 销毁资源

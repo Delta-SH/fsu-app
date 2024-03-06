@@ -1,6 +1,6 @@
 loader.define(function (require, exports, module) {
   var pageview = {
-    name: "数据机房监控系统",
+    name: "光伏发电运维管理平台",
     request: null,
     maintab: null,
     loading: null,
